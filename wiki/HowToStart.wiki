@@ -3,10 +3,16 @@
 
 = Introduction =
 
-Javascript Debug Toolkit is a eclips plugin
+Javascript Debug Toolkit is a eclips plugin used to debug javascript cross browser.
 
 
-= Details =
+= How to install =
+    Javascript Debug Toolkit requires jre 1.5+ and  eclipse 3.2+ to install.
+    Download the jsdt-1.0.0.zip to your computer and unzip to eclipse's home directory.
+    Restart eclipse and you can use Javascript Debug Toolkit.
+   
+
+= How to use =
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
