@@ -63,11 +63,11 @@ jsDebug.getFuncData = function(args, evalFunc) {
 				key = key.replace(/\n|\r|\t| /g, "");
 				if(/^[A-Za-z0-9_\$]*$/.test(key)){
 					var result = evalFunc(key);
-					if(result==null){
-						data[key] = "null";
-					}else if(result==undefined){
+					if(result==undefined){
 						data[key] = "undefined";
-					}else{				
+					}else if(result==null){
+						data[key] = "null";
+					}else {				
 						data[key] = evalFunc(key);
 					}
 				}
