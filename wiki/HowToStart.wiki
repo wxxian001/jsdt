@@ -3,7 +3,7 @@
 
 = Introduction =
 
-Add your content here.
+Javascript Debug Toolkit is a eclips plugin
 
 
 = Details =
