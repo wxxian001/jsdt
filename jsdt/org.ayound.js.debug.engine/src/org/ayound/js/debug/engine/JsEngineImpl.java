@@ -155,8 +155,7 @@ public class JsEngineImpl implements IJsEngine {
 		}
 		String scriptStr = buffer.toString();
 		if (scriptStr.trim().length() > 0) {
-			lineMap.put(url, scriptStr.split(String
-					.valueOf(Character.LINE_SEPARATOR)));
+			lineMap.put(url, scriptStr.split("\n"));
 			dim.compileScript(url, scriptStr);
 		}
 
