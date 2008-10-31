@@ -64,7 +64,7 @@ public class JsLaunchConfigurationMainTab extends
 			public void widgetSelected(SelectionEvent e) {
 				Shell shell = new Shell();
 				FileDialog dialog = new FileDialog(shell);
-				dialog.setFilterExtensions(new String[]{"*.htm","*.html"});
+				dialog.setFilterExtensions(new String[]{"*.htm*.html"});
 				dialog.setFileName(urlText.getText());
 				String fileName = dialog.open();
 				if(fileName!=null){					
