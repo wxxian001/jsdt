@@ -44,4 +44,6 @@ public interface IDebugServer {
 	public JsResourceManager getJsResourceManager();
 
 	public int getPort();
+	
+	public boolean isRunning();
 }
