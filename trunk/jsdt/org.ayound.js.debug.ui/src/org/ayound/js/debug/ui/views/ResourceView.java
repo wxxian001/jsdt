@@ -189,11 +189,13 @@ public class ResourceView extends AbstractDebugView implements
 						JsDebugTarget fTarget = (JsDebugTarget) element
 								.getDebugTarget();
 						IDebugServer server = fTarget.getServer();
-						servers.put(server.getPort(), server);
-						if (getViewer() != null) {
-							for (String resource : server.getResources()) {
-								addResource("[" + server.getPort() + "]"
-										+ resource);
+						if(server.isRunning()){							
+							servers.put(server.getPort(), server);
+							if (getViewer() != null) {
+								for (String resource : server.getResources()) {
+									addResource("[" + server.getPort() + "]"
+											+ resource);
+								}
 							}
 						}
 					}
@@ -202,10 +204,12 @@ public class ResourceView extends AbstractDebugView implements
 				ILaunch launch = (ILaunch) adaptable.getAdapter(ILaunch.class);
 				JsDebugTarget fTarget = (JsDebugTarget) launch.getDebugTarget();
 				IDebugServer server = fTarget.getServer();
-				servers.put(server.getPort(), server);
-				if (fTarget != null && getViewer() != null) {
-					for (String resource : server.getResources()) {
-						addResource("[" + server.getPort() + "]" + resource);
+				if(server.isRunning()){					
+					servers.put(server.getPort(), server);
+					if (fTarget != null && getViewer() != null) {
+						for (String resource : server.getResources()) {
+							addResource("[" + server.getPort() + "]" + resource);
+						}
 					}
 				}
 			}
