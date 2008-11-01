@@ -17,6 +17,7 @@ package org.ayound.js.debug.launch;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.net.URLDecoder;
 
@@ -24,6 +25,7 @@ import org.ayound.js.debug.core.IJsDebugConstants;
 import org.ayound.js.debug.core.JsDebugCorePlugin;
 import org.ayound.js.debug.resource.JsResourceManager;
 import org.ayound.js.debug.server.JsDebugServer;
+import org.ayound.js.debug.server.SocketServerUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
@@ -67,21 +69,25 @@ public class JsLaunchConfigurationDelegate implements
 					});
 				}
 			}
-			final JsDebugServer server = new JsDebugServer(launch, Integer
-					.parseInt(port), remoteUrl, new JsResourceManager(port));
-			if (server.start()) {
-				JsDebugCorePlugin.getDefault().usePort(server.getPort());
-			} else {
+			ServerSocket socketServer = SocketServerUtil
+					.createSocketServer(Integer.parseInt(port));
+			if (socketServer == null) {
 				Display.getDefault().syncExec(new Runnable() {
 
 					public void run() {
 						MessageDialog.openError(new Shell(),
 								"Java Script Debug Failed",
 								"Js Debug Server start failed, the port of "
-										+ server.getPort() + " is used.");
+										+ port + " is used.");
 					}
 				});
+				return;
 			}
+			JsDebugServer server = new JsDebugServer(launch, socketServer,
+					remoteUrl, new JsResourceManager(String
+							.valueOf(socketServer.getLocalPort())));
+			server.start();
+			JsDebugCorePlugin.getDefault().usePort(server.getPort());
 			final String startUrl = server.getLocalBaseUrl()
 					+ remoteUrl.getPath().replace(" ", "+");
 			Display.getDefault().asyncExec(new Runnable() {
@@ -99,5 +105,4 @@ public class JsLaunchConfigurationDelegate implements
 			e.printStackTrace();
 		}
 	}
-
 }

@@ -49,22 +49,14 @@ public class JsDebugServer implements IDebugServer {
 
 	private Set<String> resources = new HashSet<String>();
 
-	public JsDebugServer(ILaunch launch, int port, URL remoteUrl,JsResourceManager jsManager) {
+	public JsDebugServer(ILaunch launch, ServerSocket socketServer, URL remoteUrl,JsResourceManager jsManager) {
 		super();
 		this.launch = launch;
-		this.port = port;
+		this.serverSocket = socketServer;
+		this.port = socketServer.getLocalPort();
 		this.remoteUrl = remoteUrl;
 		this.jsManager = jsManager;
-		for(int i=this.port;i<65535;i++){
-			try{				
-				this.serverSocket = new ServerSocket(i);
-				this.port = i;
-				break;
-			}catch(Exception e){
-				
-			}
-			
-		}
+		
 
 	}
 
@@ -101,6 +93,9 @@ public class JsDebugServer implements IDebugServer {
 	}
 
 	public void stop() {
+		for(String resource:resources){
+			JsDebugCorePlugin.getDefault().removeResource(resource, this);
+		}
 		jsManager.clear();
 		this.running = false;
 		try {
