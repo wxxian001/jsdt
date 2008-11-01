@@ -19,5 +19,7 @@ import org.ayound.js.debug.server.IDebugServer;
 
 public interface IResourceListener {
 
-	public void addResource(String resources,IDebugServer server);
+	public void addResource(String resource,IDebugServer server);
+	
+	public void removeResource(String resource,IDebugServer server);
 }

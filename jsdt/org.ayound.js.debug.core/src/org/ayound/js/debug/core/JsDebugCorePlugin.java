@@ -79,6 +79,17 @@ public class JsDebugCorePlugin extends AbstractUIPlugin {
 			}
 		});
 	}
+	
+	public void removeResource(final String resource, final IDebugServer server) {
+		Display.getDefault().syncExec(new Runnable() {
+
+			public void run() {
+				for (IResourceListener listener : resourceListeners) {
+					listener.removeResource(resource, server);
+				}
+			}
+		});
+	}
 
 	/*
 	 * (non-Javadoc)
