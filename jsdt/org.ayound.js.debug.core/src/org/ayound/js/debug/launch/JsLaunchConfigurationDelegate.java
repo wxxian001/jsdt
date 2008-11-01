@@ -67,10 +67,10 @@ public class JsLaunchConfigurationDelegate implements
 					});
 				}
 			}
-			JsDebugServer server = new JsDebugServer(launch, Integer
+			final JsDebugServer server = new JsDebugServer(launch, Integer
 					.parseInt(port), remoteUrl, new JsResourceManager(port));
 			if (server.start()) {
-				JsDebugCorePlugin.getDefault().usePort(Integer.parseInt(port));
+				JsDebugCorePlugin.getDefault().usePort(server.getPort());
 			} else {
 				Display.getDefault().syncExec(new Runnable() {
 
@@ -78,7 +78,7 @@ public class JsLaunchConfigurationDelegate implements
 						MessageDialog.openError(new Shell(),
 								"Java Script Debug Failed",
 								"Js Debug Server start failed, the port of "
-										+ port + " is used.");
+										+ server.getPort() + " is used.");
 					}
 				});
 			}

@@ -55,6 +55,16 @@ public class JsDebugServer implements IDebugServer {
 		this.port = port;
 		this.remoteUrl = remoteUrl;
 		this.jsManager = jsManager;
+		for(int i=this.port;i<65535;i++){
+			try{				
+				this.serverSocket = new ServerSocket(i);
+				this.port = i;
+				break;
+			}catch(Exception e){
+				
+			}
+			
+		}
 
 	}
 
@@ -120,7 +130,6 @@ public class JsDebugServer implements IDebugServer {
 
 	public boolean start() {
 		try {
-			this.serverSocket = new ServerSocket(this.port);
 			this.target = new JsDebugTarget(this, this.launch);
 			this.thread = new JsDebugThread(this.target, this.launch);
 			this.target.addThread(this.thread);
