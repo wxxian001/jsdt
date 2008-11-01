@@ -237,4 +237,22 @@ public class ResourceView extends AbstractDebugView implements
 		addResource("[" + server.getPort() + "]" + resource);
 		openFile(resource, server);
 	}
+
+	public void removeResource(String resource, IDebugServer server) {
+		if (getViewer() != null) {
+			Object input = getViewer().getInput();
+			if (input != null && input instanceof String[]) {
+				String[] arr = (String[]) input;
+				Set<String> set = new HashSet<String>();
+				for (String str : arr) {
+					if(!("[" + server.getPort() + "]" + resource).equals(str)){						
+						set.add(str);
+					}
+				}
+				getViewer().setInput(set.toArray(new String[set.size()]));
+			}
+			getViewer().refresh();
+		}
+		
+	}
 }
