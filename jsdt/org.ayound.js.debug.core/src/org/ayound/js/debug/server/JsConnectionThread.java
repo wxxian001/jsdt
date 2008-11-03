@@ -17,10 +17,17 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.eclipse.debug.core.model.IThread;
-
+/**
+ * 
+ * every connection thread handle a http request
+ * the ProcessorFactory determine different processor to handle the request
+ *
+ */
 public class JsConnectionThread extends Thread {
 	private Socket connection;
 
@@ -38,45 +45,49 @@ public class JsConnectionThread extends Thread {
 	@Override
 	public void run() {
 		try {
-			int contentLength = 0;// 客户端发送的 HTTP 请求的主体的长度
+			int contentLength = 0;// the content length of client request
+			Map<String, String> requestHeader = new HashMap<String, String>(); // the header of client request
 			if (this.connection != null) {
 				try {
-					// 第一阶段: 打开输入流
+					// first open inputstream
 					BufferedReader in = new BufferedReader(
 							new InputStreamReader(this.connection
 									.getInputStream()));
 
-					// 读取第一行, 请求地址
+					// read the first line of url
 					String line = in.readLine();
 					String resource = line.substring(line.indexOf('/'), line
 							.lastIndexOf('/') - 5);
-					// 获得请求的资源的地址
-					resource = URLDecoder.decode(resource, "UTF-8");// 反编码
-					// URL
-					// 地址
+					// decode the url and get real path
+					resource = URLDecoder.decode(resource, "UTF-8");
+					// get request method
 					String method = new StringTokenizer(line).nextElement()
-							.toString();// 获取请求方法, GET 或者 POST
+							.toString();
 
-					// 读取所有浏览器发送过来的请求参数头部信息
+					// read all the head info
 					while ((line = in.readLine()) != null) {
-
-						// 读取 POST 等数据的内容长度
-						if (line.startsWith("Content-Length")) {
-							try {
-								contentLength = Integer.parseInt(line
-										.substring(line.indexOf(':') + 1)
-										.trim());
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-
 						if (line.equals("")) {
+							// the header end
 							break;
+						} else {
+							// read the length of post data
+							if (line.startsWith("Content-Length")) {
+								try {
+									contentLength = Integer.parseInt(line
+											.substring(line.indexOf(':') + 1)
+											.trim());
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+							String[] headLines = line.split(":");
+							if(headLines.length==2){								
+								requestHeader.put(headLines[0],headLines[1] );
+							}
 						}
 					}
 					StringBuffer buffer = new StringBuffer();
-					// 显示 POST 表单提交的内容, 这个内容位于请求的主体部分
+					// read the post data to buffer
 					if ("POST".equalsIgnoreCase(method) && (contentLength > 0)) {
 						for (int i = 0; i < contentLength; i++) {
 							buffer.append((char) in.read());
@@ -84,17 +95,17 @@ public class JsConnectionThread extends Thread {
 					}
 
 					JsDebugResponse response = new JsDebugResponse(
-							this.connection.getOutputStream(), this.connection,this.server.getJsResourceManager());
+							this.connection.getOutputStream(), this.connection,
+							this.server.getJsResourceManager());
 					IServerProcessor processor = ProcessorFactory
 							.createProcessor(resource, method, buffer
 									.toString(), response, this.thread,
-									this.server);
+									this.server, requestHeader);
 					processor.process();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-			// System.out.println(connection+"连接到HTTP服务器");//如果加入这一句,服务器响应速度会很慢
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

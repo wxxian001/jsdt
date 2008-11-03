@@ -13,8 +13,19 @@
  *******************************************************************************/
 package org.ayound.js.debug.server;
 
+import java.util.Map;
 
+/**
+ * 
+ * the processor handle different request
+ *
+ */
 public interface IServerProcessor {
+	/**
+	 * get reuqest header of this request
+	 * @return
+	 */
+	public Map<String, String> getRequestHeader();
 	
 	public void process();
 	

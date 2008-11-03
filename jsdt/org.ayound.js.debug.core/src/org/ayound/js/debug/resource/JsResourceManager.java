@@ -23,7 +23,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-
+/**
+ * 
+ * JsResourceManager is used to manager javascript files
+ * create file ,remove file ,or create temp project and folder
+ *
+ */
 public class JsResourceManager {
 
 	public static final String PROJECT_NAME = "jsdebug";
@@ -36,7 +41,10 @@ public class JsResourceManager {
 		super();
 		this.port = port;
 	}
-
+	/**
+	 * remove temp project
+	 *
+	 */
 	public static void removeDebugProject() {
 		try {
 			getProject().delete(true, null);
@@ -45,7 +53,11 @@ public class JsResourceManager {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * get temp project .
+	 * if the project is not exists, create it
+	 * @return
+	 */
 	public static IProject getProject() {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
 				PROJECT_NAME);
@@ -68,7 +80,10 @@ public class JsResourceManager {
 		}
 		return project;
 	}
-
+	/**
+	 * get temp root folder.
+	 * @return
+	 */
 	public static IFolder getTempRoot() {
 		IProject project = getProject();
 		IFolder tempFolder = project.getFolder(FOLDER_NAME);
@@ -77,7 +92,11 @@ public class JsResourceManager {
 		}
 		return tempFolder;
 	}
-
+	/**
+	 * get temp folder .
+	 * every server has different folder
+	 * @return
+	 */
 	public IFolder getTempDir() {
 		IProject project = getProject();
 		IFolder tempFolder = project.getFolder(FOLDER_NAME + "/" + this.port);
@@ -86,7 +105,10 @@ public class JsResourceManager {
 		}
 		return tempFolder;
 	}
-
+	/**
+	 * clear all the resources
+	 *
+	 */
 	public void clear() {
 		IFolder folder = getTempDir();
 		try {
@@ -96,18 +118,30 @@ public class JsResourceManager {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * get resource by file
+	 * @param file
+	 * @return
+	 */
 	public String getResourceByFile(IFile file) {
 		IFolder folder = getTempDir();
 		return file.getFullPath().toString().replace(
 				folder.getFullPath().toString(), "");
 	}
-
+	/**
+	 * get file by resource
+	 * @param resource
+	 * @return
+	 */
 	public IFile getFileByResource(String resource) {
 		IFolder folder = getTempDir();
 		return folder.getFile(resource);
 	}
-
+	/**
+	 * the method is used to create folder depth.
+	 * it will create parent folder if not present
+	 * @param folder
+	 */
 	private static void createFolder(IFolder folder) {
 		IContainer parent = folder.getParent();
 		if (!parent.exists()) {
@@ -130,7 +164,11 @@ public class JsResourceManager {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * create file by resource path,and write stream to the file
+	 * @param resourcePath
+	 * @param isResult
+	 */
 	public void createFile(String resourcePath, InputStream isResult) {
 		IFile file = getFileByResource(resourcePath);
 		if (!file.exists()) {

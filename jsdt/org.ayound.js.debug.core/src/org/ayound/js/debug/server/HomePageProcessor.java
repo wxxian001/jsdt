@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Map;
 
 import org.ayound.js.debug.core.JsDebugCorePlugin;
 import org.ayound.js.debug.resource.JsResourceManager;
@@ -27,12 +28,16 @@ import org.ayound.js.debug.script.ScriptCompileUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.model.IThread;
-
+/**
+ * 
+ * the processor to resolver home page.
+ * the home page have some html code and javascript code
+ */
 public class HomePageProcessor extends AbstractProcessor {
 
 	public HomePageProcessor(String requestUrl, String postData,
-			JsDebugResponse response, IThread thread, IDebugServer server) {
-		super(requestUrl, postData, response, thread, server);
+			JsDebugResponse response, IThread thread, IDebugServer server,Map<String, String> requestHeader) {
+		super(requestUrl, postData, response, thread, server,requestHeader);
 	}
 
 	@Override
@@ -42,11 +47,12 @@ public class HomePageProcessor extends AbstractProcessor {
 			String resourcePath = url.getPath();
 			JsResourceManager manager = getServer().getJsResourceManager();
 			manager.createFile(resourcePath, ProcesserUtil
-					.getInputStream(url, null, getPostData()));
+					.getInputStream(url, null, getPostData(),this.getRequestHeader()));
 			JsDebugCorePlugin.getDefault().addResource(resourcePath, getServer());
 			getServer().addResource(resourcePath);
 			IFile homeFile = manager.getFileByResource(resourcePath);
 			getResponse().writeHTMLHeader(homeFile.getCharset());
+			//write debug javascript file before any one
 			getResponse().writeln("<script type=\"text/javascript\">");
 			InputStream inputStream = HomePageProcessor.class
 					.getResourceAsStream("debug.js");
@@ -75,7 +81,7 @@ public class HomePageProcessor extends AbstractProcessor {
 			}
 			String scriptContent = buffer.toString();
 
-			// JsResourceManager.registerFile(resourcePath, scriptContent);
+			//compile html file by javascript engine
 			getServer().getJsEngine().compileHtml(resourcePath, scriptContent);
 			String[] lines = scriptContent.split("\n");
 			for (int i = 0; i < lines.length; i++) {

@@ -15,16 +15,32 @@ package org.ayound.js.debug.server;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 import org.eclipse.debug.core.model.IThread;
 
 public class ProcessorFactory {
+	/**
+	 * create processor by different url
+	 * "/" or baseUrl to create Homepage
+	 * *.js to create script processor
+	 * debugurl to create jsdebug processor
+	 * other to create resource processor
+	 * @param resource
+	 * @param method
+	 * @param postData
+	 * @param response
+	 * @param thread
+	 * @param server
+	 * @param requestHeader
+	 * @return
+	 */
 	public static IServerProcessor createProcessor(String resource,
 			String method, String postData, JsDebugResponse response,
-			IThread thread, IDebugServer server) {
+			IThread thread, IDebugServer server,Map<String, String> requestHeader) {
 		if(resource.equals("/")){
 			return  new HomePageProcessor(resource, postData, response,
-					thread, server);
+					thread, server,requestHeader);
 		}
 		if (resource.startsWith("/")) {
 			resource = server.getLocalBaseUrl() + resource;
@@ -33,20 +49,20 @@ public class ProcessorFactory {
 				+ IDebugServer.DEBUG_PATH;
 		if (resource.startsWith(debugUrl)) {
 			return new DebugProcessor(resource, postData, response, thread,
-					server);
+					server,requestHeader);
 		} else {
 			String remotePath = resource.replace(server.getLocalBaseUrl(), "");
 			try {
 				URL remoteFile = new URL(server.getRemoteBaseUrl(), remotePath);
 				if (remoteFile.getFile().toLowerCase().endsWith("js")) {
 					return new ScriptProcessor(resource, postData, response,
-							thread, server);
+							thread, server,requestHeader);
 				} else if (remoteFile.equals(server.getRemoteBaseUrl())) {
 					return new HomePageProcessor(resource, postData, response,
-							thread, server);
+							thread, server,requestHeader);
 				} else {
 					return new ResourceProcessor(resource, method, postData,
-							response, thread, server);
+							response, thread, server,requestHeader);
 				}
 
 			} catch (MalformedURLException e) {

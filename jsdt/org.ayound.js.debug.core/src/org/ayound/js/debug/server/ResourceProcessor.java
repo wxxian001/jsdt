@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Map;
 
 import org.eclipse.debug.core.model.IThread;
 
@@ -26,8 +27,8 @@ public class ResourceProcessor extends AbstractProcessor {
 	private String method;
 
 	public ResourceProcessor(String requestUrl, String method, String postData,
-			JsDebugResponse response, IThread thread, IDebugServer server) {
-		super(requestUrl, postData, response, thread, server);
+			JsDebugResponse response, IThread thread, IDebugServer server,Map<String, String> requestHeader) {
+		super(requestUrl, postData, response, thread, server,requestHeader);
 		this.method = method;
 	}
 
@@ -37,7 +38,7 @@ public class ResourceProcessor extends AbstractProcessor {
 			URL url = this.computeRemoteURL();
 			getResponse().writeOtherHeader(url.getFile());
 			DataInputStream isResult = new DataInputStream(ProcesserUtil
-					.getInputStream(url, method, getPostData()));
+					.getInputStream(url, method, getPostData(),this.getRequestHeader()));
 			byte[] bytes = new byte[isResult.available()];
 			isResult.readFully(bytes);
 			getResponse().getOutPutStream().write(bytes);

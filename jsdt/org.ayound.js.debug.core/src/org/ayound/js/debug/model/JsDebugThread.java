@@ -22,6 +22,10 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
+/**
+ * 
+ *
+ */
 
 public class JsDebugThread extends JsDebugElement implements IThread {
 
@@ -145,7 +149,10 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 		}
 
 	}
-
+	/**
+	 *  add statck frame to thread and fire resume event and breakpoint event
+	 * @param frame
+	 */
 	public void addStackFrame(JsDebugStackFrame frame) {
 		List<IStackFrame> list = new ArrayList<IStackFrame>();
 		list.add(frame);

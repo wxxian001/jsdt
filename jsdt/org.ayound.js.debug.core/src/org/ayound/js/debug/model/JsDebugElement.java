@@ -20,7 +20,10 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.DebugElement;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
-
+/**
+ * the base debug element of Javascript Debug Toolkit
+ *
+ */
 public class JsDebugElement extends DebugElement {
 
 	private boolean terminated = false;

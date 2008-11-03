@@ -24,8 +24,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * 
+ * VariableUtil is used to create IVaraibles from json
+ *
+ */
 public class VariableUtil {
+	/**
+	 * create varible by jsonObject
+	 * @param rootJson
+	 * @param target
+	 * @param launch
+	 * @return
+	 */
 	public static IVariable[] createVarsByObject(JSONObject rootJson,
 			IDebugTarget target, ILaunch launch) {
 		if (rootJson != null) {
@@ -68,7 +79,14 @@ public class VariableUtil {
 		return null;
 
 	}
-
+	/**
+	 * create varibles by jsonarray
+	 * @param arrayName
+	 * @param jsonArray
+	 * @param target
+	 * @param launch
+	 * @return
+	 */
 	public static IVariable[] createVarsByArray(String arrayName,
 			JSONArray jsonArray, IDebugTarget target, ILaunch launch) {
 		if (jsonArray != null) {
@@ -106,7 +124,11 @@ public class VariableUtil {
 		return null;
 
 	}
-
+	/**
+	 * get javascript varible type
+	 * @param value
+	 * @return
+	 */
 	private static String getJsonType(Object value) {
 		if (value instanceof String) {
 			return ("string");

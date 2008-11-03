@@ -11,6 +11,9 @@
  * 
  * Created on 2008-10-26
  *******************************************************************************/
+/**
+ * handle window.onerror method
+ */
 window.onerror = function(e) {
 	if (e == "exit") {
 		return true;
@@ -19,6 +22,9 @@ window.onerror = function(e) {
 	}
 }
 var arguments = [];
+/**
+ * create xmlhttp to cross browser
+ */
 function createXMLHttp() {
 	if (typeof XMLHttpRequest != "undefined") {
 		return new XMLHttpRequest();
@@ -43,7 +49,10 @@ jsDebug.debugCommand = null;
 jsDebug.currResource = null;
 jsDebug.breakpoints = null;
 jsDebug.functionStack = [];
-
+/**
+ * get function by arguments.callee and parse the function string
+ * find all the arguments and vars
+ */
 jsDebug.getFuncData = function(args, evalFunc) {
 	if (!evalFunc) {
 		return {};
@@ -89,6 +98,9 @@ jsDebug.getFuncData = function(args, evalFunc) {
 		return data;
 	}
 }
+/**
+ * parse all the varibles 
+ */
 jsDebug.parseVars = function(line) {
 	var varNames = [];
 	if (line && line.length > 0) {
@@ -109,6 +121,9 @@ jsDebug.parseVars = function(line) {
 	}
 	return varNames;
 }
+/**
+ * find if arguments is stepreturn context
+ */
 jsDebug.isStepReturn = function(args) {
 	if(args){
 		var func = args.callee;
@@ -122,6 +137,9 @@ jsDebug.isStepReturn = function(args) {
 		return true;
 	}
 }
+/**
+ * find if arguments is stepover context
+ */
 jsDebug.isStepOver = function(args) {
 	if(args){
 		var func = args.callee;
@@ -135,6 +153,9 @@ jsDebug.isStepOver = function(args) {
 		return true;
 	}	
 }
+/**
+ * get breakpoints from server
+ */
 jsDebug.getBreakPoint = function() {
 	try {
 		var postData = {
@@ -149,6 +170,9 @@ jsDebug.getBreakPoint = function() {
 	} catch (e) {
 	}
 }
+/**
+ * update function stack
+ */
 jsDebug.updateStack = function(args){
 	if(args){
 		var func = args.callee;

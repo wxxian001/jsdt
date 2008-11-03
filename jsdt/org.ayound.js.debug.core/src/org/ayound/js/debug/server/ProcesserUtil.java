@@ -19,9 +19,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import java.util.Map;
+/**
+ * the tool calss of processor
+ */
 public class ProcesserUtil {
-	public static InputStream getInputStream(URL url,String method,String postData){
+	/**
+	 * get remote inputstram
+	 * @param url
+	 * @param method
+	 * @param postData
+	 * @param requestHeader
+	 * @return
+	 */
+	public static InputStream getInputStream(URL url,String method,String postData,Map<String, String> requestHeader){
 		if(method==null){
 			method = "GET";
 		}
@@ -40,8 +51,10 @@ public class ProcesserUtil {
 				conn.setDoOutput(true);
 				conn.setDoInput(true);
 				conn.setUseCaches(false);
-				conn.setRequestProperty("enctype", "multipart/form-data");
-				conn.setRequestProperty("contentType", "charset=utf-8");
+				for(Map.Entry<String, String>entry:requestHeader.entrySet()){					
+//					conn.setRequestProperty("enctype", "multipart/form-data");
+					conn.setRequestProperty(entry.getKey(), entry.getValue());
+				}
 				conn.setRequestMethod(method);
 				if(method.equalsIgnoreCase("POST")){
 					conn.getOutputStream().write(postData.getBytes());

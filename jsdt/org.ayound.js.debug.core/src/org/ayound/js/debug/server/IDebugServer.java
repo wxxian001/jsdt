@@ -35,15 +35,33 @@ public interface IDebugServer {
 	 */
 	public String getLocalBaseUrl();
 
+	/**
+	 *  get the javascript engine
+	 * @return
+	 */
 	public IJsEngine getJsEngine();
-
+	/**
+	 * get resources of this server
+	 * @return
+	 */
 	public String[] getResources();
-
+	/**
+	 * add resource to this server
+	 * @param resource
+	 */
 	public void addResource(String resource);
-
+	/**
+	 * get javascript resource manager
+	 * @return
+	 */
 	public JsResourceManager getJsResourceManager();
 
+	/**
+	 *  get the port of this socket server
+	 * @return
+	 */
 	public int getPort();
-	
+
 	public boolean isRunning();
+	
 }
