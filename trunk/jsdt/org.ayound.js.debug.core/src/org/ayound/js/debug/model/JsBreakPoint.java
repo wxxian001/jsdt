@@ -24,13 +24,23 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.LineBreakpoint;
+/**
+ * 
+ * JsBreakPoint is a breakpoint model of jsdt,
+ * it used to toggle breakpoint of javascript files 
+ */
 
 public class JsBreakPoint extends LineBreakpoint {
 
 	public String getModelIdentifier() {
 		return JsDebugCorePlugin.MODEL_ID;
 	}
-
+	/**
+	 * the cunstructor of jsbreakpoint
+	 * it create the marker and enabled it
+	 * @param resource
+	 * @param lineNumber
+	 */
 	public JsBreakPoint(final IResource resource,final int lineNumber){
 		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {

@@ -23,7 +23,7 @@ public class SocketServerUtil {
 	 * @return
 	 */
 	public static ServerSocket createSocketServer(int port) {
-		for (int i = port; i < 65535; i++) {
+		for (int i = port-1; i < 65535; i++) {
 			try {
 				return new ServerSocket(i);
 			} catch (Exception e) {

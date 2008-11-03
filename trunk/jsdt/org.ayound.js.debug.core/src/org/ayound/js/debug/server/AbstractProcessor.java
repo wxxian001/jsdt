@@ -15,9 +15,14 @@ package org.ayound.js.debug.server;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 import org.eclipse.debug.core.model.IThread;
-
+/**
+ * 
+ * this class is used to define some common field
+ *
+ */
 public abstract class AbstractProcessor implements IServerProcessor {
 
 	private String requestUrl;
@@ -30,13 +35,16 @@ public abstract class AbstractProcessor implements IServerProcessor {
 
 	private IDebugServer server;
 
-	public AbstractProcessor(String requestUrl, String postData, JsDebugResponse response, IThread thread, IDebugServer server) {
+	private Map<String, String> requestHeader;
+	
+	public AbstractProcessor(String requestUrl, String postData, JsDebugResponse response, IThread thread, IDebugServer server,Map<String, String> requestHeader) {
 		super();
 		this.requestUrl = requestUrl;
 		this.postData = postData;
 		this.response = response;
 		this.thread = thread;
 		this.server = server;
+		this.requestHeader = requestHeader;
 	}
 
 	abstract public void process();
@@ -60,6 +68,12 @@ public abstract class AbstractProcessor implements IServerProcessor {
 	public IThread getThread() {
 		return this.thread;
 	}
+	/**
+	 * compute the remote url.
+	 * the request url maybe http://localhost:8080/test/a.html
+	 * the method convert it to http://www.site.com/test/a.html
+	 * @return
+	 */
 	public URL computeRemoteURL(){
 		String path = this.requestUrl.replace(this.server.getLocalBaseUrl(), "");
 		try {
@@ -69,5 +83,9 @@ public abstract class AbstractProcessor implements IServerProcessor {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public Map<String, String> getRequestHeader() {
+		return this.requestHeader;
 	}
 }

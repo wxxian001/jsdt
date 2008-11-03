@@ -16,7 +16,18 @@ package org.ayound.js.debug.server;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
+/**
+ * this class is used to parse debug post data.
+ * the data mabye {
+ * 	"RESOURCE":"/test/a.js",
+ * 	"LINE":9,
+ *  "COMMAND":"STEPOVER",
+ *  "STACK":{
+ *    "arg0":"test"
+ *  }
+ * }
+ *
+ */
 public class JsDebugParam {
 
 	private static final String RESOURCE = "RESOURCE";
@@ -35,6 +46,7 @@ public class JsDebugParam {
 
 	private int line;
 
+	
 	public JsDebugParam(String jsonString) {
 		try {
 			JSONObject jsonObject = new JSONObject(new JSONTokener(jsonString));

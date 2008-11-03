@@ -13,11 +13,21 @@
  *******************************************************************************/
 package org.ayound.js.debug.script;
 
-
+/**
+ * 
+ * the class is used to compile js line to debug line
+ * by add $jsd line before the javascript line.
+ *
+ */
 public class ScriptCompileUtil {
 
-//	private static final String KEY_WORD = " break delete function return typeof case do if switch var catch else in this void continue false instanceof throw while debugger finally new true with default for null try ";
-
+	/**
+	 * 
+	 * @param lines
+	 * @param resourcePath
+	 * @param index
+	 * @return
+	 */
 	public static String compileJsLine(String lines[], String resourcePath,
 			int index) {
 		
@@ -25,7 +35,16 @@ public class ScriptCompileUtil {
 		return compileOneLine(jsLine,lines,resourcePath,index);
 		
 	}
-
+	/**
+	 * compile one javascript line,
+	 * if the line has ":" it maybe a json Object line or case,default
+	 * 
+	 * @param jsLine
+	 * @param lines
+	 * @param resourcePath
+	 * @param index
+	 * @return
+	 */
 	private static String compileOneLine(String jsLine,String lines[],String resourcePath,int index){
 		int firstColon = jsLine.indexOf(':');
 		if (firstColon > 0 && firstColon < jsLine.length() - 2) {
@@ -69,100 +88,26 @@ public class ScriptCompileUtil {
 		return getdebugString(lines, resourcePath, index) + ";" + jsLine;
 	}
 	
-	
+	/**
+	 * get debug string insert before every javascript line.
+	 * @param lines
+	 * @param resourcePath
+	 * @param index
+	 * @return
+	 */
 	private static String getdebugString(String lines[], String resourcePath,
 			int index) {
 		String debugStr = "$jsd('" + resourcePath + "'," + (index + 1)
 				+ ",this,((typeof(arguments)!=\"undefined\"?arguments:null)),function(__text){try{return eval(__text);}catch(e){}})";
-//		debugStr = debugStr + "'arguments':arguments})";
-//		Set<String> varNames = getContextVars(lines, index);
-//		for (String varName : varNames) {
-//			varName = varName.replace("var ", "");
-//			if (varName.length() > 0 && !KEY_WORD.contains(" " + varName + " ")
-//					&& isVar(varName)) {
-//				debugStr = debugStr + "'" + varName + "':((typeof " + varName
-//						+ " !=\"undefined\")?" + varName + ":undefined),";
-//			}
-//		}
 		return debugStr;
 	}
-
-//	private static boolean isVar(String varName) {
-//		for (int i = 0; i < varName.length(); i++) {
-//			char ch = varName.charAt(i);
-//			if (!(Character.isLetterOrDigit(ch) || ch == '$' || ch == '_')) {
-//				return false;
-//			}
-//		}
-//		return true;
-//	}
-
-//	private static Set<String> getContextVars(String lines[], int index) {
-//		Set<String> varNames = new HashSet<String>();
-//		String line = lines[index];
-//		if (line.indexOf("function") >= 0) {
-//			return varNames;
-//		}
-//		for (int i = index - 1; i > -1; i--) {
-//			String lastLine = lines[i];
-//			String trimLine = lastLine.replace(" ", "");
-//			if (trimLine.indexOf("function") > -1) {
-//				String trimLineEnd = trimLine.substring(trimLine
-//						.indexOf("function"));
-//				int startOffset = trimLine.indexOf("(");
-//				int endOffset = trimLine.indexOf(')');
-//				if (endOffset >= 0) {
-//					trimLineEnd = trimLine
-//							.substring(startOffset + 1, endOffset);
-//				}
-//				if (trimLineEnd.length() > 0) {
-//					String[] vars = trimLineEnd.split(",");
-//					for (String var : vars) {
-//						varNames.add(var.trim());
-//					}
-//				}
-//				break;
-//			} else {
-//				varNames.addAll(getVarNames(lastLine));
-//			}
-//		}
-//		return varNames;
-//	}
-//
-//	private static List<String> getVarNames(String line) {
-//		List<String> varNames = new ArrayList<String>();
-//		line = line.trim();
-//		if (line.startsWith("var ")) {
-//			int endOffset = line.indexOf(';');
-//			if (endOffset > -1) {
-//				line = line.substring(4, endOffset).trim();
-//			}
-//			String[] vars = line.split(",");
-//			for (String var : vars) {
-//				int varEnd = var.indexOf("=");
-//				if (varEnd > 0) {
-//					varNames.add(var.substring(0, varEnd).trim());
-//				}
-//			}
-//		} else {
-//			int endOffset = line.indexOf('=');
-//			if (endOffset >= 0) {
-//				String varLine = line.substring(0, endOffset).trim();
-//				StringBuffer varBuffer = new StringBuffer();
-//				for (int i = 0; i < varLine.length(); i++) {
-//					char ch = varLine.charAt(i);
-//					if (Character.isLetterOrDigit(ch) || ch == '$' || ch == '_') {
-//						varBuffer.append(ch);
-//					} else {
-//						break;
-//					}
-//				}
-//				varNames.add(varBuffer.toString());
-//			}
-//		}
-//		return varNames;
-//	}
-
+	/**
+	 * insert $jsd after <script> tag
+	 * @param lines
+	 * @param resourcePath
+	 * @param index
+	 * @return
+	 */
 	public static String compileHtmlLine(String[] lines, String resourcePath,
 			int index) {
 		String htmlLine = lines[index];

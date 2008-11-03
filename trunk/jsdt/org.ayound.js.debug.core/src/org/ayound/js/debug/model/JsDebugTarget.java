@@ -27,6 +27,10 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
+/**
+ * 
+ *
+ */
 
 public class JsDebugTarget extends JsDebugElement implements IDebugTarget {
 

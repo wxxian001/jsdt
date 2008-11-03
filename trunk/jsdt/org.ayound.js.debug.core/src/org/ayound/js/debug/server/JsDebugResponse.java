@@ -48,7 +48,10 @@ public class JsDebugResponse {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * write html header of this request
+	 * @param encoding
+	 */
 	public void writeHTMLHeader(String encoding) {
 		if (encoding == null) {
 			encoding = "UTF-8";
@@ -57,7 +60,10 @@ public class JsDebugResponse {
 		out.println("Content-Type:text/html;charset=" + encoding);
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
 	}
-
+	/**
+	 * write javascript response header of this request
+	 * @param encoding
+	 */
 	public void writeJsHeader(String encoding) {
 		if (encoding == null) {
 			encoding = "UTF-8";
@@ -66,7 +72,11 @@ public class JsDebugResponse {
 		out.println("Content-Type:text/javascript;charset=" + encoding);
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
 	}
-
+	/**
+	 * write other header.
+	 * the method will set response header accroding to different file
+	 * @param fileName
+	 */
 	public void writeOtherHeader(String fileName) {
 		fileName = fileName.toLowerCase();
 		out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
@@ -78,13 +88,19 @@ public class JsDebugResponse {
 		}
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
 	}
-
+	/**
+	 * write string to client
+	 * @param str
+	 */
 	public void write(String str) {
 		if (!this.client.isClosed()) {
 			this.out.write(str);
 		}
 	}
-
+	/**
+	 * write line to client
+	 * @param str
+	 */
 	public void writeln(String str) {
 		if (!this.client.isClosed()) {
 			this.out.write(str + "\n");
@@ -106,7 +122,10 @@ public class JsDebugResponse {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * write resume to client
+	 * the method will write breakpoints to client
+	 */
 	public void writeResume() {
 		StringBuffer buffer = new StringBuffer(
 				"{COMMAND:'BREAKPOINT',BREAKPOINTS:{");
@@ -127,20 +146,32 @@ public class JsDebugResponse {
 		this.write(buffer.toString());
 
 	}
-
+	/**
+	 * write terminate command to client
+	 *
+	 */
 	public void writeTerminate() {
 		this.write("{COMMAND:'TERMINATE'}");
 
 	}
-
+	/**
+	 * write stepover command to client
+	 *
+	 */
 	public void writeStepOver() {
 		this.write("{COMMAND:'STEPOVER'}");
 	}
-
+	/**
+	 * write stepreturn command to client
+	 *
+	 */
 	public void writeStepReturn() {
 		this.write("{COMMAND:'STEPRETURN'}");
 	}
-
+	/**
+	 * write stepinto command to client
+	 *
+	 */
 	public void writeStepInTo() {
 		this.write("{COMMAND:'STEPINTO'}");
 	}

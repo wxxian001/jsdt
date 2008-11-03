@@ -34,9 +34,14 @@ import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-
+/**
+ * this class implements the ILaunchConfigurationDelegate interface
+ * to start a debug server and open browser.
+ *
+ */
 public class JsLaunchConfigurationDelegate implements
 		ILaunchConfigurationDelegate {
+
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		final String port = configuration.getAttribute(IJsDebugConstants.PORT,
@@ -51,6 +56,7 @@ public class JsLaunchConfigurationDelegate implements
 		final String browser = configuration.getAttribute(
 				IJsDebugConstants.BROWSER, "");
 		URL remoteUrl = null;
+		//support file,http url,here must be a file url
 		try {
 			if (url.startsWith("http") || url.startsWith("file")) {
 				remoteUrl = new URL(url.replace(":///", "://"));

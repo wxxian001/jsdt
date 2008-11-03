@@ -13,21 +13,19 @@
  *******************************************************************************/
 package org.ayound.js.debug.server;
 
+import java.util.Map;
+
 import org.ayound.js.debug.model.JsDebugStackFrame;
 import org.ayound.js.debug.model.JsDebugThread;
 import org.ayound.js.debug.model.VariableUtil;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IThread;
 
 public class DebugProcessor extends AbstractProcessor {
 
 	public DebugProcessor(String requestUrl, String postData,
-			JsDebugResponse response, IThread thread, IDebugServer server) {
-		super(requestUrl, postData, response, thread, server);
+			JsDebugResponse response, IThread thread, IDebugServer server,Map<String, String> requestHeader) {
+		super(requestUrl, postData, response, thread, server,requestHeader);
 	}
 
 	public void process() {
@@ -46,19 +44,6 @@ public class DebugProcessor extends AbstractProcessor {
 				JsDebugStackFrame frame = new JsDebugStackFrame(getThread(),
 						getThread().getDebugTarget(), getThread().getLaunch());
 				frame.setResponse(getResponse());
-//				try {
-//					IMarker [] markers = getServer().getJsResourceManager().getFileByResource(param.getJsResource()).findMarkers(null, true, IResource.DEPTH_ZERO);
-//					for(IMarker marker:markers){
-//						System.out.println(marker.getAttribute(IBreakpoint.ID));
-//						if(marker.getAttribute(IBreakpoint.ID)==null){
-//							marker.delete();
-//						}
-//					}
-//					System.out.println(markers.length);
-//				} catch (CoreException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
 				frame.setResource(param.getJsResource());
 				frame.setLineNum(param.getLine());
 				frame.setVariables(VariableUtil.createVarsByObject(param

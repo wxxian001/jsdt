@@ -59,7 +59,10 @@ public class JsDebugServer implements IDebugServer {
 		
 
 	}
-
+	/**
+	 * every JsConnectionThread handle a http request 
+	 *
+	 */
 	protected void startRun() {
 		(new Thread() {
 
@@ -92,6 +95,10 @@ public class JsDebugServer implements IDebugServer {
 		return this.port;
 	}
 
+	/**
+	 * when the server stop ,it remove all the resources
+	 *
+	 */
 	public void stop() {
 		for(String resource:resources){
 			JsDebugCorePlugin.getDefault().removeResource(resource, this);
