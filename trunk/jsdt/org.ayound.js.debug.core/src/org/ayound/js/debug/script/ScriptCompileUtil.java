@@ -15,9 +15,9 @@ package org.ayound.js.debug.script;
 
 /**
  * 
- * the class is used to compile js line to debug line
- * by add $jsd line before the javascript line.
- *
+ * the class is used to compile js line to debug line by add $jsd line before
+ * the javascript line.
+ * 
  */
 public class ScriptCompileUtil {
 
@@ -30,14 +30,15 @@ public class ScriptCompileUtil {
 	 */
 	public static String compileJsLine(String lines[], String resourcePath,
 			int index) {
-		
+
 		String jsLine = lines[index];
-		return compileOneLine(jsLine,lines,resourcePath,index);
-		
+		return compileOneLine(jsLine, lines, resourcePath, index);
+
 	}
+
 	/**
-	 * compile one javascript line,
-	 * if the line has ":" it maybe a json Object line or case,default
+	 * compile one javascript line, if the line has ":" it maybe a json Object
+	 * line or case,default
 	 * 
 	 * @param jsLine
 	 * @param lines
@@ -45,7 +46,8 @@ public class ScriptCompileUtil {
 	 * @param index
 	 * @return
 	 */
-	private static String compileOneLine(String jsLine,String lines[],String resourcePath,int index){
+	private static String compileOneLine(String jsLine, String lines[],
+			String resourcePath, int index) {
 		int firstColon = jsLine.indexOf(':');
 		if (firstColon > 0 && firstColon < jsLine.length() - 2) {
 			if (jsLine.trim().startsWith("case ")) {
@@ -60,36 +62,69 @@ public class ScriptCompileUtil {
 				}
 				return jsLine;
 			}
-			String beforeColon = jsLine.substring(0,firstColon).trim();
+			String beforeColon = jsLine.substring(0, firstColon).trim();
 			boolean isColonLine = true;
-			if(beforeColon.startsWith("'")&&beforeColon.endsWith("'")){
+			if (beforeColon.startsWith("'") && beforeColon.endsWith("'")) {
 				isColonLine = true;
-			}else if(beforeColon.startsWith("\"")&&beforeColon.endsWith("\"")){
+			} else if (beforeColon.startsWith("\"")
+					&& beforeColon.endsWith("\"")) {
 				isColonLine = true;
-			}else if(beforeColon.equals("default")){
+			} else if (beforeColon.equals("default")) {
 				String defaultLine = jsLine.substring(0, firstColon + 1)
-				+ getdebugString(lines, resourcePath, index) + ";";
+						+ getdebugString(lines, resourcePath, index) + ";";
 				return defaultLine;
-			}else{
-				for(int i=0;i<beforeColon.length();i++){
+			} else {
+				for (int i = 0; i < beforeColon.length(); i++) {
 					char ch = beforeColon.charAt(i);
-					if(Character.isLetterOrDigit(ch)||ch=='_'||ch=='$'){
+					if (Character.isLetterOrDigit(ch) || ch == '_' || ch == '$') {
 						continue;
-					}else{
-						isColonLine = false; 
+					} else {
+						isColonLine = false;
 					}
 				}
 			}
-			if(isColonLine){
+			if (isColonLine) {
 				return "$jsd:" + getdebugString(lines, resourcePath, index)
-				+ "," + jsLine;
+						+ "," + jsLine;
+			}
+		} else {
+			if (index > 1) {
+				String lastLine = lines[index - 1];
+				lastLine = lastLine.replace("//.*", "").replace("/\\*.*\\*/",
+						"").trim();
+				if (lastLine.startsWith("if") && (!lastLine.endsWith("{"))
+						&& (!jsLine.startsWith("{"))) {
+					boolean isIfLine = true;
+					int bracket = 0;
+					for (int i = 0; i < lastLine.length() - 1; i++) {
+						char ch = lastLine.charAt(i);
+						if (ch == '(') {
+							bracket--;
+						} else if (ch == ')') {
+							bracket++;
+							if (bracket == 0) {
+								isIfLine = false;
+							}
+						} else {
+							continue;
+						}
+					}
+					if (isIfLine) {
+						return "{" + getdebugString(lines, resourcePath, index) + ";"
+								+ jsLine + "}";
+					}
+				} else if (lastLine.equals("else")) {
+					return "{" + getdebugString(lines, resourcePath, index) + ";"
+							+ jsLine + "}";
+				}
 			}
 		}
 		return getdebugString(lines, resourcePath, index) + ";" + jsLine;
 	}
-	
+
 	/**
 	 * get debug string insert before every javascript line.
+	 * 
 	 * @param lines
 	 * @param resourcePath
 	 * @param index
@@ -97,12 +132,17 @@ public class ScriptCompileUtil {
 	 */
 	private static String getdebugString(String lines[], String resourcePath,
 			int index) {
-		String debugStr = "$jsd('" + resourcePath + "'," + (index + 1)
+		String debugStr = "$jsd('"
+				+ resourcePath
+				+ "',"
+				+ (index + 1)
 				+ ",this,((typeof(arguments)!=\"undefined\"?arguments:null)),function(__text){try{return eval(__text);}catch(e){}})";
 		return debugStr;
 	}
+
 	/**
 	 * insert $jsd after <script> tag
+	 * 
 	 * @param lines
 	 * @param resourcePath
 	 * @param index
@@ -128,8 +168,7 @@ public class ScriptCompileUtil {
 				}
 			}
 			if (buffer.toString().contains(">")) {
-				htmlLine = getdebugString(lines, resourcePath, index) + ";"
-						+ htmlLine;
+				htmlLine = compileOneLine(htmlLine, lines, resourcePath, index);
 			} else {
 				htmlLine = htmlLine.substring(0, offset + 1)
 						+ getdebugString(lines, resourcePath, index) + ";"
@@ -137,8 +176,7 @@ public class ScriptCompileUtil {
 			}
 
 		} else {
-			htmlLine = getdebugString(lines, resourcePath, index) + ";"
-					+ htmlLine;
+			htmlLine = compileOneLine(htmlLine, lines, resourcePath, index);
 		}
 		return htmlLine;
 	}
