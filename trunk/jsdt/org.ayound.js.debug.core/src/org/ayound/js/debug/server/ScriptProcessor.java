@@ -30,8 +30,9 @@ import org.eclipse.debug.core.model.IThread;
 public class ScriptProcessor extends AbstractProcessor {
 
 	public ScriptProcessor(String requestUrl, String postData,
-			JsDebugResponse response, IThread thread, IDebugServer server,Map<String, String> requestHeader) {
-		super(requestUrl, postData, response, thread, server,requestHeader);
+			JsDebugResponse response, IThread thread, IDebugServer server,
+			Map<String, String> requestHeader) {
+		super(requestUrl, postData, response, thread, server, requestHeader);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -41,15 +42,23 @@ public class ScriptProcessor extends AbstractProcessor {
 			URL url = this.computeRemoteURL();
 			String resourcePath = url.getPath();
 			JsResourceManager manager = getServer().getJsResourceManager();
-			manager.createFile(resourcePath, ProcesserUtil.getInputStream(url,
-					null, getPostData(),this.getRequestHeader()));
-			JsDebugCorePlugin.getDefault().addResource(resourcePath, getServer());
+			ResponseInfo info = ProcesserUtil.getResponseInfo(url, null,
+					getPostData(), this.getRequestHeader());
+			manager.createFile(resourcePath, info.getInputStream());
+			JsDebugCorePlugin.getDefault().addResource(resourcePath,
+					getServer());
 			getServer().addResource(resourcePath);
 			IFile scriptFile = manager.getFileByResource(resourcePath);
-			getResponse().writeJsHeader(scriptFile.getCharset());
+			String encoding = info.getEncoding();
+			if (encoding == null) {
+				encoding = scriptFile.getCharset();
+			}
+			if (encoding == null) {
+				encoding = getServer().getDefaultEncoding();
+			}
+			getResponse().writeJsHeader(info.getEncoding());
 			BufferedReader scriptStream = new BufferedReader(
-					new InputStreamReader(scriptFile.getContents(), scriptFile
-							.getCharset()));
+					new InputStreamReader(scriptFile.getContents(), encoding));
 			String line = null;
 			StringBuffer buffer = new StringBuffer();
 			while ((line = scriptStream.readLine()) != null) {
@@ -61,7 +70,7 @@ public class ScriptProcessor extends AbstractProcessor {
 					resourcePath);
 			for (int i = 0; i < lines.length; i++) {
 				String jsLine = lines[i];
-				if (i == 0 && "UTF-8".equalsIgnoreCase(scriptFile.getCharset())) {
+				if (i == 0 && "UTF-8".equalsIgnoreCase(encoding)) {
 					try {
 						char ch = jsLine.charAt(0);
 						if (!(Character.isLetter(ch) || ch == '/')) {

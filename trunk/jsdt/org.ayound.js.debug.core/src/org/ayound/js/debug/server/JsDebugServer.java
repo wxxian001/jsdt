@@ -49,6 +49,8 @@ public class JsDebugServer implements IDebugServer {
 
 	private Set<String> resources = new HashSet<String>();
 
+	private String defaultEncoding;
+	
 	public JsDebugServer(ILaunch launch, ServerSocket socketServer, URL remoteUrl,JsResourceManager jsManager) {
 		super();
 		this.launch = launch;
@@ -160,6 +162,12 @@ public class JsDebugServer implements IDebugServer {
 	public JsResourceManager getJsResourceManager() {
 		// TODO Auto-generated method stub
 		return jsManager;
+	}
+	public String getDefaultEncoding() {
+		return defaultEncoding;
+	}
+	public void setDefaultEncoding(String defaultEncoding) {
+		this.defaultEncoding = defaultEncoding;
 	}
 
 }

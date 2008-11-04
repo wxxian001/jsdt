@@ -20,52 +20,59 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
+
 /**
  * the tool calss of processor
  */
 public class ProcesserUtil {
 	/**
 	 * get remote inputstram
+	 * 
 	 * @param url
 	 * @param method
 	 * @param postData
 	 * @param requestHeader
 	 * @return
 	 */
-	public static InputStream getInputStream(URL url,String method,String postData,Map<String, String> requestHeader){
-		if(method==null){
+	public static ResponseInfo getResponseInfo(URL url, String method,
+			String postData, Map<String, String> requestHeader) {
+		InputStream stream =null;
+		String encoding = null;
+		if (method == null) {
 			method = "GET";
 		}
-		if("file".equalsIgnoreCase(url.getProtocol())){
+		if ("file".equalsIgnoreCase(url.getProtocol())) {
 			String filePath = url.toString().substring(5);
 			try {
-				return new FileInputStream(filePath);
+				stream = new FileInputStream(filePath);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}else if("http".equalsIgnoreCase(url.getProtocol())||"https".equalsIgnoreCase(url.getProtocol())){			
+		} else if ("http".equalsIgnoreCase(url.getProtocol())
+				|| "https".equalsIgnoreCase(url.getProtocol())) {
 			HttpURLConnection conn;
 			try {
 				conn = (HttpURLConnection) url.openConnection();
 				conn.setDoOutput(true);
 				conn.setDoInput(true);
 				conn.setUseCaches(false);
-				for(Map.Entry<String, String>entry:requestHeader.entrySet()){					
-//					conn.setRequestProperty("enctype", "multipart/form-data");
-					conn.setRequestProperty(entry.getKey(), entry.getValue());
+				for (Map.Entry<String, String> entry : requestHeader.entrySet()) {
+					conn.setRequestProperty(entry.getKey().toLowerCase()
+							.replace("-", ""), entry.getValue());
 				}
 				conn.setRequestMethod(method);
-				if(method.equalsIgnoreCase("POST")){
+				if (method.equalsIgnoreCase("POST")) {
 					conn.getOutputStream().write(postData.getBytes());
 				}
-				return conn.getInputStream();
+				encoding = conn.getContentEncoding();
+				stream = conn.getInputStream();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
-		return null;
+
+		return new ResponseInfo(encoding,stream);
 	}
+
 }

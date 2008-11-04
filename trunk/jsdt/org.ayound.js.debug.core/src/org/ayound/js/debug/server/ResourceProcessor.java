@@ -38,7 +38,7 @@ public class ResourceProcessor extends AbstractProcessor {
 			URL url = this.computeRemoteURL();
 			getResponse().writeOtherHeader(url.getFile());
 			DataInputStream isResult = new DataInputStream(ProcesserUtil
-					.getInputStream(url, method, getPostData(),this.getRequestHeader()));
+					.getResponseInfo(url, method, getPostData(),this.getRequestHeader()).getInputStream());
 			byte[] bytes = new byte[isResult.available()];
 			isResult.readFully(bytes);
 			getResponse().getOutPutStream().write(bytes);

@@ -166,7 +166,7 @@ jsDebug.getBreakPoint = function() {
 		xmlHttp.send(json2string(postData));
 		eval("var retObj = " + xmlHttp.responseText);
 		jsDebug.breakpoints = retObj["BREAKPOINTS"];
-		setTimeout(jsDebug.getBreakPoint, 500);
+		//setTimeout(jsDebug.getBreakPoint, 500);
 	} catch (e) {
 	}
 }
