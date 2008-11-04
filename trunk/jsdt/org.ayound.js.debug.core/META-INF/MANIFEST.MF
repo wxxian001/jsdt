@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.ayound.js.debug.engine
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
- lib/json-1.0.jar
+ lib/json-1.0.jar,
+ lib/chardet.jar
 Export-Package: org.ayound.js.debug.core,
  org.ayound.js.debug.model,
  org.ayound.js.debug.resource,
