@@ -30,9 +30,18 @@ public interface IJsEngine {
 	 */
 	public void compileHtml(String url,String text);
 	
-
+	/**
+	 * find can toggle breakpoint to this line
+	 * @param url
+	 * @param line
+	 * @return
+	 */
 	public boolean canBreakLine(String url, int line);
-	
+	/**
+	 * get script lines array .the engine handle the source script
+	 * @param url
+	 * @return
+	 */
 	public String[] getScriptLines(String url);
 	
 }
