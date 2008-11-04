@@ -149,6 +149,23 @@ public class ResourceView extends AbstractDebugView implements
 		}
 	}
 
+	private void closeFile(String resource, IDebugServer server) {
+		JsFileEditorInput input = new JsFileEditorInput(server
+				.getJsResourceManager().getFileByResource(resource));
+		IWorkbenchPage page = JsDebugUIPlugin.getDefault().getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
+		IEditorPart[] editors = page.getEditors();
+		for (IEditorPart editor : editors) {
+			if (editor instanceof JsEditor) {
+				FileEditorInput jsInput = (FileEditorInput) editor
+						.getEditorInput();
+				if (jsInput.equals(input)) {
+					page.closeEditor(editor, false);
+				}
+			}
+		}
+	}
+
 	@Override
 	protected void fillContextMenu(IMenuManager menu) {
 		// TODO Auto-generated method stub
@@ -189,7 +206,7 @@ public class ResourceView extends AbstractDebugView implements
 						JsDebugTarget fTarget = (JsDebugTarget) element
 								.getDebugTarget();
 						IDebugServer server = fTarget.getServer();
-						if(server.isRunning()){							
+						if (server.isRunning()) {
 							servers.put(server.getPort(), server);
 							if (getViewer() != null) {
 								for (String resource : server.getResources()) {
@@ -204,7 +221,7 @@ public class ResourceView extends AbstractDebugView implements
 				ILaunch launch = (ILaunch) adaptable.getAdapter(ILaunch.class);
 				JsDebugTarget fTarget = (JsDebugTarget) launch.getDebugTarget();
 				IDebugServer server = fTarget.getServer();
-				if(server.isRunning()){					
+				if (server.isRunning()) {
 					servers.put(server.getPort(), server);
 					if (fTarget != null && getViewer() != null) {
 						for (String resource : server.getResources()) {
@@ -243,13 +260,14 @@ public class ResourceView extends AbstractDebugView implements
 	}
 
 	public void removeResource(String resource, IDebugServer server) {
+		closeFile(resource, server);
 		if (getViewer() != null) {
 			Object input = getViewer().getInput();
 			if (input != null && input instanceof String[]) {
 				String[] arr = (String[]) input;
 				Set<String> set = new HashSet<String>();
 				for (String str : arr) {
-					if(!("[" + server.getPort() + "]" + resource).equals(str)){						
+					if (!("[" + server.getPort() + "]" + resource).equals(str)) {
 						set.add(str);
 					}
 				}
@@ -257,6 +275,6 @@ public class ResourceView extends AbstractDebugView implements
 			}
 			getViewer().refresh();
 		}
-		
+
 	}
 }
