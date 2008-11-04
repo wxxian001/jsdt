@@ -64,4 +64,7 @@ public interface IDebugServer {
 
 	public boolean isRunning();
 	
+	public String getDefaultEncoding();
+	
+	public void setDefaultEncoding(String defaultEncoding);
 }

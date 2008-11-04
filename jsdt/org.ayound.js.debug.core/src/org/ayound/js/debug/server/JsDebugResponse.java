@@ -53,11 +53,12 @@ public class JsDebugResponse {
 	 * @param encoding
 	 */
 	public void writeHTMLHeader(String encoding) {
-		if (encoding == null) {
-			encoding = "UTF-8";
-		}
 		out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
-		out.println("Content-Type:text/html;charset=" + encoding);
+		if (encoding == null) {
+			out.println("Content-Type:text/html;");
+		}else{			
+			out.println("Content-Type:text/html;charset=" + encoding);
+		}
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
 	}
 	/**
@@ -65,11 +66,12 @@ public class JsDebugResponse {
 	 * @param encoding
 	 */
 	public void writeJsHeader(String encoding) {
-		if (encoding == null) {
-			encoding = "UTF-8";
-		}
 		out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
-		out.println("Content-Type:text/javascript;charset=" + encoding);
+		if (encoding == null) {
+			out.println("Content-Type:text/javascript;");
+		}else{			
+			out.println("Content-Type:text/javascript;charset=" + encoding);
+		}
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
 	}
 	/**

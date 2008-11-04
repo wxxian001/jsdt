@@ -28,16 +28,18 @@ import org.ayound.js.debug.script.ScriptCompileUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.model.IThread;
+
 /**
  * 
- * the processor to resolver home page.
- * the home page have some html code and javascript code
+ * the processor to resolver home page. the home page have some html code and
+ * javascript code
  */
 public class HomePageProcessor extends AbstractProcessor {
 
 	public HomePageProcessor(String requestUrl, String postData,
-			JsDebugResponse response, IThread thread, IDebugServer server,Map<String, String> requestHeader) {
-		super(requestUrl, postData, response, thread, server,requestHeader);
+			JsDebugResponse response, IThread thread, IDebugServer server,
+			Map<String, String> requestHeader) {
+		super(requestUrl, postData, response, thread, server, requestHeader);
 	}
 
 	@Override
@@ -46,13 +48,15 @@ public class HomePageProcessor extends AbstractProcessor {
 			URL url = this.getServer().getRemoteBaseUrl();
 			String resourcePath = url.getPath();
 			JsResourceManager manager = getServer().getJsResourceManager();
-			manager.createFile(resourcePath, ProcesserUtil
-					.getInputStream(url, null, getPostData(),this.getRequestHeader()));
+			ResponseInfo info = ProcesserUtil.getResponseInfo(url, null, getPostData(),this.getRequestHeader());
+			getServer().setDefaultEncoding(info.getEncoding());
+			manager.createFile(resourcePath, info.getInputStream());
 			JsDebugCorePlugin.getDefault().addResource(resourcePath, getServer());
 			getServer().addResource(resourcePath);
+			
 			IFile homeFile = manager.getFileByResource(resourcePath);
-			getResponse().writeHTMLHeader(homeFile.getCharset());
-			//write debug javascript file before any one
+			getResponse().writeHTMLHeader(info.getEncoding());
+			// write debug javascript file before any one
 			getResponse().writeln("<script type=\"text/javascript\">");
 			InputStream inputStream = HomePageProcessor.class
 					.getResourceAsStream("debug.js");
@@ -81,7 +85,7 @@ public class HomePageProcessor extends AbstractProcessor {
 			}
 			String scriptContent = buffer.toString();
 
-			//compile html file by javascript engine
+			// compile html file by javascript engine
 			getServer().getJsEngine().compileHtml(resourcePath, scriptContent);
 			String[] lines = scriptContent.split("\n");
 			for (int i = 0; i < lines.length; i++) {
@@ -117,5 +121,4 @@ public class HomePageProcessor extends AbstractProcessor {
 			getResponse().close();
 		}
 	}
-
 }
