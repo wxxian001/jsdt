@@ -16,7 +16,10 @@ package org.ayound.js.debug.engine;
 public class EngineManager {
 
 	private static IJsEngine ENGINE = new JsEngineImpl();
-
+	/**
+	 * get default javascript engine
+	 * @return
+	 */
 	public static IJsEngine getEngine() {
 		return ENGINE;
 	}

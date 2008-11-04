@@ -21,7 +21,11 @@ import org.mozilla.javascript.tools.debugger.Dim;
 import org.mozilla.javascript.tools.debugger.GuiCallback;
 import org.mozilla.javascript.tools.debugger.Dim.SourceInfo;
 import org.mozilla.javascript.tools.debugger.Dim.StackFrame;
-
+/**
+ * js engine use rhino to compile javascript files
+ * the first page is html file,it remove all the html tag and convert html file to js file
+ *
+ */
 public class JsEngineImpl implements IJsEngine {
 
 	private Dim dim;
@@ -55,7 +59,7 @@ public class JsEngineImpl implements IJsEngine {
 			}
 		});
 	}
-
+	
 	public boolean canBreakLine(String url, int line) {
 		SourceInfo info = dim.sourceInfo(url);
 		if (info != null) {
@@ -75,7 +79,7 @@ public class JsEngineImpl implements IJsEngine {
 								|| trimLine.startsWith("final")) {
 							return false;
 						} else {
-							if (isHaflLine(lines, line, jsLine)) {
+							if (isHalfLine(lines, line, jsLine)) {
 								return false;
 							} else {
 								return true;
@@ -89,8 +93,14 @@ public class JsEngineImpl implements IJsEngine {
 		}
 		return false;
 	}
-
-	private boolean isHaflLine(String[] lines, int line, String jsLine) {
+	/**
+	 * find out is it a half line
+	 * @param lines
+	 * @param line
+	 * @param jsLine
+	 * @return
+	 */
+	private boolean isHalfLine(String[] lines, int line, String jsLine) {
 		String trimLine = jsLine.trim();
 		char firstChar = trimLine.charAt(0);
 		if (FIRST_CHAR.indexOf(firstChar) > -1) {
@@ -119,12 +129,18 @@ public class JsEngineImpl implements IJsEngine {
 		}
 		return false;
 	}
-
+	/**
+	 * compile javascript files use rhino dim engine.
+	 */
 	public void compileJs(String url, String text) {
 		lineMap.put(url, text.split("\n"));
 		dim.compileScript(url, text);
 	}
-
+	/**
+	 * remove all the html tag and convert html file to javascript file
+	 * then compile html file
+	 * all the \n is keeped to set relation to breakpoint
+	 */
 	public void compileHtml(String url, String text) {
 		StringBuffer buffer = new StringBuffer();
 		boolean scriptStart = false;
@@ -164,7 +180,9 @@ public class JsEngineImpl implements IJsEngine {
 		}
 
 	}
-
+	/**
+	 * get lines by url
+	 */
 	public String[] getScriptLines(String url) {
 		return lineMap.get(url);
 	}
