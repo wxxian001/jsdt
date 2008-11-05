@@ -1,24 +1,22 @@
 /*******************************************************************************
- *
- *==============================================================================
- *
- * Copyright (c) 2008-2011 ayound@gmail.com 
- * This program and the accompanying materials
- * are made available under the terms of the Apache License 2.0 
- * which accompanies this distribution, and is available at
- * http://www.apache.org/licenses/LICENSE-2.0
- * All rights reserved.
+ * 
+ * ==============================================================================
+ * 
+ * Copyright (c) 2008-2011 ayound@gmail.com This program and the accompanying
+ * materials are made available under the terms of the Apache License 2.0 which
+ * accompanies this distribution, and is available at
+ * http://www.apache.org/licenses/LICENSE-2.0 All rights reserved.
  * 
  * Created on 2008-10-26
- *******************************************************************************/
+ ******************************************************************************/
 /**
  * handle window.onerror method
  */
-window.onerror = function(e) {
+window.onerror = function(e, resource, line) {
 	if (e == "exit") {
 		return true;
 	} else {
-		alert(e + window.onerror.caller);
+		
 	}
 }
 var arguments = [];
@@ -49,9 +47,37 @@ jsDebug.debugCommand = null;
 jsDebug.currResource = null;
 jsDebug.breakpoints = null;
 jsDebug.functionStack = [];
+jsDebug.currResource = null;
+jsDebug.currLine = null;
 /**
- * get function by arguments.callee and parse the function string
- * find all the arguments and vars
+ * javascript debug error resolver
+ */
+jsDebug.error = function(e) {
+	if (jsDebug.currResource != null && jsDebug.currLine != null) {
+		
+	} else {
+
+	}
+}
+jsDebug.getErrorStack = function(func) {
+	var stack = [];
+	while (func) {
+		var funcStr = func.toString();
+		var funcOffset = funcStr.indexOf(")");
+		var funcHead = funcStr.substring(0, funcOffset + 1);
+		var args = func.arguments;
+		var argArr = [];
+		for (var i = 0; i < args.length; i++) {
+			argArr.push(args[i]);
+		}
+		stack.push(funcHead + json2string(argArr, 12));
+		func = func.caller;
+	}
+	return stack.join("\n");
+}
+/**
+ * get function by arguments.callee and parse the function string find all the
+ * arguments and vars
  */
 jsDebug.getFuncData = function(args, evalFunc) {
 	if (!evalFunc) {
@@ -83,13 +109,13 @@ jsDebug.getFuncData = function(args, evalFunc) {
 			var key = vars[i];
 			if (key && key.length > 0) {
 				key = key.replace(/\n|\r|\t| /g, "");
-				if(/^[A-Za-z0-9_\$]*$/.test(key)){
+				if (/^[A-Za-z0-9_\$]*$/.test(key)) {
 					var result = evalFunc(key);
-					if(result==undefined){
+					if (result == undefined) {
 						data[key] = "undefined";
-					}else if(result==null){
+					} else if (result == null) {
 						data[key] = "null";
-					}else {				
+					} else {
 						data[key] = evalFunc(key);
 					}
 				}
@@ -99,7 +125,7 @@ jsDebug.getFuncData = function(args, evalFunc) {
 	}
 }
 /**
- * parse all the varibles 
+ * parse all the varibles
  */
 jsDebug.parseVars = function(line) {
 	var varNames = [];
@@ -125,15 +151,15 @@ jsDebug.parseVars = function(line) {
  * find if arguments is stepreturn context
  */
 jsDebug.isStepReturn = function(args) {
-	if(args){
+	if (args) {
 		var func = args.callee;
-		for (var i = jsDebug.functionStack.length - 2;i>-1;i--){
-			if(func==jsDebug.functionStack[i]){
+		for (var i = jsDebug.functionStack.length - 2; i > -1; i--) {
+			if (func == jsDebug.functionStack[i]) {
 				return true;
 			}
 		}
 		return false;
-	}else{
+	} else {
 		return true;
 	}
 }
@@ -141,17 +167,17 @@ jsDebug.isStepReturn = function(args) {
  * find if arguments is stepover context
  */
 jsDebug.isStepOver = function(args) {
-	if(args){
+	if (args) {
 		var func = args.callee;
-		for (var i = jsDebug.functionStack.length - 1;i>-1;i--){
-			if(func==jsDebug.functionStack[i]){
+		for (var i = jsDebug.functionStack.length - 1; i > -1; i--) {
+			if (func == jsDebug.functionStack[i]) {
 				return true;
 			}
 		}
 		return false;
-	}else{
+	} else {
 		return true;
-	}	
+	}
 }
 /**
  * get breakpoints from server
@@ -173,22 +199,24 @@ jsDebug.getBreakPoint = function() {
 /**
  * update function stack
  */
-jsDebug.updateStack = function(args){
-	if(args){
+jsDebug.updateStack = function(args) {
+	if (args) {
 		var func = args.callee;
-		for(var i=jsDebug.functionStack.length-1;i>-1;i--){
-			if(func==jsDebug.functionStack[i]){
-				jsDebug.functionStack = jsDebug.functionStack.slice(0,i+1);
-				return ;
+		for (var i = jsDebug.functionStack.length - 1; i > -1; i--) {
+			if (func == jsDebug.functionStack[i]) {
+				jsDebug.functionStack = jsDebug.functionStack.slice(0, i + 1);
+				return;
 			}
 		}
 		jsDebug.functionStack.push(func);
-	}else{	
+	} else {
 		jsDebug.functionStack = [];
 	}
 
 }
 jsDebug.debug = function(resource, line, scope, args, evalFunc) {
+	jsDebug.currResource = resource;
+	jsDebug.currLine = line;
 	try {
 		if (jsDebug.debugCommand == null) {
 			jsDebug.debugCommand = "START";
@@ -197,7 +225,7 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 		if (jsDebug.debugCommand == "TERMINATE") {
 			throw "exit";
 		}
-		
+
 		if (!(jsDebug.breakpoints && jsDebug.breakpoints[resource + line])) {
 			if (jsDebug.debugCommand == "STEPRETURN") {
 				if (!jsDebug.isStepReturn(args)) {
@@ -207,14 +235,14 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 				if (!jsDebug.isStepOver(args)) {
 					return;
 				}
-			} else if(jsDebug.debugCommand == "RESUME"){
+			} else if (jsDebug.debugCommand == "RESUME") {
 				return;
-			}else if(jsDebug.debugCommand == "STEPINTO"){
-				
-			}else {
+			} else if (jsDebug.debugCommand == "STEPINTO") {
+
+			} else {
 				return;
 			}
-		}else{
+		} else {
 			jsDebug.debugCommand = "BREAKPOINT";
 		}
 		var data = jsDebug.getFuncData(args, evalFunc);
