@@ -70,13 +70,13 @@ public class CharsetDetector {
 			}
 			detector.DataEnd();// 最后要调用此方法，此时，Notify被调用。
 			if (isAscii) {
-				setCharset("ascii");
+				setCharset("UTF=8");
 				found = true;
 			}
 			if (!found) {// 如果没找到，则找到最可能的那些字符集
 				String charsets[] = detector.getProbableCharsets();
 				if (charsets.length > 0) {
-					setCharset(charsets[1]);
+					setCharset(charsets[0]);
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -127,11 +127,20 @@ public class CharsetDetector {
 	 * @param file
 	 */
 	public void detect(IFile file){
+		InputStream stream = null;
 		try {
-			detect(file.getContents());
+			stream = file.getContents();
+			detect(stream);
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			try {
+				stream.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }

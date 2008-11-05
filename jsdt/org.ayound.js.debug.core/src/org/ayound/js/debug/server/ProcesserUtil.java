@@ -71,7 +71,6 @@ public class ProcesserUtil {
 				e.printStackTrace();
 			}
 		}
-
 		return new ResponseInfo(encoding,stream);
 	}
 

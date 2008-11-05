@@ -14,6 +14,9 @@
 package org.ayound.js.debug.server;
 
 import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -27,8 +30,9 @@ public class ResourceProcessor extends AbstractProcessor {
 	private String method;
 
 	public ResourceProcessor(String requestUrl, String method, String postData,
-			JsDebugResponse response, IThread thread, IDebugServer server,Map<String, String> requestHeader) {
-		super(requestUrl, postData, response, thread, server,requestHeader);
+			JsDebugResponse response, IThread thread, IDebugServer server,
+			Map<String, String> requestHeader) {
+		super(requestUrl, postData, response, thread, server, requestHeader);
 		this.method = method;
 	}
 
@@ -36,13 +40,41 @@ public class ResourceProcessor extends AbstractProcessor {
 	public void process() {
 		try {
 			URL url = this.computeRemoteURL();
-			getResponse().writeOtherHeader(url.getFile());
-			DataInputStream isResult = new DataInputStream(ProcesserUtil
-					.getResponseInfo(url, method, getPostData(),this.getRequestHeader()).getInputStream());
-			byte[] bytes = new byte[isResult.available()];
-			isResult.readFully(bytes);
-			getResponse().getOutPutStream().write(bytes);
-			isResult.close();
+			ResponseInfo info = ProcesserUtil.getResponseInfo(url, method,
+					getPostData(), this.getRequestHeader());
+			DataInputStream isResult = new DataInputStream(info
+					.getInputStream());
+			if (url.getFile().toLowerCase().endsWith("css")) {
+				File file = new File("charset");
+				FileOutputStream outputStream = new FileOutputStream(file);
+				byte[] buffer = new byte[1024];
+				int i = -1;
+				while ((i = isResult.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, i);
+				}
+				outputStream.flush();
+				outputStream.close();
+				isResult.close();
+				outputStream = null;
+				String encoding = info.getEncoding();
+				if (encoding == null) {
+					CharsetDetector detector = new CharsetDetector();
+					detector.detect(file);
+					encoding = detector.getCharset();
+				}
+				getResponse().writeOtherHeader(url.getFile(), encoding);
+				FileInputStream inputStream = new FileInputStream(file);
+				byte[] bytes = new byte[inputStream.available()];
+				inputStream.read(bytes);
+				getResponse().getOutPutStream().write(bytes);
+				inputStream.close();
+			} else {
+				getResponse().writeOtherHeader(url.getFile(), null);
+				byte[] bytes = new byte[isResult.available()];
+				isResult.read(bytes);
+				getResponse().getOutPutStream().write(bytes);
+				isResult.close();
+			}
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

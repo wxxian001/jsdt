@@ -79,14 +79,14 @@ public class JsDebugResponse {
 	 * the method will set response header accroding to different file
 	 * @param fileName
 	 */
-	public void writeOtherHeader(String fileName) {
+	public void writeOtherHeader(String fileName,String encoding) {
 		fileName = fileName.toLowerCase();
 		out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
 		if (fileName.endsWith("gif") || fileName.endsWith("jpg")
 				|| fileName.equals("bmp") || fileName.endsWith("png")) {
 			out.println("image/*");
 		} else if (fileName.endsWith("css")) {
-			out.println("text/css");
+			out.println("text/css;charset=" + encoding);
 		}
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
 	}
