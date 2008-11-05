@@ -55,7 +55,14 @@ public class HomePageProcessor extends AbstractProcessor {
 			getServer().addResource(resourcePath);
 			
 			IFile homeFile = manager.getFileByResource(resourcePath);
-			getResponse().writeHTMLHeader(info.getEncoding());
+			String encoding = info.getEncoding();
+			if(encoding==null){				
+				CharsetDetector detector = new CharsetDetector();
+				detector.detect(homeFile);
+				encoding = detector.getCharset();
+			}
+			homeFile.setCharset(encoding, null);
+			getResponse().writeHTMLHeader(encoding);
 			// write debug javascript file before any one
 			getResponse().writeln("<script type=\"text/javascript\">");
 			InputStream inputStream = HomePageProcessor.class

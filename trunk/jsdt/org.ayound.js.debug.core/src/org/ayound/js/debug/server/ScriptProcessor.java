@@ -50,12 +50,15 @@ public class ScriptProcessor extends AbstractProcessor {
 			getServer().addResource(resourcePath);
 			IFile scriptFile = manager.getFileByResource(resourcePath);
 			String encoding = info.getEncoding();
-			if (encoding == null) {
-				encoding = scriptFile.getCharset();
+			if(encoding==null){				
+				CharsetDetector detector = new CharsetDetector();
+				detector.detect(scriptFile);
+				encoding = detector.getCharset();
 			}
 			if (encoding == null) {
 				encoding = getServer().getDefaultEncoding();
 			}
+			scriptFile.setCharset(encoding, null);
 			getResponse().writeJsHeader(info.getEncoding());
 			BufferedReader scriptStream = new BufferedReader(
 					new InputStreamReader(scriptFile.getContents(), encoding));
