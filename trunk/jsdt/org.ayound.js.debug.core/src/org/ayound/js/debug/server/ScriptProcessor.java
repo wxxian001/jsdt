@@ -59,7 +59,7 @@ public class ScriptProcessor extends AbstractProcessor {
 				encoding = getServer().getDefaultEncoding();
 			}
 			scriptFile.setCharset(encoding, null);
-			getResponse().writeJsHeader(info.getEncoding());
+			getResponse().writeJsHeader(encoding);
 			BufferedReader scriptStream = new BufferedReader(
 					new InputStreamReader(scriptFile.getContents(), encoding));
 			String line = null;
