@@ -70,13 +70,17 @@ public class CharsetDetector {
 			}
 			detector.DataEnd();// 最后要调用此方法，此时，Notify被调用。
 			if (isAscii) {
-				setCharset("UTF=8");
+				if(this.charset==null){					
+					setCharset("UTF=8");
+				}
 				found = true;
 			}
 			if (!found) {// 如果没找到，则找到最可能的那些字符集
-				String charsets[] = detector.getProbableCharsets();
-				if (charsets.length > 0) {
-					setCharset(charsets[0]);
+				if(this.charset==null){					
+					String charsets[] = detector.getProbableCharsets();
+					if (charsets.length > 0) {
+						setCharset(charsets[0]);
+					}
 				}
 			}
 		} catch (FileNotFoundException e) {
