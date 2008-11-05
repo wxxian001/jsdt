@@ -71,7 +71,7 @@ public class CharsetDetector {
 			detector.DataEnd();// 最后要调用此方法，此时，Notify被调用。
 			if (isAscii) {
 				if(this.charset==null){					
-					setCharset("UTF=8");
+					setCharset("UTF-8");
 				}
 				found = true;
 			}
