@@ -28,6 +28,7 @@ import org.ayound.js.debug.script.ScriptCompileUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.model.IThread;
+import org.mozilla.javascript.EvaluatorException;
 
 /**
  * 
@@ -70,9 +71,11 @@ public class HomePageProcessor extends AbstractProcessor {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					inputStream));
 			String line = null;
+			int debugLine = 2;
 			try {
 				while ((line = reader.readLine()) != null) {
 					getResponse().writeln(line);
+					debugLine ++;
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -81,6 +84,8 @@ public class HomePageProcessor extends AbstractProcessor {
 				inputStream.close();
 				reader.close();
 			}
+			getServer().setDebugLine(debugLine);
+			getServer().setHomePage(resourcePath);
 			getResponse().writeln("</script>");
 			StringBuffer buffer = new StringBuffer();
 			BufferedReader homeInputStream = new BufferedReader(
@@ -93,7 +98,11 @@ public class HomePageProcessor extends AbstractProcessor {
 			String scriptContent = buffer.toString();
 
 			// compile html file by javascript engine
-			getServer().getJsEngine().compileHtml(resourcePath, scriptContent);
+			try{
+				getServer().getJsEngine().compileHtml(resourcePath, scriptContent);
+			}catch(EvaluatorException e){
+				getServer().compileError(e.getMessage(), resourcePath, e.getLineNumber());
+			}
 			String[] lines = scriptContent.split("\n");
 			for (int i = 0; i < lines.length; i++) {
 				String htmlLine = lines[i];

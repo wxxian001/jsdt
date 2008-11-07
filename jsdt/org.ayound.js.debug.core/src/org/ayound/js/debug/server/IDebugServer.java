@@ -67,4 +67,14 @@ public interface IDebugServer {
 	public String getDefaultEncoding();
 	
 	public void setDefaultEncoding(String defaultEncoding);
+	
+	public void compileError(String errorMsg,String resorce ,int line);
+	
+	public void setDebugLine(int line);
+	
+	public void setHomePage(String resource);
+	
+	public int getDebugLine();
+	
+	public String getHomePage();
 }

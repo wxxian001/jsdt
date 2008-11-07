@@ -25,6 +25,7 @@ import org.ayound.js.debug.engine.EngineManager;
 import org.ayound.js.debug.engine.IJsEngine;
 import org.ayound.js.debug.model.JsDebugTarget;
 import org.ayound.js.debug.model.JsDebugThread;
+import org.ayound.js.debug.model.JsErrorStackFrame;
 import org.ayound.js.debug.resource.JsResourceManager;
 import org.eclipse.debug.core.ILaunch;
 
@@ -44,26 +45,31 @@ public class JsDebugServer implements IDebugServer {
 	private URL remoteUrl;
 
 	private IJsEngine jsEngine;
-	
+
 	private JsResourceManager jsManager;
 
 	private Set<String> resources = new HashSet<String>();
 
 	private String defaultEncoding;
-	
-	public JsDebugServer(ILaunch launch, ServerSocket socketServer, URL remoteUrl,JsResourceManager jsManager) {
+
+	private int debugLine = 0;
+
+	private String homePage = null;
+
+	public JsDebugServer(ILaunch launch, ServerSocket socketServer,
+			URL remoteUrl, JsResourceManager jsManager) {
 		super();
 		this.launch = launch;
 		this.serverSocket = socketServer;
 		this.port = socketServer.getLocalPort();
 		this.remoteUrl = remoteUrl;
 		this.jsManager = jsManager;
-		
 
 	}
+
 	/**
-	 * every JsConnectionThread handle a http request 
-	 *
+	 * every JsConnectionThread handle a http request
+	 * 
 	 */
 	protected void startRun() {
 		(new Thread() {
@@ -99,10 +105,10 @@ public class JsDebugServer implements IDebugServer {
 
 	/**
 	 * when the server stop ,it remove all the resources
-	 *
+	 * 
 	 */
 	public void stop() {
-		for(String resource:resources){
+		for (String resource : resources) {
 			JsDebugCorePlugin.getDefault().removeResource(resource, this);
 		}
 		jsManager.clear();
@@ -163,11 +169,39 @@ public class JsDebugServer implements IDebugServer {
 		// TODO Auto-generated method stub
 		return jsManager;
 	}
+
 	public String getDefaultEncoding() {
 		return defaultEncoding;
 	}
+
 	public void setDefaultEncoding(String defaultEncoding) {
 		this.defaultEncoding = defaultEncoding;
+	}
+
+	public void compileError(String errorMsg, String resorce, int line) {
+		JsErrorStackFrame frame = new JsErrorStackFrame(this.thread,
+				this.target, this.launch);
+		frame.setResource(resorce);
+		frame.setLineNum(line);
+		frame.setErrorMsg(errorMsg);
+		this.thread.addStackFrame(frame);
+	}
+
+	public void setDebugLine(int line) {
+		this.debugLine = line;
+
+	}
+
+	public void setHomePage(String resource) {
+		this.homePage = resource;
+	}
+
+	public int getDebugLine() {
+		return debugLine;
+	}
+
+	public String getHomePage() {
+		return homePage;
 	}
 
 }

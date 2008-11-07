@@ -13,34 +13,45 @@
  *******************************************************************************/
 package org.ayound.js.debug.server;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Map;
 
 import org.ayound.js.debug.model.JsDebugStackFrame;
 import org.ayound.js.debug.model.JsDebugThread;
+import org.ayound.js.debug.model.JsErrorStackFrame;
 import org.ayound.js.debug.model.VariableUtil;
-import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IThread;
+import org.json.JSONException;
 
 public class DebugProcessor extends AbstractProcessor {
 
 	public DebugProcessor(String requestUrl, String postData,
-			JsDebugResponse response, IThread thread, IDebugServer server,Map<String, String> requestHeader) {
-		super(requestUrl, postData, response, thread, server,requestHeader);
+			JsDebugResponse response, IThread thread, IDebugServer server,
+			Map<String, String> requestHeader) {
+		super(requestUrl, postData, response, thread, server, requestHeader);
 	}
 
 	public void process() {
 		getResponse().writeHTMLHeader("UTF-8");
-		JsDebugParam param = new JsDebugParam(getPostData());
+		JsDebugParam param = null;
+		try {
+			param = new JsDebugParam(getPostData());
+		} catch (JSONException e) {
+			getResponse().close();
+			return;
+		}
 		IThread thread = getThread();
 		if (thread instanceof JsDebugThread) {
 			JsDebugThread jsThread = (JsDebugThread) thread;
-			if ("START".equalsIgnoreCase(param.getCommand())||"RESUME".equalsIgnoreCase(param.getCommand())) {
+			if ("START".equalsIgnoreCase(param.getCommand())
+					|| "RESUME".equalsIgnoreCase(param.getCommand())) {
 				getResponse().writeResume();
 				getResponse().close();
 			} else if ("STEPOVER".equalsIgnoreCase(param.getCommand())
 					|| "STEPINTO".equalsIgnoreCase(param.getCommand())
 					|| "STEPRETURN".equalsIgnoreCase(param.getCommand())) {
-				
+
 				JsDebugStackFrame frame = new JsDebugStackFrame(getThread(),
 						getThread().getDebugTarget(), getThread().getLaunch());
 				frame.setResponse(getResponse());
@@ -51,14 +62,27 @@ public class DebugProcessor extends AbstractProcessor {
 						.getLaunch()));
 				jsThread.addStackFrame(frame);
 			} else if ("ERROR".equalsIgnoreCase(param.getCommand())) {
-				try {
-					thread.terminate();
-				} catch (DebugException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				JsErrorStackFrame frame = new JsErrorStackFrame(getThread(),
+						getThread().getDebugTarget(), getThread().getLaunch());
+				frame.setResponse(getResponse());
+				frame.setResource(param.getJsResource());
+				if (param.getJsResource().equals(param.getJsResource())) {
+					frame.setLineNum(param.getLine()
+							- getServer().getDebugLine());
+				} else {
+					frame.setLineNum(param.getLine());
 				}
+				
+				try {
+					frame.setErrorMsg(URLDecoder.decode(param.getError(),
+							"utf-8"));
+				} catch (UnsupportedEncodingException e) {
+					frame.setErrorMsg(param.getError());
+				}
+				jsThread.addStackFrame(frame);
+				getResponse().writeResume();
 				getResponse().close();
-			} else if("BREAKPOINT".equalsIgnoreCase(param.getCommand())){
+			} else if ("BREAKPOINT".equalsIgnoreCase(param.getCommand())) {
 				JsDebugStackFrame frame = new JsDebugStackFrame(getThread(),
 						getThread().getDebugTarget(), getThread().getLaunch());
 				frame.setResponse(getResponse());
@@ -68,9 +92,9 @@ public class DebugProcessor extends AbstractProcessor {
 						.getJsonStack(), thread.getDebugTarget(), thread
 						.getLaunch()));
 				jsThread.addStackFrame(frame);
-			}else{
-				 getResponse().writeResume();
-				 getResponse().close();
+			} else {
+				getResponse().writeResume();
+				getResponse().close();
 			}
 		} else {
 			getResponse().close();
