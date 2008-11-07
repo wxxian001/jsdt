@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.ayound.js.debug.core.IJsDebugConstants;
 import org.eclipse.debug.core.model.IThread;
 /**
  * 
@@ -52,14 +53,14 @@ public class JsConnectionThread extends Thread {
 					// first open inputstream
 					BufferedReader in = new BufferedReader(
 							new InputStreamReader(this.connection
-									.getInputStream()));
+									.getInputStream(),IJsDebugConstants.UTF8));
 
 					// read the first line of url
 					String line = in.readLine();
 					String resource = line.substring(line.indexOf('/'), line
 							.lastIndexOf('/') - 5);
 					// decode the url and get real path
-					resource = URLDecoder.decode(resource, "UTF-8");
+					resource = URLDecoder.decode(resource, IJsDebugConstants.UTF8);
 					// get request method
 					String method = new StringTokenizer(line).nextElement()
 							.toString();
