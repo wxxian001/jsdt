@@ -1,12 +1,12 @@
 /*******************************************************************************
- * 
+ *
  * ==============================================================================
- * 
+ *
  * Copyright (c) 2008-2011 ayound@gmail.com This program and the accompanying
  * materials are made available under the terms of the Apache License 2.0 which
  * accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0 All rights reserved.
- * 
+ *
  * Created on 2008-10-26
  ******************************************************************************/
 /**
@@ -16,7 +16,7 @@ window.onerror = function(e, resource, line) {
 	if (e == "exit") {
 		return true;
 	} else {
-		
+		jsDebug.error(e,resource,line);
 	}
 }
 var arguments = [];
@@ -52,13 +52,6 @@ jsDebug.currLine = null;
 /**
  * javascript debug error resolver
  */
-jsDebug.error = function(e) {
-	if (jsDebug.currResource != null && jsDebug.currLine != null) {
-		
-	} else {
-
-	}
-}
 jsDebug.getErrorStack = function(func) {
 	var stack = [];
 	while (func) {
@@ -199,9 +192,13 @@ jsDebug.getBreakPoint = function() {
 /**
  * update function stack
  */
-jsDebug.updateStack = function(args) {
+jsDebug.updateStack = function(args,resource,scope, line ,evalFunc) {
 	if (args) {
 		var func = args.callee;
+		func.__resource = resource;
+		func.__line = line;
+		func.__evalFunc = evalFunc;
+		func.__scope = scope;
 		for (var i = jsDebug.functionStack.length - 1; i > -1; i--) {
 			if (func == jsDebug.functionStack[i]) {
 				jsDebug.functionStack = jsDebug.functionStack.slice(0, i + 1);
@@ -214,10 +211,48 @@ jsDebug.updateStack = function(args) {
 	}
 
 }
+jsDebug.error = function(e,resource,line){
+	try{
+		if(resource && jsDebug.currResource && resource.indexOf(jsDebug.currResource)<0){
+			line = line -1;
+		}
+		resource = jsDebug.currResource;
+		jsDebug.xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
+		var postData = {
+			"ERROR":encodeURI(e),
+			"COMMAND" : "ERROR",
+			"RESOURCE" : resource,
+			"LINE" : line
+		}
+		jsDebug.xmlHttp.send(json2string(postData));
+	}catch(e){
+		alert(e);
+	}
+}
+jsDebug.stepReturn = function(func){
+	try{
+		var data = jsDebug.getFuncData(func.arguments, func.__evalFunc);
+		jsDebug.updateStack(func.arguments,func.__resource, func.__scope,func.__line,func.__evalFunc);
+		jsDebug.xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
+		if (func.__scope != window) {
+			data["this"] = func.__scope;
+		}
+		var postData = {
+			"STACK" : data,
+			"COMMAND" : jsDebug.debugCommand,
+			"RESOURCE" : func.__resource,
+			"LINE" : func.__line
+		}
+		jsDebug.xmlHttp.send(json2string(postData));
+		jsDebug.parseResult(jsDebug.xmlHttp.responseText);
+	}catch(e){
+		alert(e);
+	}
+}
 jsDebug.debug = function(resource, line, scope, args, evalFunc) {
-	jsDebug.currResource = resource;
-	jsDebug.currLine = line;
 	try {
+		jsDebug.currResource = resource;
+		jsDebug.currLine = line;
 		if (jsDebug.debugCommand == null) {
 			jsDebug.debugCommand = "START";
 			jsDebug.getBreakPoint();
@@ -227,6 +262,14 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 		}
 
 		if (!(jsDebug.breakpoints && jsDebug.breakpoints[resource + line])) {
+			if(jsDebug.debugCommand == "STEPRETURN"||jsDebug.debugCommand == "STEPOVER"){
+				var parentFunc = jsDebug.functionStack[jsDebug.functionStack.length - 2];
+				if(args.callee.caller == parentFunc && parentFunc){
+					jsDebug.stepReturn(parentFunc);
+					jsDebug.debug(resource, line, scope, args, evalFunc);
+					return;
+				}
+			}
 			if (jsDebug.debugCommand == "STEPRETURN") {
 				if (!jsDebug.isStepReturn(args)) {
 					return;
@@ -246,8 +289,7 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 			jsDebug.debugCommand = "BREAKPOINT";
 		}
 		var data = jsDebug.getFuncData(args, evalFunc);
-		jsDebug.currResource = resource;
-		jsDebug.updateStack(args);
+		jsDebug.updateStack(args,resource,scope, line,evalFunc);
 		jsDebug.xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
 		if (scope != window) {
 			data["this"] = scope;

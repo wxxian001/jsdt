@@ -26,6 +26,7 @@ import org.ayound.js.debug.resource.JsResourceManager;
 import org.ayound.js.debug.script.ScriptCompileUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.debug.core.model.IThread;
+import org.mozilla.javascript.EvaluatorException;
 
 public class ScriptProcessor extends AbstractProcessor {
 
@@ -68,7 +69,11 @@ public class ScriptProcessor extends AbstractProcessor {
 				buffer.append(line).append("\n");
 			}
 			String scriptContent = buffer.toString();
-			getServer().getJsEngine().compileJs(resourcePath, scriptContent);
+			try{
+				getServer().getJsEngine().compileJs(resourcePath, scriptContent);
+			}catch(EvaluatorException e){
+				getServer().compileError(e.getMessage(), resourcePath, e.getLineNumber());
+			}
 			String[] lines = getServer().getJsEngine().getScriptLines(
 					resourcePath);
 			for (int i = 0; i < lines.length; i++) {

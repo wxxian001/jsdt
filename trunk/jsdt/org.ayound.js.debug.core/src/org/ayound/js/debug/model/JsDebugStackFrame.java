@@ -79,7 +79,11 @@ public class JsDebugStackFrame extends JsDebugElement implements IStackFrame {
 	}
 
 	public String getName() throws DebugException {
-		return this.resource + "[" + this.lineNum + "]";
+		if(this.executed){
+			return "<executed>" + this.resource + "[" + this.lineNum + "]";
+		}else{			
+			return this.resource + "[" + this.lineNum + "]";
+		}
 	}
 
 	public IRegisterGroup[] getRegisterGroups() throws DebugException {
