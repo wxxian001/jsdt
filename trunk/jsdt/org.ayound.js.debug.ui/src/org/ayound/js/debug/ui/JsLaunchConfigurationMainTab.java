@@ -27,6 +27,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -41,9 +42,9 @@ public class JsLaunchConfigurationMainTab extends
 
 	private Text browserText;
 
-	private static final String DEFAULT_URL = "D:\\eos61_bak\\dev\\jsdebug\\org.ayound.js.debug.ui\\test\\test.html";
+	private static final String DEFAULT_URL = "http://jsdt.googlecode.com/files/test.html";
 
-	private static final String DEFAULT_BROWSER = "iexplore.exe";
+	private static final String DEFAULT_BROWSER = "C:\\Program Files\\Internet Explorer\\IEXPLORE.EXE";
 
 	private static final String DEFAULT_PORT = "8088";
 
@@ -97,7 +98,7 @@ public class JsLaunchConfigurationMainTab extends
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				Shell shell = new Shell();
+				Shell shell = new Shell(Display.getCurrent());
 				FileDialog dialog = new FileDialog(shell);
 				dialog.setFilterExtensions(new String[]{"*.exe"});
 				dialog.setFileName(browserText.getText());

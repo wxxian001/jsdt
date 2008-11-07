@@ -6,7 +6,11 @@
       <launchConfigurationTabGroup
             class="org.ayound.js.debug.ui.JsLaunchConfigurationTabGroup"
             id="org.ayound.js.debug.ui.JslaunchConfigurationTabGroup"
-            type="org.ayound.js.debug.core.JsDebug"/>
+            type="org.ayound.js.debug.core.JsDebug">
+         <launchMode
+               mode="debug"
+               perspective="org.ayound.js.debug.ui.jsDebugPerspective"/>
+      </launchConfigurationTabGroup>
    </extension>
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations">
@@ -94,15 +98,12 @@
       </editorContribution>
    </extension>
    <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension targetID="org.eclipse.debug.ui.DebugPerspective">
-         <view
-               id="org.ayound.js.debug.ui.resourceView"
-               relationship="right"
-               relative="org.eclipse.debug.ui.VariableView"
-               showTitle="true"
-               visible="true"/>
-      </perspectiveExtension>
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.ayound.js.debug.ui.JsPerspectiveFactory"
+            icon="icons/js.png"
+            id="org.ayound.js.debug.ui.jsDebugPerspective"
+            name="JavaScript Debug Toolkit"/>
    </extension>
 
 </plugin>
