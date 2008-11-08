@@ -235,6 +235,12 @@ public class JsDebugStackFrame extends JsDebugElement implements IStackFrame {
 		}
 	}
 
+	public void removeExpression(ExpressionModel model){
+		this.expressionResult.remove(model);
+		((JsDebugThread) thread).removeExpression(model.getExpression());
+		JsDebugCorePlugin.getDefault().updateEval(this);
+	}
+	
 	public void runExpression() {
 		synchronized (this) {
 			if (this.expressionStack.empty()) {
