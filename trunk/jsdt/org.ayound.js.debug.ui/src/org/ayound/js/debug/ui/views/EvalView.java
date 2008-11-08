@@ -20,6 +20,8 @@ import org.ayound.js.debug.core.IEvalListener;
 import org.ayound.js.debug.core.JsDebugCorePlugin;
 import org.ayound.js.debug.model.ExpressionModel;
 import org.ayound.js.debug.model.JsDebugStackFrame;
+import org.ayound.js.debug.ui.expression.JsExpressionAddAction;
+import org.ayound.js.debug.ui.expression.JsExpressionRemoveAction;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.ui.AbstractDebugView;
@@ -55,29 +57,14 @@ public class EvalView extends AbstractDebugView implements ISelectionListener,
 	private Text valueText;
 
 	@Override
-	protected void configureToolBar(IToolBarManager tbm) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void createActions() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	protected Viewer createViewer(Composite parent) {
 		GridLayout layout = new GridLayout(2, false);
 		layout.makeColumnsEqualWidth = true;
 		parent.setLayout(layout);
 		Table table = new Table(parent, SWT.NONE);
 		TableColumn column1 = new TableColumn(table, SWT.NONE);
-		column1.setWidth(120);
+		column1.setWidth(200);
 		column1.setResizable(true);
-		TableColumn column2 = new TableColumn(table, SWT.NONE);
-		column2.setWidth(150);
-		column2.setResizable(true);
 		table.setHeaderVisible(false);
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 		TableViewer viewer = new TableViewer(table);
@@ -115,12 +102,12 @@ public class EvalView extends AbstractDebugView implements ISelectionListener,
 				if (element instanceof ExpressionModel) {
 					ExpressionModel model = (ExpressionModel) element;
 					if (columnIndex == 0) {
-						return model.getExpression();
-					} else if (columnIndex == 1) {
 						if (model.getError() != null) {
-							return " = error : " + model.getError();
+							return model.getExpression() + " = error : "
+									+ model.getError();
 						} else {
-							return " = " + model.getResult();
+							return model.getExpression() + " = "
+									+ model.getResult();
 						}
 					}
 				}
@@ -147,22 +134,25 @@ public class EvalView extends AbstractDebugView implements ISelectionListener,
 
 			}
 		});
-		viewer.addSelectionChangedListener(new ISelectionChangedListener(){
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-				ExpressionModel model = (ExpressionModel)selection.getFirstElement();
-				if(model!=null){					
-					if(model.getError()!=null){
-						valueText.setText(model.getError());					
-					}else{
+				IStructuredSelection selection = (IStructuredSelection) event
+						.getSelection();
+				ExpressionModel model = (ExpressionModel) selection
+						.getFirstElement();
+				if (model != null) {
+					if (model.getError() != null) {
+						valueText.setText(model.getError());
+					} else {
 						valueText.setText(model.getResult());
 					}
-				}else{
+				} else {
 					valueText.setText("");
 				}
-				
-			}});
+
+			}
+		});
 		valueText = new Text(parent, SWT.MULTI);
 		valueText.setLayoutData(new GridData(GridData.FILL_BOTH));
 		return viewer;
@@ -171,6 +161,9 @@ public class EvalView extends AbstractDebugView implements ISelectionListener,
 	@Override
 	protected void fillContextMenu(IMenuManager menu) {
 		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		menu.add(new JsExpressionAddAction(this, "add watch experssion", null));
+		menu.add(new JsExpressionRemoveAction(this, "remove watch expression",
+				null));
 	}
 
 	@Override
@@ -203,6 +196,18 @@ public class EvalView extends AbstractDebugView implements ISelectionListener,
 				this.getViewer().refresh();
 			}
 		}
+	}
+
+	@Override
+	protected void configureToolBar(IToolBarManager tbm) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected void createActions() {
+		// TODO Auto-generated method stub
+
 	}
 
 }
