@@ -253,7 +253,6 @@ jsDebug.stepReturn = function(func) {
 		jsDebug.xmlHttp.send(json2string(postData));
 		jsDebug.parseResult(jsDebug.xmlHttp.responseText);
 	} catch (e) {
-		alert(e);
 	}
 }
 jsDebug.evalExpression = function(expression, evalFunc) {
@@ -274,7 +273,7 @@ jsDebug.evalExpression = function(expression, evalFunc) {
 		jsDebug.xmlHttp.send(json2string(postData));
 		jsDebug.parseResult(jsDebug.xmlHttp.responseText, evalFunc);
 	} catch (e) {
-		alert(e)
+		
 	}
 }
 
@@ -337,7 +336,7 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 		jsDebug.xmlHttp.send(json2string(postData));
 		jsDebug.parseResult(jsDebug.xmlHttp.responseText, evalFunc);
 	} catch (e) {
-		alert(e)
+		
 	}
 }
 jsDebug.parseResult = function(result, evalFunc) {
