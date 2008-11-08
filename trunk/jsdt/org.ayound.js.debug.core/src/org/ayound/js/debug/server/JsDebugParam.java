@@ -35,6 +35,10 @@ public class JsDebugParam {
 
 	private static final String ERROR = "ERROR";
 	
+	private static final String EXPRESSION = "EXPRESSION";
+	
+	private static final String RESULT = "RESULT";
+	
 	private String jsResource;
 
 	private String command;
@@ -44,6 +48,10 @@ public class JsDebugParam {
 	private int line;
 
 	private String error;
+	
+	private String expression;
+	
+	private String result;
 	
 	public JsDebugParam(String jsonString) throws JSONException {
 		JSONObject jsonObject = new JSONObject(new JSONTokener(jsonString));
@@ -61,6 +69,12 @@ public class JsDebugParam {
 		}
 		if (jsonObject.has(ERROR)) {
 			this.error = jsonObject.getString(ERROR);
+		}
+		if (jsonObject.has(EXPRESSION)) {
+			this.expression = jsonObject.getString(EXPRESSION);
+		}
+		if (jsonObject.has(RESULT)) {
+			this.result = jsonObject.getString(RESULT);
 		}
 
 	}
@@ -95,6 +109,14 @@ public class JsDebugParam {
 
 	public String getError() {
 		return error;
+	}
+
+	public String getExpression() {
+		return expression;
+	}
+
+	public String getResult() {
+		return result;
 	}
 
 }

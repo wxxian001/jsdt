@@ -48,38 +48,47 @@ public class JsDebugResponse {
 			e.printStackTrace();
 		}
 	}
+
+	public boolean isClosed(){
+		return this.client.isClosed();
+	}
 	/**
 	 * write html header of this request
+	 * 
 	 * @param encoding
 	 */
 	public void writeHTMLHeader(String encoding) {
 		out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
 		if (encoding == null) {
 			out.println("Content-Type:text/html;");
-		}else{			
+		} else {
 			out.println("Content-Type:text/html;charset=" + encoding);
 		}
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
 	}
+
 	/**
 	 * write javascript response header of this request
+	 * 
 	 * @param encoding
 	 */
 	public void writeJsHeader(String encoding) {
 		out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
 		if (encoding == null) {
 			out.println("Content-Type:text/javascript;");
-		}else{			
+		} else {
 			out.println("Content-Type:text/javascript;charset=" + encoding);
 		}
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
 	}
+
 	/**
-	 * write other header.
-	 * the method will set response header accroding to different file
+	 * write other header. the method will set response header accroding to
+	 * different file
+	 * 
 	 * @param fileName
 	 */
-	public void writeOtherHeader(String fileName,String encoding) {
+	public void writeOtherHeader(String fileName, String encoding) {
 		fileName = fileName.toLowerCase();
 		out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
 		if (fileName.endsWith("gif") || fileName.endsWith("jpg")
@@ -90,8 +99,10 @@ public class JsDebugResponse {
 		}
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
 	}
+
 	/**
 	 * write string to client
+	 * 
 	 * @param str
 	 */
 	public void write(String str) {
@@ -99,8 +110,10 @@ public class JsDebugResponse {
 			this.out.write(str);
 		}
 	}
+
 	/**
 	 * write line to client
+	 * 
 	 * @param str
 	 */
 	public void writeln(String str) {
@@ -124,9 +137,9 @@ public class JsDebugResponse {
 			e.printStackTrace();
 		}
 	}
+
 	/**
-	 * write resume to client
-	 * the method will write breakpoints to client
+	 * write resume to client the method will write breakpoints to client
 	 */
 	public void writeResume() {
 		StringBuffer buffer = new StringBuffer(
@@ -148,31 +161,35 @@ public class JsDebugResponse {
 		this.write(buffer.toString());
 
 	}
+
 	/**
 	 * write terminate command to client
-	 *
+	 * 
 	 */
 	public void writeTerminate() {
 		this.write("{COMMAND:'TERMINATE'}");
 
 	}
+
 	/**
 	 * write stepover command to client
-	 *
+	 * 
 	 */
 	public void writeStepOver() {
 		this.write("{COMMAND:'STEPOVER'}");
 	}
+
 	/**
 	 * write stepreturn command to client
-	 *
+	 * 
 	 */
 	public void writeStepReturn() {
 		this.write("{COMMAND:'STEPRETURN'}");
 	}
+
 	/**
 	 * write stepinto command to client
-	 *
+	 * 
 	 */
 	public void writeStepInTo() {
 		this.write("{COMMAND:'STEPINTO'}");
@@ -184,5 +201,10 @@ public class JsDebugResponse {
 
 	public JsResourceManager getJsManager() {
 		return jsManager;
+	}
+
+	public void writeExpression(String expression) {
+		this.write("{COMMAND:'EXPRESSION',\"EXPRESSION\":\""
+				+ expression.replace("\"", "\\\"") + "\"}");
 	}
 }

@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.ayound.js.debug.model.JsDebugStackFrame;
 import org.ayound.js.debug.resource.JsResourceManager;
 import org.ayound.js.debug.server.IDebugServer;
 import org.eclipse.swt.widgets.Display;
@@ -42,6 +43,8 @@ public class JsDebugCorePlugin extends AbstractUIPlugin {
 
 	private List<IResourceListener> resourceListeners = new ArrayList<IResourceListener>();
 
+	private List<IEvalListener> evalListeners = new ArrayList<IEvalListener>();
+
 	public void usePort(int port) {
 		usedPorts.add(port);
 	}
@@ -61,8 +64,27 @@ public class JsDebugCorePlugin extends AbstractUIPlugin {
 		plugin = this;
 	}
 
+	public void addEvalListener(IEvalListener listener) {
+		evalListeners.add(listener);
+	}
+
+	public void removeEvalListener(IEvalListener listener) {
+		evalListeners.remove(listener);
+	}
+
 	public void addResourceListener(IResourceListener listener) {
 		resourceListeners.add(listener);
+	}
+
+	public void updateEval(final JsDebugStackFrame frame) {
+		Display.getDefault().syncExec(new Runnable() {
+
+			public void run() {
+				for (IEvalListener listener : evalListeners) {
+					listener.update(frame);
+				}
+			}
+		});
 	}
 
 	public void removeResourceListener(IResourceListener listener) {
@@ -79,7 +101,7 @@ public class JsDebugCorePlugin extends AbstractUIPlugin {
 			}
 		});
 	}
-	
+
 	public void removeResource(final String resource, final IDebugServer server) {
 		Display.getDefault().syncExec(new Runnable() {
 

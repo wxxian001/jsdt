@@ -28,6 +28,7 @@ import org.ayound.js.debug.model.JsDebugThread;
 import org.ayound.js.debug.model.JsErrorStackFrame;
 import org.ayound.js.debug.resource.JsResourceManager;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.model.IWatchExpressionListener;
 
 public class JsDebugServer implements IDebugServer {
 	ServerSocket serverSocket;
@@ -55,6 +56,8 @@ public class JsDebugServer implements IDebugServer {
 	private int debugLine = 0;
 
 	private String homePage = null;
+	
+	private IWatchExpressionListener evalListener;
 
 	public JsDebugServer(ILaunch launch, ServerSocket socketServer,
 			URL remoteUrl, JsResourceManager jsManager) {
@@ -203,5 +206,4 @@ public class JsDebugServer implements IDebugServer {
 	public String getHomePage() {
 		return homePage;
 	}
-
 }

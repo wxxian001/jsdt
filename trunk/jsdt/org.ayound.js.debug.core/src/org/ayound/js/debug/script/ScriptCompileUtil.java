@@ -136,7 +136,7 @@ public class ScriptCompileUtil {
 				+ resourcePath
 				+ "',"
 				+ (index + 1)
-				+ ",this,((typeof(arguments)!=\"undefined\"?arguments:null)),function(__text){try{return eval(__text);}catch(e){}})";
+				+ ",this,((typeof(arguments)!=\"undefined\"?arguments:null)),function(__text){return eval(__text);})";
 		return debugStr;
 	}
 
