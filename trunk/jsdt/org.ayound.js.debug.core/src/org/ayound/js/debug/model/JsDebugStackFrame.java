@@ -15,9 +15,7 @@
 package org.ayound.js.debug.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 import org.ayound.js.debug.core.JsDebugCorePlugin;
@@ -72,11 +70,16 @@ public class JsDebugStackFrame extends JsDebugElement implements IStackFrame {
 
 	public void setResponse(JsDebugResponse response) {
 		this.response = response;
+		if (!this.expressionStack.empty()) {
+			runExpression();
+		}
 	}
 
 	public JsDebugStackFrame(IThread thread, IDebugTarget target, ILaunch launch) {
 		super(target, launch);
 		this.thread = thread;
+		this.expressionStack.addAll(((JsDebugThread) thread)
+				.getDebugExpressions());
 	}
 
 	public int getCharEnd() throws DebugException {
@@ -220,6 +223,7 @@ public class JsDebugStackFrame extends JsDebugElement implements IStackFrame {
 	}
 
 	public void addExpression(String expression) {
+		((JsDebugThread) thread).addExpression(expression);
 		if (this.executed || this.terminated || this.response.isClosed()) {
 			return;
 		}
@@ -245,6 +249,13 @@ public class JsDebugStackFrame extends JsDebugElement implements IStackFrame {
 
 	public void finishExpression(final String expression, final String result,
 			final String error) {
+
+		for (ExpressionModel model : expressionResult) {
+			if (expression.equals(model.getExpression())) {
+				expressionResult.remove(model);
+				break;
+			}
+		}
 		expressionResult.add(new ExpressionModel(expression, result, error));
 		JsDebugCorePlugin.getDefault().updateEval(this);
 		if (this.isExpression) {
