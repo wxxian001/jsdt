@@ -1,12 +1,12 @@
 /*******************************************************************************
- *
+ * 
  * ==============================================================================
- *
+ * 
  * Copyright (c) 2008-2011 ayound@gmail.com This program and the accompanying
  * materials are made available under the terms of the Apache License 2.0 which
  * accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0 All rights reserved.
- *
+ * 
  * Created on 2008-10-26
  ******************************************************************************/
 /**
@@ -16,7 +16,7 @@ window.onerror = function(e, resource, line) {
 	if (e == "exit") {
 		return true;
 	} else {
-		jsDebug.error(e,resource,line);
+		jsDebug.error(e, resource, line);
 	}
 }
 var arguments = [];
@@ -49,6 +49,7 @@ jsDebug.breakpoints = null;
 jsDebug.functionStack = [];
 jsDebug.currResource = null;
 jsDebug.currLine = null;
+jsDebug.isExpression = false;
 /**
  * javascript debug error resolver
  */
@@ -103,13 +104,17 @@ jsDebug.getFuncData = function(args, evalFunc) {
 			if (key && key.length > 0) {
 				key = key.replace(/\n|\r|\t| /g, "");
 				if (/^[A-Za-z0-9_\$]*$/.test(key)) {
-					var result = evalFunc(key);
-					if (result == undefined) {
-						data[key] = "undefined";
-					} else if (result == null) {
-						data[key] = "null";
-					} else {
-						data[key] = evalFunc(key);
+					try {
+						var result = evalFunc(key);
+						if (result == undefined) {
+							data[key] = "undefined";
+						} else if (result == null) {
+							data[key] = "null";
+						} else {
+							data[key] = evalFunc(key);
+						}
+					} catch (e) {
+
 					}
 				}
 			}
@@ -192,7 +197,7 @@ jsDebug.getBreakPoint = function() {
 /**
  * update function stack
  */
-jsDebug.updateStack = function(args,resource,scope, line ,evalFunc) {
+jsDebug.updateStack = function(args, resource, scope, line, evalFunc) {
 	if (args) {
 		var func = args.callee;
 		func.__resource = resource;
@@ -211,28 +216,30 @@ jsDebug.updateStack = function(args,resource,scope, line ,evalFunc) {
 	}
 
 }
-jsDebug.error = function(e,resource,line){
-	try{
-		if(resource && jsDebug.currResource && resource.indexOf(jsDebug.currResource)<0){
-			line = line -1;
+jsDebug.error = function(e, resource, line) {
+	try {
+		if (resource && jsDebug.currResource
+				&& resource.indexOf(jsDebug.currResource) < 0) {
+			line = line - 1;
 		}
 		resource = jsDebug.currResource;
 		jsDebug.xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
 		var postData = {
-			"ERROR":encodeURI(e),
+			"ERROR" : encodeURI(e),
 			"COMMAND" : "ERROR",
 			"RESOURCE" : resource,
 			"LINE" : line
 		}
 		jsDebug.xmlHttp.send(json2string(postData));
-	}catch(e){
+	} catch (e) {
 		alert(e);
 	}
 }
-jsDebug.stepReturn = function(func){
-	try{
+jsDebug.stepReturn = function(func) {
+	try {
 		var data = jsDebug.getFuncData(func.arguments, func.__evalFunc);
-		jsDebug.updateStack(func.arguments,func.__resource, func.__scope,func.__line,func.__evalFunc);
+		jsDebug.updateStack(func.arguments, func.__resource, func.__scope,
+				func.__line, func.__evalFunc);
 		jsDebug.xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
 		if (func.__scope != window) {
 			data["this"] = func.__scope;
@@ -245,11 +252,36 @@ jsDebug.stepReturn = function(func){
 		}
 		jsDebug.xmlHttp.send(json2string(postData));
 		jsDebug.parseResult(jsDebug.xmlHttp.responseText);
-	}catch(e){
+	} catch (e) {
 		alert(e);
 	}
 }
+jsDebug.evalExpression = function(expression, evalFunc) {
+	try {
+		jsDebug.xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
+		var postData = {
+			"STACK" : {},
+			"COMMAND" : "EXPRESSION",
+			"EXPRESSION" : expression
+		}
+		try {
+			jsDebug.isExpression = true;
+			postData["RESULT"] = evalFunc(expression);
+		} catch (e) {
+			postData["ERROR"] = e;
+		}
+		jsDebug.isExpression = false;
+		jsDebug.xmlHttp.send(json2string(postData));
+		jsDebug.parseResult(jsDebug.xmlHttp.responseText, evalFunc);
+	} catch (e) {
+		alert(e)
+	}
+}
+
 jsDebug.debug = function(resource, line, scope, args, evalFunc) {
+	if (jsDebug.isExpression) {
+		return;
+	}
 	try {
 		jsDebug.currResource = resource;
 		jsDebug.currLine = line;
@@ -262,9 +294,11 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 		}
 
 		if (!(jsDebug.breakpoints && jsDebug.breakpoints[resource + line])) {
-			if(jsDebug.debugCommand == "STEPRETURN"||jsDebug.debugCommand == "STEPOVER"){
-				var parentFunc = jsDebug.functionStack[jsDebug.functionStack.length - 2];
-				if(args.callee.caller == parentFunc && parentFunc){
+			if (jsDebug.debugCommand == "STEPRETURN"
+					|| jsDebug.debugCommand == "STEPOVER") {
+				var parentFunc = jsDebug.functionStack[jsDebug.functionStack.length
+						- 2];
+				if (args.callee.caller == parentFunc && parentFunc) {
 					jsDebug.stepReturn(parentFunc);
 					jsDebug.debug(resource, line, scope, args, evalFunc);
 					return;
@@ -289,7 +323,7 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 			jsDebug.debugCommand = "BREAKPOINT";
 		}
 		var data = jsDebug.getFuncData(args, evalFunc);
-		jsDebug.updateStack(args,resource,scope, line,evalFunc);
+		jsDebug.updateStack(args, resource, scope, line, evalFunc);
 		jsDebug.xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
 		if (scope != window) {
 			data["this"] = scope;
@@ -301,20 +335,28 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 			"LINE" : line
 		}
 		jsDebug.xmlHttp.send(json2string(postData));
-		jsDebug.parseResult(jsDebug.xmlHttp.responseText);
+		jsDebug.parseResult(jsDebug.xmlHttp.responseText, evalFunc);
 	} catch (e) {
 		alert(e)
 	}
 }
-jsDebug.parseResult = function(result) {
+jsDebug.parseResult = function(result, evalFunc) {
 	if (result) {
 		if (result.indexOf("{") == 0) {
 			try {
 				eval("var retObj = " + result);
-				jsDebug.debugCommand = retObj["COMMAND"];
-				if (jsDebug.debugCommand == "BREAKPOINT") {
-					jsDebug.breakpoints = retObj["BREAKPOINTS"];
+				if( retObj["COMMAND"]){
+					if(retObj["COMMAND"]!="EXPRESSION"){
+						jsDebug.isExpression = false;
+						jsDebug.debugCommand = retObj["COMMAND"];
+						if (jsDebug.debugCommand == "BREAKPOINT") {
+							jsDebug.breakpoints = retObj["BREAKPOINTS"];
+						}
+					}else{
+						jsDebug.evalExpression(retObj["EXPRESSION"], evalFunc);
+					}
 				}
+				
 			} catch (e) {
 			}
 		} else {
@@ -370,7 +412,7 @@ function obj2string(obj, depth) {
 					}
 				}
 			} catch (e) {
-
+	
 			}
 		}
 		return "{" + arr.join(",") + "}";

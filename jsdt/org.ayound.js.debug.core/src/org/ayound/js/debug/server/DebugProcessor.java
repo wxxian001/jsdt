@@ -21,6 +21,8 @@ import org.ayound.js.debug.model.JsDebugStackFrame;
 import org.ayound.js.debug.model.JsDebugThread;
 import org.ayound.js.debug.model.JsErrorStackFrame;
 import org.ayound.js.debug.model.VariableUtil;
+import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.json.JSONException;
 
@@ -92,6 +94,18 @@ public class DebugProcessor extends AbstractProcessor {
 						.getJsonStack(), thread.getDebugTarget(), thread
 						.getLaunch()));
 				jsThread.addStackFrame(frame);
+			} else if("EXPRESSION".equalsIgnoreCase(param.getCommand())){
+				try {
+					IStackFrame frame = jsThread.getTopStackFrame();
+					if(frame instanceof JsDebugStackFrame){
+						JsDebugStackFrame jsFrame = (JsDebugStackFrame)frame;
+						jsFrame.setResponse(getResponse());
+						jsFrame.finishExpression(param.getExpression(), param.getResult(), param.getError());
+					}
+				} catch (DebugException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} else {
 				getResponse().writeResume();
 				getResponse().close();

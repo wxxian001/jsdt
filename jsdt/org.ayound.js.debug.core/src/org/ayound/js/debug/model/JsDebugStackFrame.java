@@ -14,6 +14,13 @@
 
 package org.ayound.js.debug.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+import org.ayound.js.debug.core.JsDebugCorePlugin;
 import org.ayound.js.debug.server.JsDebugResponse;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
@@ -23,9 +30,10 @@ import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
+
 /**
  * 
- *
+ * 
  */
 
 public class JsDebugStackFrame extends JsDebugElement implements IStackFrame {
@@ -45,10 +53,15 @@ public class JsDebugStackFrame extends JsDebugElement implements IStackFrame {
 	private IThread thread;
 
 	private int charStart = -1;
-	
+
 	private int charEnd = -1;
-	
-	
+
+	private Stack<String> expressionStack = new Stack<String>();
+
+	private boolean isExpression = false;
+
+	private List<ExpressionModel> expressionResult = new ArrayList<ExpressionModel>();
+
 	public void setCharEnd(int charEnd) {
 		this.charEnd = charEnd;
 	}
@@ -79,9 +92,9 @@ public class JsDebugStackFrame extends JsDebugElement implements IStackFrame {
 	}
 
 	public String getName() throws DebugException {
-		if(this.executed){
+		if (this.executed) {
 			return "<executed>" + this.resource + "[" + this.lineNum + "]";
-		}else{			
+		} else {
 			return this.resource + "[" + this.lineNum + "]";
 		}
 	}
@@ -205,4 +218,42 @@ public class JsDebugStackFrame extends JsDebugElement implements IStackFrame {
 	public void setVariables(IVariable[] variables) {
 		this.variables = variables;
 	}
+
+	public void addExpression(String expression) {
+		if (this.executed || this.terminated || this.response.isClosed()) {
+			return;
+		}
+		if (!this.expressionStack.contains(expression)) {
+			this.expressionStack.add(expression);
+		}
+		if (!this.isExpression) {
+			runExpression();
+		}
+	}
+
+	public void runExpression() {
+		synchronized (this) {
+			if (this.expressionStack.empty()) {
+				this.isExpression = false;
+			} else {
+				this.isExpression = true;
+				this.response.writeExpression(this.expressionStack.pop());
+				this.response.close();
+			}
+		}
+	}
+
+	public void finishExpression(final String expression, final String result,
+			final String error) {
+		expressionResult.add(new ExpressionModel(expression, result, error));
+		JsDebugCorePlugin.getDefault().updateEval(this);
+		if (this.isExpression) {
+			runExpression();
+		}
+	}
+
+	public List<ExpressionModel> getExpressionResult() {
+		return expressionResult;
+	}
+
 }
