@@ -14,11 +14,12 @@
 package org.ayound.js.debug.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
@@ -32,6 +33,8 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 
 	private IStackFrame[] stackFrames = new IStackFrame[] {};
 
+	private Set<String> debugExpressions = new HashSet<String>();
+	
 	public JsDebugThread(IDebugTarget target, ILaunch launch) {
 		super(target, launch);
 	}
@@ -62,6 +65,14 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 		}
 	}
 
+	public void addExpression(String expression){
+		debugExpressions.add(expression);
+	}
+	
+	public void removeExpression(String expression){
+		debugExpressions.remove(expression);
+	}
+	
 	public boolean hasStackFrames() throws DebugException {
 		return this.stackFrames != null && this.stackFrames.length > 0;
 	}
@@ -164,6 +175,10 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 		fireResumeEvent(DebugEvent.STEP_END);
 		fireSuspendEvent(DebugEvent.BREAKPOINT);
 
+	}
+
+	public Set<String> getDebugExpressions() {
+		return debugExpressions;
 	}
 
 }
