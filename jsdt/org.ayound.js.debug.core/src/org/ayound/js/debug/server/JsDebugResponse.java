@@ -23,6 +23,7 @@ import org.ayound.js.debug.model.JsBreakPoint;
 import org.ayound.js.debug.resource.JsResourceManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
@@ -49,9 +50,10 @@ public class JsDebugResponse {
 		}
 	}
 
-	public boolean isClosed(){
+	public boolean isClosed() {
 		return this.client.isClosed();
 	}
+
 	/**
 	 * write html header of this request
 	 * 
@@ -148,13 +150,18 @@ public class JsDebugResponse {
 				.getBreakpointManager();
 		for (IBreakpoint point : manager
 				.getBreakpoints(JsDebugCorePlugin.MODEL_ID)) {
-			if (point instanceof JsBreakPoint) {
-				String resource = jsManager.getResourceByFile((IFile) point
-						.getMarker().getResource());
-				int line = point.getMarker().getAttribute(IMarker.LINE_NUMBER,
-						0);
-				buffer.append("'").append(resource).append(line).append(
-						"':true,");
+			try {
+				if ((point instanceof JsBreakPoint) && point.isEnabled()) {
+					String resource = jsManager.getResourceByFile((IFile) point
+							.getMarker().getResource());
+					int line = point.getMarker().getAttribute(IMarker.LINE_NUMBER,
+							0);
+					buffer.append("'").append(resource).append(line).append(
+							"':true,");
+				}
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		buffer.append("'end':false}}");
