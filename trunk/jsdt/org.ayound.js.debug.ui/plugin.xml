@@ -70,6 +70,11 @@
             icon="icons/js.png"
             id="org.ayound.js.debug.ui.resourceView"
             name="Debug Scripts"/>
+      <view
+            class="org.ayound.js.debug.ui.views.EvalView"
+            icon="icons/js.png"
+            id="org.ayound.js.debug.ui.ExpressionView"
+            name="Javascript Expression"/>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -82,11 +87,24 @@
                label="Toggle Breakpoint"
                menubarPath="debug"/>
       </viewerContribution>
+      <viewerContribution
+            id="org.ayound.js.debug.ui.jsEvalAction"
+            targetID="org.ayound.js.debug.ui.jsEvalMenu">
+         <action
+               class="org.ayound.js.debug.ui.eval.JsEditorEvalAction"
+               icon="icons/js.png"
+               id="org.ayound.js.debug.ui.jsEvalAction"
+               label="Eval Expression"
+               menubarPath="jsdt.JsEval"/>
+         <menu
+               id="jsdt.JsEval"
+               label="Eval Expression"/>
+      </viewerContribution>
    </extension>
    <extension
          point="org.eclipse.ui.editorActions">
       <editorContribution
-            id="org.ayound.js.debug.ui.editorAction"
+            id="org.ayound.js.debug.ui.JsEditorBreakPointAction"
             targetID="org.ayound.js.debug.ui.editor.JsEditor">
          <action
                actionID="RulerDoubleClick"

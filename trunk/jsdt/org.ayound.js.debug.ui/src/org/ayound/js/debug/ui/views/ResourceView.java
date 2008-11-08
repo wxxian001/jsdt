@@ -168,7 +168,6 @@ public class ResourceView extends AbstractDebugView implements
 
 	@Override
 	protected void fillContextMenu(IMenuManager menu) {
-		// TODO Auto-generated method stub
 		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
