@@ -35,7 +35,7 @@ public class JsPerspectiveFactory implements IPerspectiveFactory {
 		IFolderLayout toolsFolder= layout.createFolder("right", IPageLayout.RIGHT, (float) 0.50, "top");
 		toolsFolder.addView(IDebugUIConstants.ID_VARIABLE_VIEW);
 		toolsFolder.addView(IDebugUIConstants.ID_BREAKPOINT_VIEW);
-		toolsFolder.addView(IDebugUIConstants.ID_EXPRESSION_VIEW);
+		toolsFolder.addView("org.ayound.js.debug.ui.ExpressionView");
 		IFolderLayout resourceFolder= layout.createFolder("resource", IPageLayout.RIGHT, (float) 0.75, layout.getEditorArea());
 		resourceFolder.addView("org.ayound.js.debug.ui.resourceView");
 	}

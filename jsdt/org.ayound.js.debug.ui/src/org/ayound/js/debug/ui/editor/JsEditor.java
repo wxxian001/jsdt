@@ -15,8 +15,7 @@ package org.ayound.js.debug.ui.editor;
 
 import org.eclipse.ui.editors.text.TextEditor;
 
-public class JsEditor extends TextEditor{
-
+public class JsEditor extends TextEditor {
 
 	/**
 	 * Constructor for SampleEditor.
@@ -24,7 +23,7 @@ public class JsEditor extends TextEditor{
 	public JsEditor() {
 		super();
 		setRulerContextMenuId("org.ayound.js.debug.rulerMenu");
+		setEditorContextMenuId("org.ayound.js.debug.ui.jsEvalMenu");
 	}
-
 
 }
