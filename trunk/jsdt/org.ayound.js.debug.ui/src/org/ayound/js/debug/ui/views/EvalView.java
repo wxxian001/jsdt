@@ -145,7 +145,11 @@ public class EvalView extends AbstractDebugView implements ISelectionListener,
 					if (model.getError() != null) {
 						valueText.setText(model.getError());
 					} else {
-						valueText.setText(model.getResult());
+						if(model.getResult()!=null){							
+							valueText.setText(model.getResult());
+						}else{
+							valueText.setText("null");
+						}
 					}
 				} else {
 					valueText.setText("");
@@ -200,7 +204,8 @@ public class EvalView extends AbstractDebugView implements ISelectionListener,
 
 	@Override
 	protected void configureToolBar(IToolBarManager tbm) {
-		// TODO Auto-generated method stub
+		// tbm.add(new JsExpressionAddAction(this, "add", null));
+		// tbm.add(new JsExpressionRemoveAction(this, "remove", null));
 
 	}
 
