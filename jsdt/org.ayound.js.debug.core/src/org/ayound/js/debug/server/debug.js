@@ -265,7 +265,15 @@ jsDebug.evalExpression = function(expression, evalFunc) {
 		}
 		try {
 			jsDebug.isExpression = true;
-			postData["RESULT"] = evalFunc(expression);
+			var ret = evalFunc(expression);
+			if(typeof(ret)=="undefined"){
+				ret = "undefined";
+			}else if(ret==null){
+				ret = "null";
+			}else{
+				ret = ret.toString().replace(/\n|\r/gm, "");
+			}
+			postData["RESULT"] = ret;
 		} catch (e) {
 			postData["ERROR"] = e;
 		}
@@ -377,7 +385,7 @@ function json2string(obj, depth) {
 		return array2string(obj, depth + 1);
 	} else {
 		if (typeof obj == "string") {
-			return "\"" + obj.replace(/"/gm, "\\\"").replace(/\n|\r/, "")
+			return "\"" + obj.replace(/"/gm, "\\\"").replace(/\n|\r/gm, "")
 					+ "\"";
 		} else if (typeof obj == "number") {
 			if (isFinite(obj)) {
@@ -386,7 +394,7 @@ function json2string(obj, depth) {
 				return "\"out of number\"";
 			}
 		} else {
-			return obj.toString().replace(/"/gm, "\\\"").replace(/\n|\r/, "");
+			return obj.toString().replace(/"/gm, "\\\"").replace(/\n|\r/gm, "");
 		}
 	}
 }
