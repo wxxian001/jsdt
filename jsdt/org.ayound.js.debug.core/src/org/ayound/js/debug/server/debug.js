@@ -1,12 +1,12 @@
 /*******************************************************************************
- * 
+ *
  * ==============================================================================
- * 
+ *
  * Copyright (c) 2008-2011 ayound@gmail.com This program and the accompanying
  * materials are made available under the terms of the Apache License 2.0 which
  * accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0 All rights reserved.
- * 
+ *
  * Created on 2008-10-26
  ******************************************************************************/
 /**
@@ -218,11 +218,13 @@ jsDebug.updateStack = function(args, resource, scope, line, evalFunc) {
 }
 jsDebug.error = function(e, resource, line) {
 	try {
-		if (resource && jsDebug.currResource
-				&& resource.indexOf(jsDebug.currResource) < 0) {
-			line = line - 1;
+		if(document.all){
+			if (resource && jsDebug.currResource
+					&& resource.indexOf(jsDebug.currResource) < 0) {
+				line = line - 1;
+			}
+			resource = jsDebug.currResource;
 		}
-		resource = jsDebug.currResource;
 		jsDebug.xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
 		var postData = {
 			"ERROR" : encodeURI(e),
@@ -270,8 +272,6 @@ jsDebug.evalExpression = function(expression, evalFunc) {
 				ret = "undefined";
 			}else if(ret==null){
 				ret = "null";
-			}else{
-				ret = ret.toString().replace(/\n|\r/gm, "");
 			}
 			postData["RESULT"] = ret;
 		} catch (e) {
@@ -281,7 +281,7 @@ jsDebug.evalExpression = function(expression, evalFunc) {
 		jsDebug.xmlHttp.send(json2string(postData));
 		jsDebug.parseResult(jsDebug.xmlHttp.responseText, evalFunc);
 	} catch (e) {
-		
+
 	}
 }
 
@@ -344,7 +344,7 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 		jsDebug.xmlHttp.send(json2string(postData));
 		jsDebug.parseResult(jsDebug.xmlHttp.responseText, evalFunc);
 	} catch (e) {
-		
+
 	}
 }
 jsDebug.parseResult = function(result, evalFunc) {
@@ -363,7 +363,7 @@ jsDebug.parseResult = function(result, evalFunc) {
 						jsDebug.evalExpression(retObj["EXPRESSION"], evalFunc);
 					}
 				}
-				
+
 			} catch (e) {
 			}
 		} else {
@@ -419,7 +419,7 @@ function obj2string(obj, depth) {
 					}
 				}
 			} catch (e) {
-	
+
 			}
 		}
 		return "{" + arr.join(",") + "}";
