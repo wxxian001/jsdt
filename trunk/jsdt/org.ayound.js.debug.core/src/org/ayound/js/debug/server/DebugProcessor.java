@@ -67,8 +67,12 @@ public class DebugProcessor extends AbstractProcessor {
 				JsErrorStackFrame frame = new JsErrorStackFrame(getThread(),
 						getThread().getDebugTarget(), getThread().getLaunch());
 				frame.setResponse(getResponse());
-				frame.setResource(param.getJsResource());
-				if (param.getJsResource().equals(param.getJsResource())) {
+				String resource = param.getJsResource();
+				if(resource!=null){
+					resource =resource.replace(getServer().getLocalBaseUrl(), "");
+					frame.setResource(resource);
+				}
+				if (param.getJsResource().equals(getServer().getHomePage())) {
 					frame.setLineNum(param.getLine()
 							- getServer().getDebugLine());
 				} else {
