@@ -40,7 +40,7 @@ public class ManageBreakpointRulerAction extends Action implements IUpdate {
 			ITextEditor editor) {
 		this.rulerInfo = ruler;
 		this.textEditor = editor;
-		this.setText("Ìí¼Ó/É¾³ý¶Ïµã");
+		this.setText("add/remove breakpoint");
 	}
 
 	@Override

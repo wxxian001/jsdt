@@ -22,7 +22,7 @@
          point="org.eclipse.ui.contexts">
       <context
             id="org.ayound.js.debug.ui.context"
-            name="Js Debug Context"
+            name="%ContextName"
             parentId="org.eclipse.debug.ui.debugging"/>
    </extension>
    <extension
@@ -54,7 +54,7 @@
             extensions="js"
             icon="icons/js.png"
             id="org.ayound.js.debug.ui.editor.JsEditor"
-            name="JsEditor"/>
+            name="%editorName"/>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
@@ -69,12 +69,12 @@
             class="org.ayound.js.debug.ui.views.ResourceView"
             icon="icons/js.png"
             id="org.ayound.js.debug.ui.resourceView"
-            name="Debug Scripts"/>
+            name="%scriptViewName"/>
       <view
             class="org.ayound.js.debug.ui.views.EvalView"
             icon="icons/js.png"
             id="org.ayound.js.debug.ui.ExpressionView"
-            name="Javascript Expression"/>
+            name="%expressionViewName"/>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -84,7 +84,7 @@
          <action
                class="org.ayound.js.debug.ui.breakpoint.ManageBreakpointRulerActionDelegate"
                id="org.ayound.js.debug.ui.toggleBreakPointAction"
-               label="Toggle Breakpoint"
+               label="%toggleBreakPoint"
                menubarPath="debug"/>
       </viewerContribution>
       <viewerContribution
@@ -94,11 +94,11 @@
                class="org.ayound.js.debug.ui.eval.JsEditorEvalAction"
                icon="icons/js.png"
                id="org.ayound.js.debug.ui.jsEvalAction"
-               label="Eval Expression"
+               label="%watchExpression"
                menubarPath="jsdt.JsEval"/>
          <menu
                id="jsdt.JsEval"
-               label="Eval Expression"/>
+               label="%watchExpression"/>
       </viewerContribution>
    </extension>
    <extension
@@ -110,7 +110,7 @@
                actionID="RulerDoubleClick"
                class="org.ayound.js.debug.ui.breakpoint.ManageBreakpointRulerActionDelegate"
                id="org.ayound.js.debug.ui.ClickBreakPointAction"
-               label="Js BreakPoint Action"
+               label="%jsBreakPointAction"
                state="true"
                style="toggle"/>
       </editorContribution>
@@ -121,7 +121,7 @@
             class="org.ayound.js.debug.ui.JsPerspectiveFactory"
             icon="icons/js.png"
             id="org.ayound.js.debug.ui.jsDebugPerspective"
-            name="JavaScript Debug Toolkit"/>
+            name="%appName"/>
    </extension>
 
 </plugin>
