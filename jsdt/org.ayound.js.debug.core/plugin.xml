@@ -7,7 +7,7 @@
             delegate="org.ayound.js.debug.launch.JsLaunchConfigurationDelegate"
             id="org.ayound.js.debug.core.JsDebug"
             modes="debug"
-            name="JavaScript Debug"
+            name="%DebugName"
             sourceLocatorId="org.ayound.js.debug.core.sourceLocator"
             sourcePathComputerId="org.ayound.js.debug.core.sourcePathComputer"/>
    </extension>
