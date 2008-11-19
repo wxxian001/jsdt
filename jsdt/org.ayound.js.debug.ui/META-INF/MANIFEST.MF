@@ -18,5 +18,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.views,
  org.ayound.js.debug.engine
 Eclipse-LazyStart: true
-Bundle-ClassPath: icons/,
- .
+Bundle-ClassPath: .
