@@ -51,7 +51,7 @@
             class="org.ayound.js.debug.ui.editor.JsEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="false"
-            extensions="js"
+            extensions="js,htm,html"
             icon="icons/js.png"
             id="org.ayound.js.debug.ui.editor.JsEditor"
             name="%editorName"/>

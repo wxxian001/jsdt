@@ -17,9 +17,7 @@ import org.ayound.js.debug.core.JsDebugCorePlugin;
 import org.ayound.js.debug.engine.EngineManager;
 import org.ayound.js.debug.engine.IJsEngine;
 import org.ayound.js.debug.model.JsBreakPoint;
-import org.ayound.js.debug.resource.JsResourceManager;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -48,6 +46,7 @@ public class ManageBreakpointRulerAction extends Action implements IUpdate {
 		IFileEditorInput editorInput = (IFileEditorInput) this.getTextEditor()
 		.getEditorInput();
 		int breakLine = getBreakPointLine();
+		int rulerLine = this.getRulerInfo().getLineOfLastMouseButtonActivity() + 1;
 		if(breakLine<1){
 			return;
 		}
@@ -62,7 +61,9 @@ public class ManageBreakpointRulerAction extends Action implements IUpdate {
 							editorInput.getFile())
 							&& point.getMarker().getAttribute(
 									IMarker.LINE_NUMBER, 0) == breakLine) {
-						point.delete();
+						if(rulerLine==breakLine){							
+							point.delete();
+						}
 						hasBreakPoint = true;
 						break;
 					}
@@ -88,9 +89,8 @@ public class ManageBreakpointRulerAction extends Action implements IUpdate {
 		IFile resource =  editorInput.getFile();
 		int rulerLine = this.getRulerInfo().getLineOfLastMouseButtonActivity() + 1;
 		IJsEngine engine = EngineManager.getEngine();
-		IFolder rootFolder = JsResourceManager.getTempRoot();
-		String relativeString = resource.getFullPath().toString().replace(rootFolder.getFullPath().toString() + "/", "");
-		String jsResource = relativeString.substring(relativeString.indexOf('/'));
+		engine.compileFile(resource);
+		String jsResource = resource.getFullPath().toString();
 		if(engine.canBreakLine(jsResource, rulerLine)){
 			return rulerLine;
 		}else{
