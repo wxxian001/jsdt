@@ -13,9 +13,7 @@
  *******************************************************************************/
 package org.ayound.js.debug.ui.views;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.ayound.js.debug.core.IResourceListener;
@@ -25,6 +23,9 @@ import org.ayound.js.debug.server.IDebugServer;
 import org.ayound.js.debug.ui.JsDebugUIPlugin;
 import org.ayound.js.debug.ui.JsFileEditorInput;
 import org.ayound.js.debug.ui.editor.JsEditor;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugElement;
@@ -54,8 +55,6 @@ import org.eclipse.ui.part.FileEditorInput;
 public class ResourceView extends AbstractDebugView implements
 		ISelectionListener, IResourceListener {
 
-	private Map<Integer, IDebugServer> servers = new HashMap<Integer, IDebugServer>();
-
 	public ResourceView() {
 		super();
 		JsDebugCorePlugin.getDefault().addResourceListener(this);
@@ -71,16 +70,6 @@ public class ResourceView extends AbstractDebugView implements
 	protected void createActions() {
 		// TODO Auto-generated method stub
 
-	}
-
-	private IDebugServer getServerByResource(String resource) {
-		if (resource != null) {
-			int endOffset = resource.indexOf(']');
-			String portStr = resource.substring(1, endOffset);
-			int port = Integer.parseInt(portStr);
-			return servers.get(port);
-		}
-		return null;
 	}
 
 	@Override
@@ -113,10 +102,7 @@ public class ResourceView extends AbstractDebugView implements
 						.getSelection();
 				if (selection.size() == 1) {
 					String resource = (String) selection.getFirstElement();
-					IDebugServer server = getServerByResource(resource);
-					int startOffset = resource.indexOf(']');
-					String portStr = resource.substring(startOffset + 1);
-					openFile(portStr, server);
+					openFile(resource);
 				}
 
 			}
@@ -125,42 +111,46 @@ public class ResourceView extends AbstractDebugView implements
 		return viewer;
 	}
 
-	private void openFile(String resource, IDebugServer server) {
-		JsFileEditorInput input = new JsFileEditorInput(server
-				.getJsResourceManager().getFileByResource(resource));
-		try {
+	private void openFile(String resource) {
+		IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(resource);
+		if(res instanceof IFile){			
+			JsFileEditorInput input = new JsFileEditorInput((IFile)res);
+			try {
+				IWorkbenchPage page = JsDebugUIPlugin.getDefault().getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
+				IEditorPart[] editors = page.getEditors();
+				for (IEditorPart editor : editors) {
+					if (editor instanceof JsEditor) {
+						FileEditorInput jsInput = (FileEditorInput) editor
+						.getEditorInput();
+						if (jsInput.equals(input)) {
+							page.closeEditor(editor, false);
+						}
+					}
+				}
+				IDE.openEditor(page, input,
+						"org.ayound.js.debug.ui.editor.JsEditor", true);
+			} catch (PartInitException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void closeFile(String resource) {
+		IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(resource);
+		if(res instanceof IFile){			
+			JsFileEditorInput input = new JsFileEditorInput((IFile)res);
 			IWorkbenchPage page = JsDebugUIPlugin.getDefault().getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage();
+			.getActiveWorkbenchWindow().getActivePage();
 			IEditorPart[] editors = page.getEditors();
 			for (IEditorPart editor : editors) {
 				if (editor instanceof JsEditor) {
 					FileEditorInput jsInput = (FileEditorInput) editor
-							.getEditorInput();
+					.getEditorInput();
 					if (jsInput.equals(input)) {
 						page.closeEditor(editor, false);
 					}
-				}
-			}
-			IDE.openEditor(page, input,
-					"org.ayound.js.debug.ui.editor.JsEditor", true);
-		} catch (PartInitException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private void closeFile(String resource, IDebugServer server) {
-		JsFileEditorInput input = new JsFileEditorInput(server
-				.getJsResourceManager().getFileByResource(resource));
-		IWorkbenchPage page = JsDebugUIPlugin.getDefault().getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage();
-		IEditorPart[] editors = page.getEditors();
-		for (IEditorPart editor : editors) {
-			if (editor instanceof JsEditor) {
-				FileEditorInput jsInput = (FileEditorInput) editor
-						.getEditorInput();
-				if (jsInput.equals(input)) {
-					page.closeEditor(editor, false);
 				}
 			}
 		}
@@ -206,11 +196,9 @@ public class ResourceView extends AbstractDebugView implements
 								.getDebugTarget();
 						IDebugServer server = fTarget.getServer();
 						if (server.isRunning()) {
-							servers.put(server.getPort(), server);
 							if (getViewer() != null) {
 								for (String resource : server.getResources()) {
-									addResource("[" + server.getPort() + "]"
-											+ resource);
+									addResource(resource);
 								}
 							}
 						}
@@ -221,10 +209,9 @@ public class ResourceView extends AbstractDebugView implements
 				JsDebugTarget fTarget = (JsDebugTarget) launch.getDebugTarget();
 				IDebugServer server = fTarget.getServer();
 				if (server.isRunning()) {
-					servers.put(server.getPort(), server);
 					if (fTarget != null && getViewer() != null) {
 						for (String resource : server.getResources()) {
-							addResource("[" + server.getPort() + "]" + resource);
+							addResource(resource);
 						}
 					}
 				}
@@ -253,13 +240,12 @@ public class ResourceView extends AbstractDebugView implements
 	}
 
 	public void addResource(String resource, IDebugServer server) {
-		servers.put(server.getPort(), server);
-		addResource("[" + server.getPort() + "]" + resource);
-		openFile(resource, server);
+		addResource(resource);
+		openFile(resource);
 	}
 
 	public void removeResource(String resource, IDebugServer server) {
-		closeFile(resource, server);
+		closeFile(resource);
 		if (getViewer() != null) {
 			Object input = getViewer().getInput();
 			if (input != null && input instanceof String[]) {
