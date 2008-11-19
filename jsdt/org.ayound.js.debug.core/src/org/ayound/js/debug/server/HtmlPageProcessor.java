@@ -22,7 +22,6 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Map;
 
-import org.ayound.js.debug.core.JsDebugCorePlugin;
 import org.ayound.js.debug.resource.JsResourceManager;
 import org.ayound.js.debug.script.ScriptCompileUtil;
 import org.eclipse.core.resources.IFile;
@@ -51,7 +50,7 @@ public class HtmlPageProcessor extends AbstractProcessor {
 			JsResourceManager manager = getServer().getJsResourceManager();
 			getServer().setDefaultEncoding(getInfo().getEncoding());
 			manager.createFile(resourcePath, getInfo().getInputStream());
-			JsDebugCorePlugin.getDefault().addResource(resourcePath, getServer());
+			
 			
 			
 			IFile htmlFile = manager.getFileByResource(resourcePath);
