@@ -13,9 +13,15 @@
  *******************************************************************************/
 package org.ayound.js.debug.engine;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.tools.debugger.Dim;
 import org.mozilla.javascript.tools.debugger.GuiCallback;
@@ -185,6 +191,39 @@ public class JsEngineImpl implements IJsEngine {
 	 */
 	public String[] getScriptLines(String url) {
 		return lineMap.get(url);
+	}
+
+	public void compileFile(IFile file) {
+		String fileName = file.getFullPath().toString();
+		InputStream input = null;
+		try {
+			input = file.getContents();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+			String line = null;
+			StringBuffer buffer = new StringBuffer();
+			while((line=reader.readLine())!=null){
+				buffer.append(line).append("\n");
+			}
+			String scriptText = buffer.toString();
+			if(scriptText.trim().startsWith("<")){
+				this.compileHtml(fileName, scriptText);
+			}else{
+				this.compileJs(fileName, scriptText);
+			}
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			try {
+				input.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
