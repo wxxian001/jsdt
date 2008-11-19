@@ -36,13 +36,19 @@ public class ProcesserUtil {
 	 */
 	public static ResponseInfo getResponseInfo(URL url, String method,
 			String postData, Map<String, String> requestHeader) {
-		InputStream stream =null;
+		InputStream stream = null;
 		String encoding = null;
+		String contentType = null;
 		if (method == null) {
 			method = "GET";
 		}
 		if ("file".equalsIgnoreCase(url.getProtocol())) {
 			String filePath = url.toString().substring(5);
+			if(filePath.toLowerCase().endsWith(".js")){
+				contentType = "text/javascript";
+			}else if(filePath.toLowerCase().endsWith(".htm")||filePath.toLowerCase().endsWith(".html")){
+				contentType = "text/html";
+			}
 			try {
 				stream = new FileInputStream(filePath);
 			} catch (FileNotFoundException e) {
@@ -65,13 +71,14 @@ public class ProcesserUtil {
 				if (method.equalsIgnoreCase("POST")) {
 					conn.getOutputStream().write(postData.getBytes());
 				}
+				contentType = conn.getContentType();
 				encoding = conn.getContentEncoding();
 				stream = conn.getInputStream();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		return new ResponseInfo(encoding,stream);
+		return new ResponseInfo(encoding, stream, contentType);
 	}
 
 }

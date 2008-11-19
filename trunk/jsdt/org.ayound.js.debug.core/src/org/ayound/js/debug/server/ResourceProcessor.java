@@ -31,8 +31,9 @@ public class ResourceProcessor extends AbstractProcessor {
 
 	public ResourceProcessor(String requestUrl, String method, String postData,
 			JsDebugResponse response, IThread thread, IDebugServer server,
-			Map<String, String> requestHeader) {
-		super(requestUrl, postData, response, thread, server, requestHeader);
+			Map<String, String> requestHeader, ResponseInfo info) {
+		super(requestUrl, postData, response, thread, server, requestHeader,
+				info);
 		this.method = method;
 	}
 
@@ -40,9 +41,8 @@ public class ResourceProcessor extends AbstractProcessor {
 	public void process() {
 		try {
 			URL url = this.computeRemoteURL();
-			ResponseInfo info = ProcesserUtil.getResponseInfo(url, method,
-					getPostData(), this.getRequestHeader());
-			DataInputStream isResult = new DataInputStream(info
+
+			DataInputStream isResult = new DataInputStream(getInfo()
 					.getInputStream());
 			if (url.getFile().toLowerCase().endsWith("css")) {
 				File file = new File("charset");
@@ -56,7 +56,7 @@ public class ResourceProcessor extends AbstractProcessor {
 				outputStream.close();
 				isResult.close();
 				outputStream = null;
-				String encoding = info.getEncoding();
+				String encoding = getInfo().getEncoding();
 				if (encoding == null) {
 					CharsetDetector detector = new CharsetDetector();
 					detector.detect(file);

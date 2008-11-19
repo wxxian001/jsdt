@@ -55,7 +55,7 @@ public class JsDebugServer implements IDebugServer {
 
 	private int debugLine = 0;
 
-	private String homePage = null;
+	private Set<String> htmlPage = new HashSet<String>();
 	
 	private IWatchExpressionListener evalListener;
 
@@ -67,7 +67,7 @@ public class JsDebugServer implements IDebugServer {
 		this.port = socketServer.getLocalPort();
 		this.remoteUrl = remoteUrl;
 		this.jsManager = jsManager;
-
+		this.jsManager.setServer(this);
 	}
 
 	/**
@@ -195,15 +195,17 @@ public class JsDebugServer implements IDebugServer {
 
 	}
 
-	public void setHomePage(String resource) {
-		this.homePage = resource;
-	}
 
 	public int getDebugLine() {
 		return debugLine;
 	}
 
-	public String getHomePage() {
-		return homePage;
+	public void addHtmlPage(String resource) {
+		this.htmlPage.add(resource);
 	}
+
+	public boolean isHtmlPage(String resource) {
+		return this.htmlPage.contains(resource);
+	}
+
 }

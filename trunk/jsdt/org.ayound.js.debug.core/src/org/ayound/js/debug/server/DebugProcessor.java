@@ -31,7 +31,7 @@ public class DebugProcessor extends AbstractProcessor {
 	public DebugProcessor(String requestUrl, String postData,
 			JsDebugResponse response, IThread thread, IDebugServer server,
 			Map<String, String> requestHeader) {
-		super(requestUrl, postData, response, thread, server, requestHeader);
+		super(requestUrl, postData, response, thread, server, requestHeader,null);
 	}
 
 	public void process() {
@@ -72,7 +72,7 @@ public class DebugProcessor extends AbstractProcessor {
 					resource =resource.replace(getServer().getLocalBaseUrl(), "");
 					frame.setResource(resource);
 				}
-				if (param.getJsResource().equals(getServer().getHomePage())) {
+				if (getServer().isHtmlPage(param.getJsResource())) {
 					frame.setLineNum(param.getLine()
 							- getServer().getDebugLine());
 				} else {
