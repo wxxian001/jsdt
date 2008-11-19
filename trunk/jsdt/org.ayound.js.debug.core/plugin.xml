@@ -29,7 +29,7 @@
       <breakpoint
             class="org.ayound.js.debug.model.JsBreakPoint"
             id="org.ayound.js.debug.core.breakpoint"
-            markerType="org.ayound.js.debug.core.jsMarker"/>
+            markerType="org.eclipse.debug.core.lineBreakpointMarker"/>
    </extension>
    <extension
          id="org.ayound.js.debug.core.jsMarker"
