@@ -219,10 +219,6 @@ jsDebug.updateStack = function(args, resource, scope, line, evalFunc) {
 jsDebug.error = function(e, resource, line) {
 	try {
 		if(document.all){
-			if (resource && jsDebug.currResource
-					&& resource.indexOf(jsDebug.currResource) < 0) {
-				line = line - 1;
-			}
 			resource = jsDebug.currResource;
 		}
 		jsDebug.xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
