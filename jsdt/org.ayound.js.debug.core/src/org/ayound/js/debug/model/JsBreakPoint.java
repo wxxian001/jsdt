@@ -44,12 +44,14 @@ public class JsBreakPoint extends LineBreakpoint {
 	public JsBreakPoint(final IResource resource,final int lineNumber){
 		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
-				IMarker marker = resource.createMarker("org.ayound.js.debug.core.jsMarker");
+				IMarker marker = resource.createMarker("org.eclipse.debug.core.lineBreakpointMarker");
 				setMarker(marker);
 				marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
 				marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
 				marker.setAttribute(IBreakpoint.ID, getModelIdentifier());
-				marker.setAttribute(IMarker.MESSAGE, "Line Breakpoint: " + resource.getName() + " [line: " + lineNumber + "]");
+				marker.setAttribute(IMarker.MESSAGE, "Js Breakpoint: " + resource.getName() + " [line: " + lineNumber + "]");
+				setPersisted(true);
+				setRegistered(true);
 			}
 		};
 		try {
