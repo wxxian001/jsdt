@@ -32,9 +32,8 @@ public class ScriptProcessor extends AbstractProcessor {
 
 	public ScriptProcessor(String requestUrl, String postData,
 			JsDebugResponse response, IThread thread, IDebugServer server,
-			Map<String, String> requestHeader) {
-		super(requestUrl, postData, response, thread, server, requestHeader);
-		// TODO Auto-generated constructor stub
+			Map<String, String> requestHeader,ResponseInfo info) {
+		super(requestUrl, postData, response, thread, server, requestHeader,info);
 	}
 
 	@Override
@@ -43,14 +42,12 @@ public class ScriptProcessor extends AbstractProcessor {
 			URL url = this.computeRemoteURL();
 			String resourcePath = url.getPath();
 			JsResourceManager manager = getServer().getJsResourceManager();
-			ResponseInfo info = ProcesserUtil.getResponseInfo(url, null,
-					getPostData(), this.getRequestHeader());
-			manager.createFile(resourcePath, info.getInputStream());
+			manager.createFile(resourcePath, getInfo().getInputStream());
 			JsDebugCorePlugin.getDefault().addResource(resourcePath,
 					getServer());
-			getServer().addResource(resourcePath);
+			
 			IFile scriptFile = manager.getFileByResource(resourcePath);
-			String encoding = info.getEncoding();
+			String encoding = getInfo().getEncoding();
 			if(encoding==null){				
 				CharsetDetector detector = new CharsetDetector();
 				detector.detect(scriptFile);
@@ -69,10 +66,12 @@ public class ScriptProcessor extends AbstractProcessor {
 				buffer.append(line).append("\n");
 			}
 			String scriptContent = buffer.toString();
+			String scriptPath = scriptFile.getFullPath().toString();
+			getServer().addResource(scriptPath);
 			try{
-				getServer().getJsEngine().compileJs(resourcePath, scriptContent);
+				getServer().getJsEngine().compileJs(scriptPath, scriptContent);
 			}catch(EvaluatorException e){
-				getServer().compileError(e.getMessage(), resourcePath, e.getLineNumber());
+				getServer().compileError(e.getMessage(), scriptPath, e.getLineNumber());
 			}
 			String[] lines = getServer().getJsEngine().getScriptLines(
 					resourcePath);
@@ -88,9 +87,9 @@ public class ScriptProcessor extends AbstractProcessor {
 						e.printStackTrace();
 					}
 				}
-				if (getServer().getJsEngine().canBreakLine(resourcePath, i + 1)) {
+				if (getServer().getJsEngine().canBreakLine(scriptPath, i + 1)) {
 					jsLine = ScriptCompileUtil.compileJsLine(lines,
-							resourcePath, i);//
+							scriptPath, i);//
 				}
 				getResponse().writeln(jsLine);
 			}

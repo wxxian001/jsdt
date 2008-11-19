@@ -21,10 +21,14 @@ public class ResponseInfo {
 
 	private InputStream inputStream;
 
-	public ResponseInfo(String encoding, InputStream inputStream) {
+	private String contentType;
+
+	public ResponseInfo(String encoding, InputStream inputStream,
+			String contentType) {
 		super();
 		this.encoding = encoding;
 		this.inputStream = inputStream;
+		this.contentType = contentType;
 	}
 
 	public String getEncoding() {
@@ -33,6 +37,10 @@ public class ResponseInfo {
 
 	public InputStream getInputStream() {
 		return inputStream;
+	}
+
+	public String getContentType() {
+		return contentType;
 	}
 
 }

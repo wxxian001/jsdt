@@ -72,9 +72,9 @@ public interface IDebugServer {
 	
 	public void setDebugLine(int line);
 	
-	public void setHomePage(String resource);
+	public void addHtmlPage(String resource);
 	
 	public int getDebugLine();
 	
-	public String getHomePage();
+	public boolean isHtmlPage(String resouce);
 }

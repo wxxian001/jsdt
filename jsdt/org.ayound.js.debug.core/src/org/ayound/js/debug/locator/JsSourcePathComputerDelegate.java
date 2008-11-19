@@ -15,19 +15,18 @@
 
 package org.ayound.js.debug.locator;
 
-import org.ayound.js.debug.resource.JsResourceManager;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
-import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer;
+import org.eclipse.debug.core.sourcelookup.containers.FolderSourceContainer;
 
 public class JsSourcePathComputerDelegate implements ISourcePathComputerDelegate {
 
 	public ISourceContainer[] computeSourceContainers(ILaunchConfiguration configuration, IProgressMonitor monitor) throws CoreException {
-		ISourceContainer sourceContainer = new ProjectSourceContainer(ResourcesPlugin.getWorkspace().getRoot().getProject(JsResourceManager.PROJECT_NAME),false);
+		ISourceContainer sourceContainer = new FolderSourceContainer(ResourcesPlugin.getWorkspace().getRoot(),false);
 		return new ISourceContainer[] { sourceContainer };
 	}
 

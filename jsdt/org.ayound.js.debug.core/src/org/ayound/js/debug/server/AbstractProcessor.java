@@ -37,7 +37,9 @@ public abstract class AbstractProcessor implements IServerProcessor {
 
 	private Map<String, String> requestHeader;
 	
-	public AbstractProcessor(String requestUrl, String postData, JsDebugResponse response, IThread thread, IDebugServer server,Map<String, String> requestHeader) {
+	private ResponseInfo info;
+	
+	public AbstractProcessor(String requestUrl, String postData, JsDebugResponse response, IThread thread, IDebugServer server,Map<String, String> requestHeader,ResponseInfo info) {
 		super();
 		this.requestUrl = requestUrl;
 		this.postData = postData;
@@ -45,6 +47,7 @@ public abstract class AbstractProcessor implements IServerProcessor {
 		this.thread = thread;
 		this.server = server;
 		this.requestHeader = requestHeader;
+		this.info = info;
 	}
 
 	abstract public void process();
@@ -87,5 +90,9 @@ public abstract class AbstractProcessor implements IServerProcessor {
 
 	public Map<String, String> getRequestHeader() {
 		return this.requestHeader;
+	}
+
+	public ResponseInfo getInfo() {
+		return info;
 	}
 }

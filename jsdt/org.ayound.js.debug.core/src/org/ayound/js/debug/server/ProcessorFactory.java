@@ -21,11 +21,10 @@ import org.eclipse.debug.core.model.IThread;
 
 public class ProcessorFactory {
 	/**
-	 * create processor by different url
-	 * "/" or baseUrl to create Homepage
-	 * *.js to create script processor
-	 * debugurl to create jsdebug processor
-	 * other to create resource processor
+	 * create processor by different url "/" or baseUrl to create Homepage *.js
+	 * to create script processor debugurl to create jsdebug processor other to
+	 * create resource processor
+	 * 
 	 * @param resource
 	 * @param method
 	 * @param postData
@@ -37,38 +36,46 @@ public class ProcessorFactory {
 	 */
 	public static IServerProcessor createProcessor(String resource,
 			String method, String postData, JsDebugResponse response,
-			IThread thread, IDebugServer server,Map<String, String> requestHeader) {
-		if(resource.equals("/")){
-			return  new HomePageProcessor(resource, postData, response,
-					thread, server,requestHeader);
-		}
-		if (resource.startsWith("/")) {
-			resource = server.getLocalBaseUrl() + resource;
-		}
-		String debugUrl = server.getLocalBaseUrl() + "/"
-				+ IDebugServer.DEBUG_PATH;
+			IThread thread, IDebugServer server,
+			Map<String, String> requestHeader) {
+		String debugUrl = "/" + IDebugServer.DEBUG_PATH;
 		if (resource.startsWith(debugUrl)) {
 			return new DebugProcessor(resource, postData, response, thread,
-					server,requestHeader);
+					server, requestHeader);
 		} else {
-			String remotePath = resource.replace(server.getLocalBaseUrl(), "");
-			try {
-				URL remoteFile = new URL(server.getRemoteBaseUrl(), remotePath);
-				if (remoteFile.getFile().toLowerCase().endsWith("js")) {
-					return new ScriptProcessor(resource, postData, response,
-							thread, server,requestHeader);
-				} else if (remoteFile.equals(server.getRemoteBaseUrl())) {
-					return new HomePageProcessor(resource, postData, response,
-							thread, server,requestHeader);
-				} else {
-					return new ResourceProcessor(resource, method, postData,
-							response, thread, server,requestHeader);
-				}
-
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			URL url = computeRemoteURL(resource, server);
+			ResponseInfo info = ProcesserUtil.getResponseInfo(url, null,
+					postData, requestHeader);
+			if ("text/javascript".equalsIgnoreCase(info.getContentType())) {
+				return new ScriptProcessor(resource, postData, response,
+						thread, server, requestHeader, info);
+			} else if ("text/html".equalsIgnoreCase(info.getContentType())) {
+				return new HtmlPageProcessor(resource, postData, response,
+						thread, server, requestHeader, info);
+			} else {
+				return new ResourceProcessor(resource, method, postData,
+						response, thread, server, requestHeader, info);
 			}
+
+		}
+	}
+
+	/**
+	 * compute the remote url. the request url maybe
+	 * http://localhost:8080/test/a.html the method convert it to
+	 * http://www.site.com/test/a.html
+	 * 
+	 * @param resource
+	 * @param server
+	 * @return
+	 */
+	private static URL computeRemoteURL(String resource, IDebugServer server) {
+		String path = resource.replace(server.getLocalBaseUrl(), "");
+		try {
+			return new URL(server.getRemoteBaseUrl(), path);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 	}
