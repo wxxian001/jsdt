@@ -21,7 +21,6 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Map;
 
-import org.ayound.js.debug.core.JsDebugCorePlugin;
 import org.ayound.js.debug.resource.JsResourceManager;
 import org.ayound.js.debug.script.ScriptCompileUtil;
 import org.eclipse.core.resources.IFile;
@@ -43,9 +42,6 @@ public class ScriptProcessor extends AbstractProcessor {
 			String resourcePath = url.getPath();
 			JsResourceManager manager = getServer().getJsResourceManager();
 			manager.createFile(resourcePath, getInfo().getInputStream());
-			JsDebugCorePlugin.getDefault().addResource(resourcePath,
-					getServer());
-			
 			IFile scriptFile = manager.getFileByResource(resourcePath);
 			String encoding = getInfo().getEncoding();
 			if(encoding==null){				

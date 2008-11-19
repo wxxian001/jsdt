@@ -165,6 +165,7 @@ public class JsDebugServer implements IDebugServer {
 	}
 
 	public void addResource(String resource) {
+		JsDebugCorePlugin.getDefault().addResource(resource, this);
 		resources.add(resource);
 	}
 
