@@ -123,5 +123,18 @@
             id="org.ayound.js.debug.ui.jsDebugPerspective"
             name="%appName"/>
    </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="org.ayound.js.debug.ui.shortcut.JsDebugLaunchShortcut"
+            icon="icons/js.png"
+            id="org.ayound.js.debug.ui.launchShortCut"
+            label="%shortCutLabel"
+            modes="debug">
+         <perspective
+               id="org.ayound.js.debug.ui.jsDebugPerspective">
+         </perspective>
+      </shortcut>
+   </extension>
 
 </plugin>
