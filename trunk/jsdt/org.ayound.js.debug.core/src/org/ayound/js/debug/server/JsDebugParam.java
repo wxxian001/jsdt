@@ -39,6 +39,12 @@ public class JsDebugParam {
 	
 	private static final String RESULT = "RESULT";
 	
+	private static final String ERRORFUNC = "ERRORFUNC";
+	
+	private static final String ISIE = "ISIE";
+	
+	
+	
 	private String jsResource;
 
 	private String command;
@@ -52,6 +58,11 @@ public class JsDebugParam {
 	private String expression;
 	
 	private String result;
+	
+	private String errorFunc;
+	
+	private boolean isIE = false;
+	
 	
 	public JsDebugParam(String jsonString) throws JSONException {
 		JSONObject jsonObject = new JSONObject(new JSONTokener(jsonString));
@@ -76,7 +87,12 @@ public class JsDebugParam {
 		if (jsonObject.has(RESULT)) {
 			this.result = jsonObject.getString(RESULT);
 		}
-
+		if (jsonObject.has(ERRORFUNC)) {
+			this.errorFunc = jsonObject.getString(ERRORFUNC);
+		}
+		if (jsonObject.has(ISIE)) {
+			this.isIE = jsonObject.getBoolean(ISIE);
+		}
 	}
 
 	public String getJsResource() {
@@ -117,6 +133,14 @@ public class JsDebugParam {
 
 	public String getResult() {
 		return result;
+	}
+
+	public String getErrorFunc() {
+		return errorFunc;
+	}
+
+	public boolean isIE() {
+		return isIE;
 	}
 
 }
