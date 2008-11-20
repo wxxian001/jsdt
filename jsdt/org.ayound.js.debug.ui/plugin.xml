@@ -138,17 +138,39 @@
                         value="1">
                   </count>
                   <iterate>
-                     <instanceof
-                           value="org.eclipse.core.resources.IFile">
-                     </instanceof>
-                     <test
-                           property="org.eclipse.debug.ui.matchesPattern"
-                           value="*.htm|*.html">
-                     </test>
+                     <or>
+                        <test
+                              property="org.eclipse.debug.ui.matchesPattern"
+                              value="*.htm">
+                        </test>
+                        <test
+                              property="org.eclipse.debug.ui.matchesPattern"
+                              value="*.html">
+                        </test>
+                     </or>
                   </iterate>
                </with>
             </enablement>
+            <contextLabel
+                  label="Javascript Debug Toolkit"
+                  mode="debug">
+            </contextLabel>
          </contextualLaunch>
+         <perspective
+               id="org.eclipse.ui.resourcePerspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.debug.ui.DebugPerspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.jdt.ui.JavaPerspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.jst.j2ee.J2EEPerspective">
+         </perspective>
+         <perspective
+               id="org.ayound.js.debug.ui.jsDebugPerspective">
+         </perspective>
       </shortcut>
    </extension>
    <extension
