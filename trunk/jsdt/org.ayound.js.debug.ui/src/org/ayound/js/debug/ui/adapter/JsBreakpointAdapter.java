@@ -58,34 +58,34 @@ public class JsBreakpointAdapter implements IToggleBreakpointsTargetExtension {
 			if (breakLine < 1) {
 				return;
 			}
-			try {
-				IBreakpoint breakPoints[] = DebugPlugin.getDefault()
-						.getBreakpointManager().getBreakpoints(
-								JsDebugCorePlugin.MODEL_ID);
-				boolean hasBreakPoint = false;
-				for (IBreakpoint point : breakPoints) {
-					if (point instanceof JsBreakPoint) {
-						if (point.getMarker().getResource().equals(
-								resource)
-								&& point.getMarker().getAttribute(
-										IMarker.LINE_NUMBER, 0) == breakLine) {
-							if (rulerLine == breakLine) {
+			if (rulerLine == breakLine) {
+				try {
+					IBreakpoint breakPoints[] = DebugPlugin.getDefault()
+							.getBreakpointManager().getBreakpoints(
+									JsDebugCorePlugin.MODEL_ID);
+					boolean hasBreakPoint = false;
+					for (IBreakpoint point : breakPoints) {
+						if (point instanceof JsBreakPoint) {
+							if (point.getMarker().getResource()
+									.equals(resource)
+									&& point.getMarker().getAttribute(
+											IMarker.LINE_NUMBER, 0) == breakLine) {
 								point.delete();
+								hasBreakPoint = true;
+								break;
 							}
-							hasBreakPoint = true;
-							break;
 						}
 					}
+					if (!hasBreakPoint) {
+						DebugPlugin.getDefault().getBreakpointManager()
+								.addBreakpoint(
+										new JsBreakPoint(editorInput.getFile(),
+												breakLine));
+					}
+				} catch (CoreException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				if (!hasBreakPoint) {
-					DebugPlugin.getDefault().getBreakpointManager()
-							.addBreakpoint(
-									new JsBreakPoint(editorInput.getFile(),
-											breakLine));
-				}
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 
