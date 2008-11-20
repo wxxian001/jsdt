@@ -29,7 +29,8 @@
       <breakpoint
             class="org.ayound.js.debug.model.JsBreakPoint"
             id="org.ayound.js.debug.core.breakpoint"
-            markerType="org.eclipse.debug.core.lineBreakpointMarker"/>
+            markerType="org.eclipse.debug.core.lineBreakpointMarker"
+            name="Js Line BreakPoint"/>
    </extension>
    <extension
          id="org.ayound.js.debug.core.jsMarker"
