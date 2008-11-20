@@ -198,7 +198,7 @@ jsDebug.getBreakPoint = function() {
  * update function stack
  */
 jsDebug.updateStack = function(args, resource, scope, line, evalFunc) {
-	if (args) {
+	if (args && args.callee) {
 		var func = args.callee;
 		func.__resource = resource;
 		func.__line = line;
