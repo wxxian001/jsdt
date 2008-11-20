@@ -154,7 +154,7 @@ public class JsEngineImpl implements IJsEngine {
 		for (int i = 0; i < text.length(); i++) {
 			char ch = text.charAt(i);
 			if (ch == '\n') {
-				buffer.append(ch);
+				buffer.append(' ').append(ch);
 			} else {
 				if (ch == '<') {
 					if (text.length() > i + 8) {
@@ -180,8 +180,8 @@ public class JsEngineImpl implements IJsEngine {
 			}
 		}
 		String scriptStr = buffer.toString();
+		lineMap.put(url, scriptStr.split("\n"));
 		if (scriptStr.trim().length() > 0) {
-			lineMap.put(url, scriptStr.split("\n"));
 			dim.compileScript(url, scriptStr);
 		}
 
