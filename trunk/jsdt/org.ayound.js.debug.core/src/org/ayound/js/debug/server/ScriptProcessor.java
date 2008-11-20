@@ -70,7 +70,7 @@ public class ScriptProcessor extends AbstractProcessor {
 				getServer().compileError(e.getMessage(), scriptPath, e.getLineNumber());
 			}
 			String[] lines = getServer().getJsEngine().getScriptLines(
-					resourcePath);
+					scriptPath);
 			for (int i = 0; i < lines.length; i++) {
 				String jsLine = lines[i];
 				if (i == 0 && "UTF-8".equalsIgnoreCase(encoding)) {
