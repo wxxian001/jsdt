@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.ayound.js.debug.ui.editor;
 
-import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
-public class JsEditor extends TextEditor {
+public class JsEditor extends AbstractDecoratedTextEditor {
 
 	/**
 	 * Constructor for SampleEditor.

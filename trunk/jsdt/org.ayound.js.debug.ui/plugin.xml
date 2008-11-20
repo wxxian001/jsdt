@@ -82,7 +82,7 @@
             id="org.ayound.js.debug.ui.rulerActions"
             targetID="org.ayound.js.debug.rulerMenu">
          <action
-               class="org.ayound.js.debug.ui.breakpoint.ManageBreakpointRulerActionDelegate"
+               class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
                id="org.ayound.js.debug.ui.toggleBreakPointAction"
                label="%toggleBreakPoint"
                menubarPath="debug"/>
@@ -108,10 +108,9 @@
             targetID="org.ayound.js.debug.ui.editor.JsEditor">
          <action
                actionID="RulerDoubleClick"
-               class="org.ayound.js.debug.ui.breakpoint.ManageBreakpointRulerActionDelegate"
+               class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
                id="org.ayound.js.debug.ui.ClickBreakPointAction"
                label="%jsBreakPointAction"
-               state="true"
                style="toggle"/>
       </editorContribution>
    </extension>
@@ -151,6 +150,16 @@
             </enablement>
          </contextualLaunch>
       </shortcut>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.ayound.js.debug.ui.editor.JsEditor"
+            class="org.ayound.js.debug.ui.adapter.JsEditorAdapterFactory">
+         <adapter
+               type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
+         </adapter>
+      </factory>
    </extension>
 
 </plugin>
