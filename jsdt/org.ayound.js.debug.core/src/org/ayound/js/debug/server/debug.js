@@ -303,8 +303,7 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 		}
 
 		if (!(jsDebug.breakpoints && jsDebug.breakpoints[resource + line])) {
-			if (jsDebug.debugCommand == "STEPRETURN"
-					|| jsDebug.debugCommand == "STEPOVER") {
+			if (jsDebug.debugCommand == "STEPRETURN") {
 				var parentFunc = jsDebug.functionStack[jsDebug.functionStack.length
 						- 2];
 				if (args.callee.caller == parentFunc && parentFunc) {
