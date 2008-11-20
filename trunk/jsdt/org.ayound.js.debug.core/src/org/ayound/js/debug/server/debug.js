@@ -309,7 +309,10 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 						- 2];
 				var currFunc = jsDebug.functionStack[jsDebug.functionStack.length
 						- 1];
-				if(currFunc && (currFunc==args.callee) && jsDebug.debugCommand == "STEPOVER"){
+				if(currFunc && (currFunc==args.callee)){
+					if(jsDebug.debugCommand == "STEPRETURN"){
+						return;
+					}
 					// do nothing
 				}else{
 					if (parentFunc && (args.callee.caller == parentFunc)) {
@@ -318,6 +321,8 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 						if(jsDebug.debugCommand == "STEPRETURN"){
 							return;
 						}
+					}else{
+						return;
 					}
 				}
 
