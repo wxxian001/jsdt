@@ -27,7 +27,7 @@ public class HtmlJsScanner extends RuleBasedScanner {
 		IToken procInstr = new Token(new TextAttribute(manager
 				.getColor(IHtmlJsColorConstants.PROC_INSTR)));
 
-		IRule[] rules = new IRule[3];
+		IRule[] rules = new IRule[6];
 		// Add rule for processing instructions
 		rules[0] = new SingleLineRule("<?", "?>", procInstr);
 		// Add generic whitespace rule.
@@ -40,6 +40,10 @@ public class HtmlJsScanner extends RuleBasedScanner {
 			keywordRule.addWord(keyword, keywordToken);
 		}
 		rules[2] = keywordRule;
+		IToken stringToken = new Token(new TextAttribute(manager.getColor(IHtmlJsColorConstants.STRING)));
+		rules[3] = new SingleLineRule("/","/",stringToken);
+		rules[4] = new MultiLineRule("\"","\"",stringToken);
+		rules[5] = new MultiLineRule("'","'",stringToken);
 		setRules(rules);
 	}
 }

@@ -11,12 +11,11 @@ public class HtmlJsPartitionScanner extends RuleBasedPartitionScanner {
 		IToken htmlJsComment = new Token(HTMLJS_COMMENT);
 		IToken tag = new Token(HTML_TAG);
 
-		IPredicateRule[] rules = new IPredicateRule[4];
+		IPredicateRule[] rules = new IPredicateRule[3];
 
 		rules[0] = new MultiLineRule("<!--", "-->", htmlJsComment);
-		rules[1] = new TagRule(tag);
-		rules[2] = new MultiLineRule("/*","*/",htmlJsComment);
-		rules[3] = new SingleLineRule("//","",htmlJsComment);
+		rules[1] = new MultiLineRule("/*","*/",htmlJsComment);
+		rules[2] = new SingleLineRule("//","",htmlJsComment);
 		setPredicateRules(rules);
 	}
 }
