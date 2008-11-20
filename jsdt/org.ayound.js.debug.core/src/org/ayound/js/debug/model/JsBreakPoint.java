@@ -50,8 +50,6 @@ public class JsBreakPoint extends LineBreakpoint {
 				marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
 				marker.setAttribute(IBreakpoint.ID, getModelIdentifier());
 				marker.setAttribute(IMarker.MESSAGE, "Js Breakpoint: " + resource.getName() + " [line: " + lineNumber + "]");
-				setPersisted(true);
-				setRegistered(true);
 			}
 		};
 		try {
