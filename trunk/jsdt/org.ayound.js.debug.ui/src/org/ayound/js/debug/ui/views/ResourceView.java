@@ -245,7 +245,6 @@ public class ResourceView extends AbstractDebugView implements
 	}
 
 	public void removeResource(String resource, IDebugServer server) {
-		closeFile(resource);
 		if (getViewer() != null) {
 			Object input = getViewer().getInput();
 			if (input != null && input instanceof String[]) {
