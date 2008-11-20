@@ -303,14 +303,24 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 		}
 
 		if (!(jsDebug.breakpoints && jsDebug.breakpoints[resource + line])) {
-			if (jsDebug.debugCommand == "STEPRETURN") {
+			if (jsDebug.debugCommand == "STEPRETURN"
+					|| jsDebug.debugCommand == "STEPOVER") {
 				var parentFunc = jsDebug.functionStack[jsDebug.functionStack.length
 						- 2];
-				if (args.callee.caller == parentFunc && parentFunc) {
-					jsDebug.stepReturn(parentFunc);
-					jsDebug.debug(resource, line, scope, args, evalFunc);
-					return;
+				var currFunc = jsDebug.functionStack[jsDebug.functionStack.length
+						- 1];
+				if(currFunc && (currFunc==args.callee) && jsDebug.debugCommand == "STEPOVER"){
+					// do nothing
+				}else{
+					if (parentFunc && (args.callee.caller == parentFunc)) {
+						jsDebug.stepReturn(parentFunc);
+						jsDebug.debug(resource, line, scope, args, evalFunc);
+						if(jsDebug.debugCommand == "STEPRETURN"){
+							return;
+						}
+					}
 				}
+
 			}
 			if (jsDebug.debugCommand == "STEPRETURN") {
 				if (!jsDebug.isStepReturn(args)) {
