@@ -16,7 +16,7 @@ window.onerror = function(e, resource, line) {
 	if (e == "exit") {
 		return true;
 	} else {
-		jsDebug.error(e, resource, line);
+		jsDebug.error(e, resource, line,arguments.callee.caller);
 	}
 }
 var arguments = [];
@@ -216,21 +216,27 @@ jsDebug.updateStack = function(args, resource, scope, line, evalFunc) {
 	}
 
 }
-jsDebug.error = function(e, resource, line) {
+jsDebug.error = function(e, resource, line,callFunc) {
 	try {
-		if(document.all){
-			resource = jsDebug.currResource;
+		var funcStr = callFunc + "";
+		var isIE = window.ActiveXObject ? true : false;
+		if(isIE){
+			if(funcStr.indexOf("function anonymous")>=0){
+				funcStr = undefined;
+			}
 		}
 		jsDebug.xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
 		var postData = {
 			"ERROR" : encodeURI(e),
 			"COMMAND" : "ERROR",
 			"RESOURCE" : resource,
-			"LINE" : line
+			"LINE" : line,
+			"ERRORFUNC":funcStr,
+			"ISIE":isIE
 		}
 		jsDebug.xmlHttp.send(json2string(postData));
 	} catch (e) {
-		alert(e);
+
 	}
 }
 jsDebug.stepReturn = function(func) {

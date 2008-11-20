@@ -21,6 +21,7 @@ import org.ayound.js.debug.model.JsDebugStackFrame;
 import org.ayound.js.debug.model.JsDebugThread;
 import org.ayound.js.debug.model.JsErrorStackFrame;
 import org.ayound.js.debug.model.VariableUtil;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
@@ -31,7 +32,8 @@ public class DebugProcessor extends AbstractProcessor {
 	public DebugProcessor(String requestUrl, String postData,
 			JsDebugResponse response, IThread thread, IDebugServer server,
 			Map<String, String> requestHeader) {
-		super(requestUrl, postData, response, thread, server, requestHeader,null);
+		super(requestUrl, postData, response, thread, server, requestHeader,
+				null);
 	}
 
 	public void process() {
@@ -68,17 +70,73 @@ public class DebugProcessor extends AbstractProcessor {
 						getThread().getDebugTarget(), getThread().getLaunch());
 				frame.setResponse(getResponse());
 				String resource = param.getJsResource();
-				if(resource!=null){
-					resource =resource.replace(getServer().getLocalBaseUrl(), "");
-					frame.setResource(resource);
+				int errorLine = param.getLine();
+				if (resource != null) {
+					resource = resource.replace(getServer().getLocalBaseUrl(),
+							"");
+					IFile resourceFile = getServer().getJsResourceManager()
+							.getFileByResource(resource);
+					resource = resourceFile.getFullPath().toString();
 				}
-				if (getServer().isHtmlPage(param.getJsResource())) {
-					frame.setLineNum(param.getLine()
-							- getServer().getDebugLine());
-				} else {
-					frame.setLineNum(param.getLine());
+				if (param.isIE()) {
+					if (param.getErrorFunc() != null) {
+						String[] jsLines = getServer().getJsEngine()
+								.getScriptLines(resource);
+						boolean isRightResource = false;
+						int index = param.getLine() - 1;
+						if (jsLines != null) {
+							if (getServer().isHtmlPage(resource)) {
+								index = index - getServer().getDebugLine();
+							} else {
+								index = index - 1;
+							}
+							if (index > -1 && index < jsLines.length) {
+								String errLineStr = jsLines[index];
+								if (param.getErrorFunc().indexOf(errLineStr.trim()) >= 0) {
+									isRightResource = true;
+									errorLine = index + 1;
+								}
+							}
+						}
+						if(!isRightResource){							
+							for (String res : getServer()
+									.getResources()) {
+								index = param.getLine() - 1;
+								if (getServer().isHtmlPage(res)) {
+									index = index
+									- getServer()
+									.getDebugLine();
+								} else {
+									index = index - 1;
+								}
+								jsLines = getServer().getJsEngine()
+								.getScriptLines(res);
+								if (jsLines != null && index > -1
+										&& index < jsLines.length) {
+									if (param.getErrorFunc().indexOf(
+											jsLines[index].trim()) >= 0) {
+										resource = res;
+										errorLine = index + 1;
+										break;
+									}
+								}
+							}
+						}
+					} else {
+						if (getServer().isHtmlPage(resource)) {
+							errorLine = errorLine - getServer().getDebugLine();
+						} else {
+							errorLine = errorLine + 1;
+						}
+					}
+				}else{
+					if (getServer().isHtmlPage(resource)) {
+						errorLine = errorLine - getServer().getDebugLine();
+					}
 				}
-				
+				frame.setLineNum(errorLine);
+				frame.setResource(resource);
+
 				try {
 					frame.setErrorMsg(URLDecoder.decode(param.getError(),
 							"utf-8"));
@@ -98,13 +156,14 @@ public class DebugProcessor extends AbstractProcessor {
 						.getJsonStack(), thread.getDebugTarget(), thread
 						.getLaunch()));
 				jsThread.addStackFrame(frame);
-			} else if("EXPRESSION".equalsIgnoreCase(param.getCommand())){
+			} else if ("EXPRESSION".equalsIgnoreCase(param.getCommand())) {
 				try {
 					IStackFrame frame = jsThread.getTopStackFrame();
-					if(frame instanceof JsDebugStackFrame){
-						JsDebugStackFrame jsFrame = (JsDebugStackFrame)frame;
+					if (frame instanceof JsDebugStackFrame) {
+						JsDebugStackFrame jsFrame = (JsDebugStackFrame) frame;
 						jsFrame.setResponse(getResponse());
-						jsFrame.finishExpression(param.getExpression(), param.getResult(), param.getError());
+						jsFrame.finishExpression(param.getExpression(), param
+								.getResult(), param.getError());
 					}
 				} catch (DebugException e) {
 					// TODO Auto-generated catch block
