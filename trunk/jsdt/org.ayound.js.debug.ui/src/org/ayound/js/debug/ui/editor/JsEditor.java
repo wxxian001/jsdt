@@ -16,6 +16,7 @@ package org.ayound.js.debug.ui.editor;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 public class JsEditor extends AbstractDecoratedTextEditor {
+	private ColorManager colorManager;
 
 	/**
 	 * Constructor for SampleEditor.
@@ -24,6 +25,13 @@ public class JsEditor extends AbstractDecoratedTextEditor {
 		super();
 		setRulerContextMenuId("org.ayound.js.debug.rulerMenu");
 		setEditorContextMenuId("org.ayound.js.debug.ui.jsEvalMenu");
+		colorManager = new ColorManager();
+		setSourceViewerConfiguration(new HtmlJsconfiguration(colorManager));
+		setDocumentProvider(new HtmlJsDocumentProvider());
 	}
 
+	public void dispose() {
+		colorManager.dispose();
+		super.dispose();
+	}
 }
