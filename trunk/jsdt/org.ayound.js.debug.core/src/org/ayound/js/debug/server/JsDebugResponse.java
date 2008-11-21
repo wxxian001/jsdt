@@ -149,9 +149,9 @@ public class JsDebugResponse {
 		IBreakpointManager manager = DebugPlugin.getDefault()
 				.getBreakpointManager();
 		for (IBreakpoint point : manager
-				.getBreakpoints(JsDebugCorePlugin.MODEL_ID)) {
+				.getBreakpoints()) {
 			try {
-				if ((point instanceof JsBreakPoint) && point.isEnabled()) {
+				if (point.isEnabled()) {
 					String resource = jsManager.getResourceByFile((IFile) point
 							.getMarker().getResource());
 					int line = point.getMarker().getAttribute(IMarker.LINE_NUMBER,
