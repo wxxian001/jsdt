@@ -251,7 +251,7 @@ public class ResourceView extends AbstractDebugView implements
 				String[] arr = (String[]) input;
 				Set<String> set = new HashSet<String>();
 				for (String str : arr) {
-					if (!("[" + server.getPort() + "]" + resource).equals(str)) {
+					if (!resource.equals(str)) {
 						set.add(str);
 					}
 				}
