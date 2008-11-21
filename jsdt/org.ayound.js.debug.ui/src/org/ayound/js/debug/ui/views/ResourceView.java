@@ -137,25 +137,6 @@ public class ResourceView extends AbstractDebugView implements
 		}
 	}
 
-	private void closeFile(String resource) {
-		IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(resource);
-		if(res instanceof IFile){			
-			JsFileEditorInput input = new JsFileEditorInput((IFile)res);
-			IWorkbenchPage page = JsDebugUIPlugin.getDefault().getWorkbench()
-			.getActiveWorkbenchWindow().getActivePage();
-			IEditorPart[] editors = page.getEditors();
-			for (IEditorPart editor : editors) {
-				if (editor instanceof JsEditor) {
-					FileEditorInput jsInput = (FileEditorInput) editor
-					.getEditorInput();
-					if (jsInput.equals(input)) {
-						page.closeEditor(editor, false);
-					}
-				}
-			}
-		}
-	}
-
 	@Override
 	protected void fillContextMenu(IMenuManager menu) {
 		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
