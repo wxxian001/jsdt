@@ -1,6 +1,5 @@
 package org.ayound.js.debug.ui.adapter;
 
-import org.ayound.js.debug.core.JsDebugCorePlugin;
 import org.ayound.js.debug.engine.EngineManager;
 import org.ayound.js.debug.engine.IJsEngine;
 import org.ayound.js.debug.model.JsBreakPoint;
