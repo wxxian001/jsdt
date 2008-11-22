@@ -1,7 +1,11 @@
 package org.ayound.js.debug.ui.editor;
 
+import org.ayound.js.debug.ui.editor.assist.JsContentAssistProcessor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextAttribute;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
@@ -65,6 +69,19 @@ public class HtmlJsconfiguration extends SourceViewerConfiguration {
 		reconciler.setRepairer(ndr, HtmlJsPartitionScanner.HTMLJS_COMMENT);
 
 		return reconciler;
+	}
+	@Override
+	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+		 ContentAssistant assistant = new ContentAssistant();   
+
+		 IContentAssistProcessor tagContentAssistProcessor    
+		     = new JsContentAssistProcessor();   
+		 assistant.setContentAssistProcessor(tagContentAssistProcessor, IDocument.DEFAULT_CONTENT_TYPE);   
+		 assistant.enableAutoActivation(true);   
+		 assistant.setAutoActivationDelay(500);   
+		 assistant.setProposalPopupOrientation(IContentAssistant.CONTEXT_INFO_BELOW);   
+		 assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_BELOW);
+		 return assistant;   
 	}
 
 }
