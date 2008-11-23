@@ -185,5 +185,19 @@
          </adapter>
       </factory>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.ayound.js.debug.ui.jsDebugPerspective">
+         <view
+               id="org.ayound.js.debug.ui.resourceView"
+               relationship="stack">
+         </view>
+         <view
+               id="org.ayound.js.debug.ui.ExpressionView"
+               relationship="stack">
+         </view>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>
