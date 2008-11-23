@@ -2,6 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
+         id="org.ayound.js.debug.ui.JslaunchConfigurationTabGroup"
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             class="org.ayound.js.debug.ui.JsLaunchConfigurationTabGroup"
@@ -123,6 +124,7 @@
             name="%appName"/>
    </extension>
    <extension
+         id="org.ayound.js.debug.ui.launchShortCut"
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             class="org.ayound.js.debug.ui.shortcut.JsDebugLaunchShortcut"
