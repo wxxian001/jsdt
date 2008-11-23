@@ -20,9 +20,5 @@
   4. Syntax Error Location
 
   [http://jsdt.googlecode.com/svn/wiki/resource/picture/error.png]
-= Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+  [http://code.google.com/p/jsdt/wiki/HowToStart JSDT]  
