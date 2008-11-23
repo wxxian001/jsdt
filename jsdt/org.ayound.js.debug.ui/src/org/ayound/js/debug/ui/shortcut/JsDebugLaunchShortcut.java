@@ -15,6 +15,7 @@ import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
@@ -38,14 +39,11 @@ public class JsDebugLaunchShortcut implements ILaunchShortcut {
 				.getLaunchManager();
 		ILaunchConfigurationType type = launchManager
 				.getLaunchConfigurationType("org.ayound.js.debug.core.JsDebug");
-		String browser = null;
 		try {
 			ILaunchConfiguration[] configurations = launchManager
 					.getLaunchConfigurations(type);
 			for (int i = 0; i < configurations.length; i++) {
 				ILaunchConfiguration configuration = configurations[i];
-				browser = configuration.getAttribute(IJsDebugConstants.BROWSER,
-						BROWSER_PATH);
 				String attribute = configuration.getAttribute("url",
 						(String) null);
 				if (path.equals(attribute)) {
@@ -64,16 +62,23 @@ public class JsDebugLaunchShortcut implements ILaunchShortcut {
 			workingCopy.setAttribute(IJsDebugConstants.URL, path);
 			workingCopy.setAttribute(IJsDebugConstants.PORT,
 					IJsDebugConstants.DEFAULT_PORT + "");
-			if (browser == null) {
-				browser = BROWSER_PATH;
-			}
 			File browserFile = new File(BROWSER_PATH);
-			if(browserFile.exists()){				
-				workingCopy.setAttribute(IJsDebugConstants.BROWSER, browser);
+			if (browserFile.exists()) {
+				workingCopy.setAttribute(IJsDebugConstants.BROWSER, BROWSER_PATH);
 				ILaunchConfiguration configuration = workingCopy.doSave();
-				DebugUITools.launch(configuration, mode);
-			}else{
-				MessageDialog.openError(new Shell(Display.getCurrent()), "Debug Javascript Error!", "The browser " + browser + " is not exists!");
+				int result = DebugUITools.openLaunchConfigurationPropertiesDialog(
+						new Shell(), configuration,
+						"org.eclipse.debug.ui.launchGroup.debug");
+				if(result==Window.CANCEL){
+					configuration.delete();
+					workingCopy.delete();
+				}else{					
+					DebugUITools.launch(configuration, mode);
+				}
+			} else {
+				MessageDialog.openError(new Shell(Display.getCurrent()),
+						"Debug Javascript Error!", "The browser " + BROWSER_PATH
+								+ " is not exists!");
 			}
 
 		} catch (CoreException e1) {
