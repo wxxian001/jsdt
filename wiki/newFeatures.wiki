@@ -1,12 +1,25 @@
 #summary One-sentence summary of this page.
+#labels javascript,debug,Featured
 
 = Javascript Debug Toolkit 2.0.0 published =
 
 ==Features==
-  1. Javascript Code Colorization
-  2. Debug Javascript in eclipse
-  3. Syntax Error Location
 
+  1. Javascript Code Colorization
+
+   [http://jsdt.googlecode.com/svn/wiki/resource/picture/color.png]
+
+  2. Debug Javascript in eclipse
+
+  [http://jsdt.googlecode.com/svn/wiki/resource/video/debug.gif]
+
+  3. Watch Javascript Expression
+
+  [http://jsdt.googlecode.com/svn/wiki/resource/video/expression.gif]
+
+  4. Syntax Error Location
+
+  [http://jsdt.googlecode.com/svn/wiki/resource/picture/error.png]
 = Details =
 
 Add your content here.  Format your content with:
