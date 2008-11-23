@@ -1,0 +1,15 @@
+#summary One-sentence summary of this page.
+
+= Javascript Debug Toolkit 2.0.0 published =
+
+==Features==
+  1. Javascript Code Colorization
+  2. Debug Javascript in eclipse
+  3. Syntax Error Location
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
