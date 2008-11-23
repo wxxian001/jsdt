@@ -4,17 +4,14 @@
       label="Feature Feature"
       version="2.0.0">
 
-   <description url="http://">
+   <description url="http://code.google.com/p/jsdt/">
       [Javascript Debug Toolkit is a cross browser debug toolkit who
 can debug javascript in ie,firefox,safari,chrome and so on.]
    </description>
 
    <copyright url="http://www.example.com/copyright">
-      [Copyright [2008-2011] [ayound].]
-   </copyright>
-
-   <license url="http://www.example.com/license">
-      [   Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+      [Copyright [2008-2011] [ayound].
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -24,7 +21,22 @@ can debug javascript in ie,firefox,safari,chrome and so on.]
    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.]
+   limitations under the License.
+]
+   </copyright>
+
+   <license url="http://www.apache.org/licenses/LICENSE-2.0">
+      [   Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+or implied.
+See the License for the specific language governing permissions
+and
+limitations under the License.]
    </license>
 
    <plugin
