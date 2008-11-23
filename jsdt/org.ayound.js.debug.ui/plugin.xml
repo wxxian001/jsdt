@@ -183,13 +183,5 @@
          </adapter>
       </factory>
    </extension>
-   <extension
-         id="org.ayound.js.debug.errorMarker"
-         name="org.ayound.js.debug.errorMarker"
-         point="org.eclipse.core.resources.markers">
-      <super type="org.eclipse.core.resources.problemmarker"/>
-      <super type="org.eclipse.core.resources.textmarker"/>
-      <persistent value="false"/>
-   </extension>
 
 </plugin>

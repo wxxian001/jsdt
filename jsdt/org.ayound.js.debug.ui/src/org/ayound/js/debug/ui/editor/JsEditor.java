@@ -27,8 +27,6 @@ import org.mozilla.javascript.EvaluatorException;
 
 public class JsEditor extends AbstractDecoratedTextEditor {
 
-	private static final String ERROR_MARKER_ID = "org.ayound.js.debug.errorMarker";
-
 	private ColorManager colorManager;
 
 	/**
@@ -64,14 +62,12 @@ public class JsEditor extends AbstractDecoratedTextEditor {
 	protected void validateAndMark() {
 		IFile file = ((IFileEditorInput) getEditorInput()).getFile();
 		try {
-			IMarker[] markers = file.findMarkers(ERROR_MARKER_ID, true,
+			IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true,
 					IResource.DEPTH_INFINITE);
 			for (IMarker marker : markers) {
 				marker.delete();
 			}
 		} catch (CoreException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
 		IDocument document = getDocumentProvider()
 				.getDocument(getEditorInput());
@@ -80,7 +76,22 @@ public class JsEditor extends AbstractDecoratedTextEditor {
 			try {
 				EngineManager.getEngine().compileHtml("_temp.js", text);
 			} catch (EvaluatorException e) {
-				handleError(e, true);
+				String[] lines = EngineManager.getEngine().getScriptLines(
+						"_temp.js");
+				int lineNum = e.lineNumber();
+				if(lineNum>lines.length){
+					lineNum = lines.length;
+				}
+				int errLine = lineNum;
+				
+				for (int i = lineNum - 1; i > -1; i--) {
+					String line = lines[i];
+					if (line.trim().length() > 0) {
+						errLine = i + 1;
+						break;
+					}
+				}
+				handleError(e, errLine, true);
 			}
 		} else {
 			try {
@@ -92,22 +103,66 @@ public class JsEditor extends AbstractDecoratedTextEditor {
 
 	}
 
-	protected void handleError(EvaluatorException e, boolean isFatal) {
+	protected void handleError(EvaluatorException e, int lineNum,
+			boolean isFatal) {
 
 		IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-		;
 		try {
-			IMarker marker = file.createMarker(ERROR_MARKER_ID);
+			IMarker marker = file.createMarker(IMarker.PROBLEM);
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-			marker
-					.setAttribute(IMarker.LOCATION, file.getFullPath()
-							.toString());
+
 			marker.setAttribute(IMarker.MESSAGE, "[Error]: " + e.details());
-			marker.setAttribute(IMarker.LINE_NUMBER, e.lineNumber());
+			marker.setAttribute(IMarker.LINE_NUMBER, lineNum);
+			int startChar = getCharStart(lineNum, e.columnNumber());
+			int endChar = getCharEnd(lineNum, e.columnNumber());
+			marker.setAttribute(IMarker.CHAR_START, startChar);
+			marker.setAttribute(IMarker.CHAR_END, endChar);
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		}
 
 	}
 
+	protected void handleError(EvaluatorException e, boolean isFatal) {
+
+		handleError(e, e.lineNumber(), isFatal);
+	}
+
+	private int getCharStart(int lineNum, int columnNum) {
+		IDocument document = getDocumentProvider()
+				.getDocument(getEditorInput());
+		String text = document.get();
+		int offset = 0;
+		int lineIndex = 0;
+		for (int i = 0; i < text.length(); i++) {
+			char ch = text.charAt(i);
+			offset++;
+			if (ch == '\n') {
+				lineIndex++;
+			}
+			if (lineIndex >= lineNum - 1) {
+				break;
+			}
+		}
+		return offset;
+	}
+
+	private int getCharEnd(int lineNum, int columnNum) {
+		IDocument document = getDocumentProvider()
+				.getDocument(getEditorInput());
+		String text = document.get();
+		int offset = 0;
+		int lineIndex = 0;
+		for (int i = 0; i < text.length(); i++) {
+			char ch = text.charAt(i);
+			offset++;
+			if (ch == '\n') {
+				lineIndex++;
+			}
+			if (lineIndex >= lineNum) {
+				break;
+			}
+		}
+		return offset - 1;
+	}
 }
