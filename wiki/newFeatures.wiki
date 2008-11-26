@@ -3,7 +3,7 @@
 
 = Javascript Debug Toolkit 2.0.0 published =
 
-[Download http://jsdt.googlecode.com/files/jsdt-2.0.0.zip]
+[http://jsdt.googlecode.com/files/jsdt-2.0.0.zip Download]
 
 ==Features==
 
