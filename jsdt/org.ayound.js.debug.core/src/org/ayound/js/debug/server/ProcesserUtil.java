@@ -44,6 +44,10 @@ public class ProcesserUtil {
 		}
 		if ("file".equalsIgnoreCase(url.getProtocol())) {
 			String filePath = url.toString().substring(5);
+			int paramOffset = filePath.indexOf('?');
+			if(paramOffset>0){
+				filePath = filePath.substring(0, paramOffset);
+			}
 			if(filePath.toLowerCase().endsWith(".js")){
 				contentType = "text/javascript";
 			}else if(filePath.toLowerCase().endsWith(".htm")||filePath.toLowerCase().endsWith(".html")){
@@ -71,7 +75,16 @@ public class ProcesserUtil {
 				if (method.equalsIgnoreCase("POST")) {
 					conn.getOutputStream().write(postData.getBytes());
 				}
-				contentType = conn.getContentType();
+				String fileName = url.getFile();
+				int offsetParam = fileName.indexOf('?');
+				if(offsetParam>0){
+					fileName = fileName.substring(0,offsetParam);
+				}
+				if(fileName.toLowerCase().endsWith(".js")){
+					contentType = "text/javascript";
+				}else{					
+					contentType = conn.getContentType();
+				}
 				encoding = conn.getContentEncoding();
 				stream = conn.getInputStream();
 			} catch (IOException e) {

@@ -139,9 +139,7 @@ public class JsResourceManager {
 	 * @return
 	 */
 	public String getResourceByFile(IFile file) {
-		IFolder folder = getTempDir();
-		return file.getFullPath().toString().replace(
-				folder.getFullPath().toString(), "");
+		return file.getFullPath().toString();
 	}
 
 	/**
@@ -151,13 +149,14 @@ public class JsResourceManager {
 	 * @return
 	 */
 	public IFile getFileByResource(String resource) {
-		if (server.getRemoteBaseUrl().getProtocol().toLowerCase()
-				.startsWith("file")) {
+		if (server.getRemoteBaseUrl().getProtocol().toLowerCase().startsWith(
+				"file")) {
 			URL url;
 			try {
-				url = new URL(server.getRemoteBaseUrl(),resource);
-				IFile[] results = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(url.toURI());
-				if(results!=null&&results.length>0){
+				url = new URL(server.getRemoteBaseUrl(), resource);
+				IFile[] results = ResourcesPlugin.getWorkspace().getRoot()
+						.findFilesForLocationURI(url.toURI());
+				if (results != null && results.length > 0) {
 					return results[0];
 				}
 			} catch (MalformedURLException e) {
