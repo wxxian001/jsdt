@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.ayound.js.debug.ui.views;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -206,6 +207,9 @@ public class ResourceView extends AbstractDebugView implements
 			Object input = getViewer().getInput();
 			if (input != null && input instanceof String[]) {
 				String[] arr = (String[]) input;
+				if(Arrays.asList(arr).contains(resource)){
+					return;
+				}
 				Set<String> set = new HashSet<String>();
 				for (String str : arr) {
 					set.add(str);
@@ -216,13 +220,13 @@ public class ResourceView extends AbstractDebugView implements
 				getViewer().setInput(new String[] { resource });
 			}
 			getViewer().refresh();
+			openFile(resource);
 		}
 
 	}
 
 	public void addResource(String resource, IDebugServer server) {
 		addResource(resource);
-		openFile(resource);
 	}
 
 	public void removeResource(String resource, IDebugServer server) {
