@@ -69,6 +69,7 @@ public class ProcesserUtil {
 				conn.setDoOutput(true);
 				conn.setDoInput(true);
 				conn.setUseCaches(false);
+				conn.setInstanceFollowRedirects(false);
 				for (Map.Entry<String, String> entry : requestHeader.entrySet()) {
 					conn.setRequestProperty(entry.getKey(), entry.getValue());
 				}
