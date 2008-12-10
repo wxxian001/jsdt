@@ -18,7 +18,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -64,9 +66,13 @@ public class JsDebugResponse {
 	 */
 	public void writeHTMLHeader(String encoding,
 			Map<String, List<String>> responseHeader) {
-		out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
 
 		if (responseHeader != null) {
+			if(responseHeader.containsKey("Location")){
+				out.println("HTTP/1.0 301 Moved Permanently");
+			}else{
+				out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
+			}
 			for (Map.Entry<String, List<String>> entry : responseHeader
 					.entrySet()) {
 				if (entry.getKey() != null) {
@@ -74,11 +80,24 @@ public class JsDebugResponse {
 						String value = Arrays.toString(entry.getValue()
 								.toArray());
 						value = value.substring(1, value.length() - 1);
+						if("Location".equals(entry.getKey())){
+							String localUrl = getJsManager().getServer().getLocalBaseUrl();
+							try {
+								URL locationUrl = new URL(value);
+								value = localUrl + locationUrl.getPath();
+							} catch (MalformedURLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							
+							
+						}
 						out.println(entry.getKey() + ":" + value);
 					}
 				}
 			}
 		} else {
+			out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
 			if (encoding == null) {
 				out.println("Content-Type:text/html;");
 			} else {
