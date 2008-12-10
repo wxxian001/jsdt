@@ -15,11 +15,14 @@ package org.ayound.js.debug.server;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-import org.ayound.js.debug.core.JsDebugCorePlugin;
-import org.ayound.js.debug.model.JsBreakPoint;
 import org.ayound.js.debug.resource.JsResourceManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -59,12 +62,28 @@ public class JsDebugResponse {
 	 * 
 	 * @param encoding
 	 */
-	public void writeHTMLHeader(String encoding) {
+	public void writeHTMLHeader(String encoding,
+			Map<String, List<String>> responseHeader) {
 		out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
-		if (encoding == null) {
-			out.println("Content-Type:text/html;");
+
+		if (responseHeader != null) {
+			for (Map.Entry<String, List<String>> entry : responseHeader
+					.entrySet()) {
+				if (entry.getKey() != null) {
+					if (!"Content-Length".equals(entry.getKey())) {
+						String value = Arrays.toString(entry.getValue()
+								.toArray());
+						value = value.substring(1, value.length() - 1);
+						out.println(entry.getKey() + ":" + value);
+					}
+				}
+			}
 		} else {
-			out.println("Content-Type:text/html;charset=" + encoding);
+			if (encoding == null) {
+				out.println("Content-Type:text/html;");
+			} else {
+				out.println("Content-Type:text/html;charset=" + encoding);
+			}
 		}
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
 	}
@@ -90,15 +109,26 @@ public class JsDebugResponse {
 	 * 
 	 * @param fileName
 	 */
-	public void writeOtherHeader(String fileName, String encoding) {
+	public void writeOtherHeader(String fileName, String encoding,
+			Map<String, List<String>> responseHeader, int length) {
 		fileName = fileName.toLowerCase();
 		out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
 		if (fileName.endsWith("gif") || fileName.endsWith("jpg")
 				|| fileName.equals("bmp") || fileName.endsWith("png")) {
 			out.println("image/*");
+//			out.println("Content-Length:" + length);
 		} else if (fileName.endsWith("css")) {
 			out.println("text/css;charset=" + encoding);
 		}
+		for (Map.Entry<String, List<String>> entry : responseHeader.entrySet()) {
+			String key = entry.getKey();
+			if (key != null && !"Content-Length".equals(key)) {
+				String value = Arrays.toString(entry.getValue().toArray());
+				value = value.substring(1, value.length() - 1);
+				out.println(key + ":" + value);
+			}
+		}
+		
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
 	}
 
@@ -124,6 +154,22 @@ public class JsDebugResponse {
 		}
 	}
 
+	public void writeln(String str,String encoding){
+		OutputStreamWriter writer = null;
+		try {
+			this.outPutStream.flush();
+			writer = new OutputStreamWriter(this.outPutStream,encoding);
+			writer.write(str + "\n");
+			writer.flush();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void close() {
 		this.out.close();
 		try {
@@ -148,14 +194,13 @@ public class JsDebugResponse {
 				"{COMMAND:'BREAKPOINT',BREAKPOINTS:{");
 		IBreakpointManager manager = DebugPlugin.getDefault()
 				.getBreakpointManager();
-		for (IBreakpoint point : manager
-				.getBreakpoints()) {
+		for (IBreakpoint point : manager.getBreakpoints()) {
 			try {
 				if (point.isEnabled()) {
 					String resource = jsManager.getResourceByFile((IFile) point
 							.getMarker().getResource());
-					int line = point.getMarker().getAttribute(IMarker.LINE_NUMBER,
-							0);
+					int line = point.getMarker().getAttribute(
+							IMarker.LINE_NUMBER, 0);
 					buffer.append("'").append(resource).append(line).append(
 							"':true,");
 				}

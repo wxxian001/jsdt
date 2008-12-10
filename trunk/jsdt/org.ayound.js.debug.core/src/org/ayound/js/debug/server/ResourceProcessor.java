@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.debug.core.model.IThread;
@@ -44,37 +46,30 @@ public class ResourceProcessor extends AbstractProcessor {
 
 			DataInputStream isResult = new DataInputStream(getInfo()
 					.getInputStream());
-			if (url.getFile().toLowerCase().endsWith("css")) {
-				File file = new File("charset");
-				FileOutputStream outputStream = new FileOutputStream(file);
-				byte[] buffer = new byte[1024];
-				int i = -1;
-				while ((i = isResult.read(buffer)) != -1) {
-					outputStream.write(buffer, 0, i);
-				}
-				outputStream.flush();
-				outputStream.close();
-				isResult.close();
-				outputStream = null;
-				String encoding = getInfo().getEncoding();
-				if (encoding == null) {
-					CharsetDetector detector = new CharsetDetector();
-					detector.detect(file);
-					encoding = detector.getCharset();
-				}
-				getResponse().writeOtherHeader(url.getFile(), encoding);
-				FileInputStream inputStream = new FileInputStream(file);
-				byte[] bytes = new byte[inputStream.available()];
-				inputStream.read(bytes);
-				getResponse().getOutPutStream().write(bytes);
-				inputStream.close();
-			} else {
-				getResponse().writeOtherHeader(url.getFile(), null);
-				byte[] bytes = new byte[isResult.available()];
-				isResult.read(bytes);
-				getResponse().getOutPutStream().write(bytes);
-				isResult.close();
+			File file = new File("charset");
+			FileOutputStream outputStream = new FileOutputStream(file);
+			byte[] buffer = new byte[1024];
+			int i = -1;
+			while ((i = isResult.read(buffer)) != -1) {
+				outputStream.write(buffer, 0, i);
 			}
+			outputStream.flush();
+			outputStream.close();
+			isResult.close();
+			outputStream = null;
+			String encoding = getInfo().getEncoding();
+			if (encoding == null) {
+				CharsetDetector detector = new CharsetDetector();
+				detector.detect(file);
+				encoding = detector.getCharset();
+			}
+			FileInputStream inputStream = new FileInputStream(file);
+			byte[] bytes = new byte[inputStream.available()];
+			getResponse().writeOtherHeader(url.getFile(), encoding,
+					getInfo().getResponseHeader(),bytes.length);
+			inputStream.read(bytes);
+			getResponse().getOutPutStream().write(bytes);
+			inputStream.close();
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
