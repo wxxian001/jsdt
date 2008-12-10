@@ -27,10 +27,11 @@ import org.mozilla.javascript.tools.debugger.Dim;
 import org.mozilla.javascript.tools.debugger.GuiCallback;
 import org.mozilla.javascript.tools.debugger.Dim.SourceInfo;
 import org.mozilla.javascript.tools.debugger.Dim.StackFrame;
+
 /**
- * js engine use rhino to compile javascript files
- * the first page is html file,it remove all the html tag and convert html file to js file
- *
+ * js engine use rhino to compile javascript files the first page is html
+ * file,it remove all the html tag and convert html file to js file
+ * 
  */
 public class JsEngineImpl implements IJsEngine {
 
@@ -65,7 +66,7 @@ public class JsEngineImpl implements IJsEngine {
 			}
 		});
 	}
-	
+
 	public boolean canBreakLine(String url, int line) {
 		SourceInfo info = dim.sourceInfo(url);
 		if (info != null) {
@@ -76,6 +77,12 @@ public class JsEngineImpl implements IJsEngine {
 						return false;
 					} else {
 						String jsLine = lines[line - 1];
+						int firstStartBrakets = jsLine.indexOf('(');
+						int firstEndBrakets = jsLine.indexOf(')');
+						if ((firstEndBrakets>0 && firstEndBrakets < firstStartBrakets)
+								|| (firstEndBrakets > 0 && firstStartBrakets < 0)) {
+							return false;
+						}
 						String trimLine = jsLine.trim();
 						if (trimLine.startsWith("else")
 								|| trimLine.startsWith("}")
@@ -99,8 +106,10 @@ public class JsEngineImpl implements IJsEngine {
 		}
 		return false;
 	}
+
 	/**
 	 * find out is it a half line
+	 * 
 	 * @param lines
 	 * @param line
 	 * @param jsLine
@@ -135,6 +144,7 @@ public class JsEngineImpl implements IJsEngine {
 		}
 		return false;
 	}
+
 	/**
 	 * compile javascript files use rhino dim engine.
 	 */
@@ -142,10 +152,10 @@ public class JsEngineImpl implements IJsEngine {
 		lineMap.put(url, text.split("\n"));
 		dim.compileScript(url, text);
 	}
+
 	/**
-	 * remove all the html tag and convert html file to javascript file
-	 * then compile html file
-	 * all the \n is keeped to set relation to breakpoint
+	 * remove all the html tag and convert html file to javascript file then
+	 * compile html file all the \n is keeped to set relation to breakpoint
 	 */
 	public void compileHtml(String url, String text) {
 		StringBuffer buffer = new StringBuffer();
@@ -186,6 +196,7 @@ public class JsEngineImpl implements IJsEngine {
 		}
 
 	}
+
 	/**
 	 * get lines by url
 	 */
@@ -198,16 +209,17 @@ public class JsEngineImpl implements IJsEngine {
 		InputStream input = null;
 		try {
 			input = file.getContents();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					input));
 			String line = null;
 			StringBuffer buffer = new StringBuffer();
-			while((line=reader.readLine())!=null){
+			while ((line = reader.readLine()) != null) {
 				buffer.append(line).append("\n");
 			}
 			String scriptText = buffer.toString();
-			if(scriptText.trim().startsWith("<")){
+			if (scriptText.trim().startsWith("<")) {
 				this.compileHtml(fileName, scriptText);
-			}else{
+			} else {
 				this.compileJs(fileName, scriptText);
 			}
 		} catch (CoreException e) {
@@ -216,7 +228,7 @@ public class JsEngineImpl implements IJsEngine {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally{
+		} finally {
 			try {
 				input.close();
 			} catch (IOException e) {
