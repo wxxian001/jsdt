@@ -75,6 +75,7 @@ public class ProcesserUtil {
 				conn.setRequestMethod(method);
 				if (method.equalsIgnoreCase("POST")) {
 					conn.getOutputStream().write(postData.getBytes());
+					conn.getOutputStream().flush();
 				}
 				String fileName = url.getFile();
 				int offsetParam = fileName.indexOf('?');
