@@ -90,7 +90,7 @@ public class ScriptCompileUtil {
 		} else {
 			if (index > 1) {
 				String lastLine = lines[index - 1];
-				lastLine = lastLine.replace("//.*", "").replace("/\\*.*\\*/",
+				lastLine = lastLine.replaceAll("//.*", "").replaceAll("/\\*.*\\*/",
 						"").trim();
 				if (lastLine.startsWith("if") && (!lastLine.endsWith("{"))
 						&& (!jsLine.startsWith("{"))) {
@@ -110,12 +110,12 @@ public class ScriptCompileUtil {
 						}
 					}
 					if (isIfLine) {
-						return "{" + getdebugString(lines, resourcePath, index) + ";"
-								+ jsLine + "}";
+						return "if(" + getdebugString(lines, resourcePath, index) + "||true)"
+								+ jsLine;
 					}
 				} else if (lastLine.equals("else")) {
-					return "{" + getdebugString(lines, resourcePath, index) + ";"
-							+ jsLine + "}";
+					return "if(" + getdebugString(lines, resourcePath, index) + "||true)"
+							+ jsLine;
 				}
 			}
 		}
