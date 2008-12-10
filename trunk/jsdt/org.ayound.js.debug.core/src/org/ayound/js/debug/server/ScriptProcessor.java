@@ -75,9 +75,11 @@ public class ScriptProcessor extends AbstractProcessor {
 				String jsLine = lines[i];
 				if (i == 0 && "UTF-8".equalsIgnoreCase(encoding)) {
 					try {
-						char ch = jsLine.charAt(0);
-						if (!(Character.isLetter(ch) || ch == '/')) {
-							jsLine = jsLine.substring(1);
+						if(jsLine.length()>0){							
+							char ch = jsLine.charAt(0);
+							if (!(Character.isLetter(ch) || ch == '/')) {
+								jsLine = jsLine.substring(1);
+							}
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

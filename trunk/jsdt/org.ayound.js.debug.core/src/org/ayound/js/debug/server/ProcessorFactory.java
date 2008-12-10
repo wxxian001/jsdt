@@ -44,12 +44,13 @@ public class ProcessorFactory {
 					server, requestHeader);
 		} else {
 			URL url = computeRemoteURL(resource, server);
-			ResponseInfo info = ProcesserUtil.getResponseInfo(url, null,
+			ResponseInfo info = ProcesserUtil.getResponseInfo(url, method,
 					postData, requestHeader);
-			if ("text/javascript".equalsIgnoreCase(info.getContentType())) {
+			String contentType = info.getContentType();
+			if (contentType!=null && contentType.indexOf("text/javascript")>-1) {
 				return new ScriptProcessor(resource, postData, response,
 						thread, server, requestHeader, info);
-			} else if ("text/html".equalsIgnoreCase(info.getContentType())) {
+			} else if (contentType!=null && contentType.indexOf("text/html")>-1) {
 				return new HtmlPageProcessor(resource, postData, response,
 						thread, server, requestHeader, info);
 			} else {
