@@ -92,7 +92,7 @@ public class ScriptCompileUtil {
 				String lastLine = lines[index - 1];
 				lastLine = lastLine.replaceAll("//.*", "").replaceAll("/\\*.*\\*/",
 						"").trim();
-				if (lastLine.startsWith("if") && (!lastLine.endsWith("{"))
+				if ((lastLine.startsWith("if") || lastLine.startsWith("else if")) && (!lastLine.endsWith("{"))
 						&& (!jsLine.startsWith("{"))) {
 					boolean isIfLine = true;
 					int bracket = 0;
@@ -159,6 +159,9 @@ public class ScriptCompileUtil {
 			preLine = htmlLine.substring(0, scriptOffset + 8);
 			lastLine = htmlLine.substring(scriptOffset + 8);
 			buffer.append(preLine);
+		}
+		if(lastLine.trim().startsWith("<")){
+			return htmlLine;
 		}
 		int offset = lastLine.indexOf('>');
 		if (offset >= 0) {
