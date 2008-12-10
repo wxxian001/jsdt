@@ -150,10 +150,19 @@ public class ScriptCompileUtil {
 	 */
 	public static String compileHtmlLine(String[] lines, String resourcePath,
 			int index) {
+		StringBuffer buffer = new StringBuffer();
 		String htmlLine = lines[index];
-		int offset = htmlLine.indexOf('>');
-		if (htmlLine.indexOf('>') >= 0) {
-			StringBuffer buffer = new StringBuffer(htmlLine
+		int scriptOffset = htmlLine.toLowerCase().indexOf("<script");
+		String preLine = "";
+		String lastLine = htmlLine;
+		if(scriptOffset>=0){
+			preLine = htmlLine.substring(0, scriptOffset + 8);
+			lastLine = htmlLine.substring(scriptOffset + 8);
+			buffer.append(preLine);
+		}
+		int offset = lastLine.indexOf('>');
+		if (offset >= 0) {
+			buffer.append(lastLine
 					.substring(0, offset));
 			if (!buffer.toString().toLowerCase().contains("<script")) {
 				for (int i = index - 1; i >= 0; i--) {
@@ -168,9 +177,9 @@ public class ScriptCompileUtil {
 				}
 			}
 			if (buffer.toString().contains(">")) {
-				htmlLine = compileOneLine(htmlLine, lines, resourcePath, index);
+				htmlLine = preLine + compileOneLine(lastLine, lines, resourcePath, index);
 			} else {
-				htmlLine = htmlLine.substring(0, offset + 1)
+				htmlLine = preLine +  lastLine.substring(0, offset + 1)
 						+ getdebugString(lines, resourcePath, index) + ";"
 						+ htmlLine.substring(offset + 1);
 			}
