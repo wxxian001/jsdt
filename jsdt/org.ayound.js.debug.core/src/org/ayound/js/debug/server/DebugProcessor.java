@@ -37,7 +37,7 @@ public class DebugProcessor extends AbstractProcessor {
 	}
 
 	public void process() {
-		getResponse().writeHTMLHeader("UTF-8");
+		getResponse().writeHTMLHeader("UTF-8",null);
 		JsDebugParam param = null;
 		try {
 			param = new JsDebugParam(getPostData());

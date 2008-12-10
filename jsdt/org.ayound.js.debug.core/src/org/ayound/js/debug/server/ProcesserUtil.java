@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,6 +40,7 @@ public class ProcesserUtil {
 		InputStream stream = null;
 		String encoding = null;
 		String contentType = null;
+		Map<String ,List<String>> responseHeader = null;
 		if (method == null) {
 			method = "GET";
 		}
@@ -68,8 +70,7 @@ public class ProcesserUtil {
 				conn.setDoInput(true);
 				conn.setUseCaches(false);
 				for (Map.Entry<String, String> entry : requestHeader.entrySet()) {
-					conn.setRequestProperty(entry.getKey().toLowerCase()
-							.replace("-", ""), entry.getValue());
+					conn.setRequestProperty(entry.getKey(), entry.getValue());
 				}
 				conn.setRequestMethod(method);
 				if (method.equalsIgnoreCase("POST")) {
@@ -87,11 +88,12 @@ public class ProcesserUtil {
 				}
 				encoding = conn.getContentEncoding();
 				stream = conn.getInputStream();
+				responseHeader = conn.getHeaderFields();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		return new ResponseInfo(encoding, stream, contentType);
+		return new ResponseInfo(encoding, stream, contentType,responseHeader);
 	}
 
 }

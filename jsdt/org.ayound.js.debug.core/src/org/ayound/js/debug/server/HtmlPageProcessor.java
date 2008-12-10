@@ -50,9 +50,6 @@ public class HtmlPageProcessor extends AbstractProcessor {
 			JsResourceManager manager = getServer().getJsResourceManager();
 			getServer().setDefaultEncoding(getInfo().getEncoding());
 			manager.createFile(resourcePath, getInfo().getInputStream());
-			
-			
-			
 			IFile htmlFile = manager.getFileByResource(resourcePath);
 			String encoding = getInfo().getEncoding();
 			if(encoding==null){				
@@ -61,9 +58,9 @@ public class HtmlPageProcessor extends AbstractProcessor {
 				encoding = detector.getCharset();
 			}
 			htmlFile.setCharset(encoding, null);
-			getResponse().writeHTMLHeader(encoding);
+			getResponse().writeHTMLHeader(encoding,getInfo().getResponseHeader());
 			// write debug javascript file before any one
-			getResponse().writeln("<script type=\"text/javascript\">");
+			getResponse().writeln("<script type=\"text/javascript\">",encoding);
 			InputStream inputStream = HtmlPageProcessor.class
 					.getResourceAsStream("debug.js");
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -72,7 +69,7 @@ public class HtmlPageProcessor extends AbstractProcessor {
 			int debugLine = 2;
 			try {
 				while ((line = reader.readLine()) != null) {
-					getResponse().writeln(line);
+					getResponse().writeln(line,encoding);
 					debugLine ++;
 				}
 			} catch (IOException e) {
@@ -84,7 +81,7 @@ public class HtmlPageProcessor extends AbstractProcessor {
 			}
 			getServer().setDebugLine(debugLine);
 			
-			getResponse().writeln("</script>");
+			getResponse().writeln("</script>",encoding);
 			StringBuffer buffer = new StringBuffer();
 			BufferedReader homeInputStream = new BufferedReader(
 					new InputStreamReader(htmlFile.getContents(), htmlFile
@@ -111,7 +108,7 @@ public class HtmlPageProcessor extends AbstractProcessor {
 					jsLine = ScriptCompileUtil.compileHtmlLine(lines,
 							scriptPath, i);//
 				}
-				getResponse().writeln(jsLine);
+				getResponse().writeln(jsLine,encoding);
 			}
 			lines = null;
 			scriptContent = null;

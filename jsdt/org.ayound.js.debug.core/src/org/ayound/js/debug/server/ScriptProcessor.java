@@ -89,7 +89,7 @@ public class ScriptProcessor extends AbstractProcessor {
 					jsLine = ScriptCompileUtil.compileJsLine(lines,
 							scriptPath, i);//
 				}
-				getResponse().writeln(jsLine);
+				getResponse().writeln(jsLine,encoding);
 			}
 			lines = null;
 			scriptContent = null;

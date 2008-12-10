@@ -15,6 +15,8 @@
 package org.ayound.js.debug.server;
 
 import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 public class ResponseInfo {
 	private String encoding;
@@ -23,12 +25,15 @@ public class ResponseInfo {
 
 	private String contentType;
 
+	private Map<String ,List<String>> responseHeader;
+	
 	public ResponseInfo(String encoding, InputStream inputStream,
-			String contentType) {
+			String contentType,Map<String ,List<String>> responseHeader) {
 		super();
 		this.encoding = encoding;
 		this.inputStream = inputStream;
 		this.contentType = contentType;
+		this.responseHeader = responseHeader;
 	}
 
 	public String getEncoding() {
@@ -43,4 +48,8 @@ public class ResponseInfo {
 		return contentType;
 	}
 
+	public Map<String, List<String>> getResponseHeader() {
+		return responseHeader;
+	}
+	
 }
