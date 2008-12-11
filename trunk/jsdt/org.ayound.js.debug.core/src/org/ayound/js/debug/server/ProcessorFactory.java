@@ -47,6 +47,13 @@ public class ProcessorFactory {
 			ResponseInfo info = ProcesserUtil.getResponseInfo(url, method,
 					postData, requestHeader);
 			String contentType = info.getContentType();
+			if(info.getResponseHeader()!=null){
+				if(info.getResponseHeader().containsKey("Location")){
+					response.writeHTMLHeader(null, info.getResponseHeader());
+					response.close();
+					return null;
+				}
+			}
 			if (contentType!=null && contentType.indexOf("text/javascript")>-1) {
 				return new ScriptProcessor(resource, postData, response,
 						thread, server, requestHeader, info);
