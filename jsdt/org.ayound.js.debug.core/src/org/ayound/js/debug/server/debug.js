@@ -356,7 +356,9 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 		var data = jsDebug.getFuncData(args, evalFunc);
 		jsDebug.updateStack(args, resource, scope, line, evalFunc);
 		jsDebug.xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
-		if (scope != window) {
+		if(scope==window){
+			data["window"] = scope;
+		}else{
 			data["this"] = scope;
 		}
 		var postData = {
@@ -425,11 +427,9 @@ function json2string(obj, depth) {
 function obj2string(obj, depth) {
 	depth = depth || 0;
 	if (obj == window) {
-		return "window";
+		return complexObj2String(obj);
 	} else if (obj == document) {
-		return "document";
-	} else if (obj == document.body) {
-		return "document.body";
+		return complexObj2String(obj);
 	} else {
 		var arr = [];
 		for (var prop in obj) {
@@ -448,6 +448,21 @@ function obj2string(obj, depth) {
 		}
 		return "{" + arr.join(",") + "}";
 	}
+}
+function complexObj2String(obj){
+	var arr = [];
+	for (var prop in obj) {
+		try {
+			if (typeof(obj[prop]) != "function") {
+				var value = (obj[prop] + "").replace(/"/gm, "\\\"").replace(/\n|\r/gm, "");
+				arr.push("\"" + prop + "\":\""
+						+ value + "\"");
+			}
+		} catch (e) {
+
+		}
+	}
+	return "{" + arr.join(",") + "}";
 }
 function array2string(array, depth) {
 	depth = depth || 0;
