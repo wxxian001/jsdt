@@ -132,18 +132,14 @@ public class JsDebugResponse {
 			Map<String, List<String>> responseHeader, int length) {
 		fileName = fileName.toLowerCase();
 		out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
-		if (fileName.endsWith("gif") || fileName.endsWith("jpg")
-				|| fileName.equals("bmp") || fileName.endsWith("png")) {
-			out.println("image/*");
-		} else if (fileName.endsWith("css")) {
-			out.println("text/css;charset=" + encoding);
-		}
-		for (Map.Entry<String, List<String>> entry : responseHeader.entrySet()) {
-			String key = entry.getKey();
-			if (key != null && !"Content-Length".equals(key)) {
-				String value = Arrays.toString(entry.getValue().toArray());
-				value = value.substring(1, value.length() - 1);
-				out.println(key + ":" + value);
+		if(responseHeader!=null){			
+			for (Map.Entry<String, List<String>> entry : responseHeader.entrySet()) {
+				String key = entry.getKey();
+				if (key != null ) {
+					String value = Arrays.toString(entry.getValue().toArray());
+					value = value.substring(1, value.length() - 1);
+					out.println(key + ":" + value);
+				}
 			}
 		}
 		

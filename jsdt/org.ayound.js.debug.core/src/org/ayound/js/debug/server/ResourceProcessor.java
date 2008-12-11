@@ -66,6 +66,8 @@ public class ResourceProcessor extends AbstractProcessor {
 				encoding = detector.getCharset();
 			}
 			FileInputStream inputStream = new FileInputStream(file);
+			getResponse().writeOtherHeader(url.getFile(), encoding,
+					getInfo().getResponseHeader(),inputStream.available());
 			if(getInfo().getContentType()!=null && getInfo().getContentType().startsWith("text/")){
 				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,encoding));
 				String line = null;
@@ -75,8 +77,6 @@ public class ResourceProcessor extends AbstractProcessor {
 				reader.close();
 			}else{				
 				byte[] bytes = new byte[inputStream.available()];
-				getResponse().writeOtherHeader(url.getFile(), encoding,
-						getInfo().getResponseHeader(),bytes.length);
 				inputStream.read(bytes);
 				getResponse().getOutPutStream().write(bytes);
 			}
