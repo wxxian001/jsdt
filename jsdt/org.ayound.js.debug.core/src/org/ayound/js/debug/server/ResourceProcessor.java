@@ -13,16 +13,18 @@
  *******************************************************************************/
 package org.ayound.js.debug.server;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.debug.core.model.IThread;
@@ -64,11 +66,20 @@ public class ResourceProcessor extends AbstractProcessor {
 				encoding = detector.getCharset();
 			}
 			FileInputStream inputStream = new FileInputStream(file);
-			byte[] bytes = new byte[inputStream.available()];
-			getResponse().writeOtherHeader(url.getFile(), encoding,
-					getInfo().getResponseHeader(),bytes.length);
-			inputStream.read(bytes);
-			getResponse().getOutPutStream().write(bytes);
+			if(getInfo().getContentType()!=null && getInfo().getContentType().startsWith("text/")){
+				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,encoding));
+				String line = null;
+				while((line=reader.readLine())!=null){
+					getResponse().writeln(line);
+				}
+				reader.close();
+			}else{				
+				byte[] bytes = new byte[inputStream.available()];
+				getResponse().writeOtherHeader(url.getFile(), encoding,
+						getInfo().getResponseHeader(),bytes.length);
+				inputStream.read(bytes);
+				getResponse().getOutPutStream().write(bytes);
+			}
 			inputStream.close();
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block

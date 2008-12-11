@@ -135,7 +135,6 @@ public class JsDebugResponse {
 		if (fileName.endsWith("gif") || fileName.endsWith("jpg")
 				|| fileName.equals("bmp") || fileName.endsWith("png")) {
 			out.println("image/*");
-//			out.println("Content-Length:" + length);
 		} else if (fileName.endsWith("css")) {
 			out.println("text/css;charset=" + encoding);
 		}
