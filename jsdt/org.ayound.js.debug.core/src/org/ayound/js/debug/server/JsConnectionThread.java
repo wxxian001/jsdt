@@ -102,7 +102,9 @@ public class JsConnectionThread extends Thread {
 							.createProcessor(resource, method, buffer
 									.toString(), response, this.thread,
 									this.server, requestHeader);
-					processor.process();
+					if(processor!=null){						
+						processor.process();
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

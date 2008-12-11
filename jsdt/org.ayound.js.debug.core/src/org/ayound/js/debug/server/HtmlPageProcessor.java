@@ -43,7 +43,7 @@ public class HtmlPageProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	public void process() {
+	public synchronized void process() {
 		try {
 			URL url = this.computeRemoteURL();
 			String resourcePath = url.getPath();

@@ -180,7 +180,13 @@ public class ScriptCompileUtil {
 				}
 			}
 			if (buffer.toString().contains(">")) {
-				htmlLine = preLine + compileOneLine(lastLine, lines, resourcePath, index);
+				if(scriptOffset>=0){
+					htmlLine = preLine +  lastLine.substring(0, offset + 1)
+					+ getdebugString(lines, resourcePath, index) + ";"
+					+ lastLine.substring(offset + 1);
+				}else{					
+					htmlLine = preLine + compileOneLine(lastLine, lines, resourcePath, index);
+				}
 			} else {
 				htmlLine = preLine +  lastLine.substring(0, offset + 1)
 						+ getdebugString(lines, resourcePath, index) + ";"
