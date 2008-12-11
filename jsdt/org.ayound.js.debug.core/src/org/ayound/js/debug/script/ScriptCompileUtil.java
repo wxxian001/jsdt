@@ -156,8 +156,8 @@ public class ScriptCompileUtil {
 		String preLine = "";
 		String lastLine = htmlLine;
 		if(scriptOffset>=0){
-			preLine = htmlLine.substring(0, scriptOffset + 8);
-			lastLine = htmlLine.substring(scriptOffset + 8);
+			preLine = htmlLine.substring(0, scriptOffset + 7);
+			lastLine = htmlLine.substring(scriptOffset + 7);
 			buffer.append(preLine);
 		}
 		if(lastLine.trim().startsWith("<")){
@@ -184,7 +184,7 @@ public class ScriptCompileUtil {
 			} else {
 				htmlLine = preLine +  lastLine.substring(0, offset + 1)
 						+ getdebugString(lines, resourcePath, index) + ";"
-						+ htmlLine.substring(offset + 1);
+						+ lastLine.substring(offset + 1);
 			}
 
 		} else {

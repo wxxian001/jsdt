@@ -206,8 +206,16 @@ public class JsResourceManager {
 	 * @param resourcePath
 	 * @param isResult
 	 */
-	public void createFile(String resourcePath, InputStream isResult) {
+	public void createFile(String resourcePath, InputStream isResult,boolean forceUpdate) {
 		IFile file = getFileByResource(resourcePath);
+		if(forceUpdate&&file.exists()){
+			try {
+				file.delete(true, null);
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		if (!file.exists()) {
 			IFolder parent = (IFolder) file.getParent();
 			if (!parent.exists()) {
