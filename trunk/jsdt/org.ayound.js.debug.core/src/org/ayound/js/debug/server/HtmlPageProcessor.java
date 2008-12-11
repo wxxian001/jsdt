@@ -49,7 +49,7 @@ public class HtmlPageProcessor extends AbstractProcessor {
 			String resourcePath = url.getPath();
 			JsResourceManager manager = getServer().getJsResourceManager();
 			getServer().setDefaultEncoding(getInfo().getEncoding());
-			manager.createFile(resourcePath, getInfo().getInputStream());
+			manager.createFile(resourcePath, getInfo().getInputStream(),true);
 			IFile htmlFile = manager.getFileByResource(resourcePath);
 			String encoding = getInfo().getEncoding();
 			if(encoding==null){				

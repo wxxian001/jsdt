@@ -41,7 +41,7 @@ public class ScriptProcessor extends AbstractProcessor {
 			URL url = this.computeRemoteURL();
 			String resourcePath = url.getPath();
 			JsResourceManager manager = getServer().getJsResourceManager();
-			manager.createFile(resourcePath, getInfo().getInputStream());
+			manager.createFile(resourcePath, getInfo().getInputStream(),false);
 			IFile scriptFile = manager.getFileByResource(resourcePath);
 			String encoding = getInfo().getEncoding();
 			if(encoding==null){				
