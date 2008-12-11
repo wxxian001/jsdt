@@ -324,7 +324,7 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 							return;
 						}
 					}else{
-						if(scope!=window){
+						if(args.callee){
 							return;
 						}
 					}
@@ -333,13 +333,13 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 			}
 			if (jsDebug.debugCommand == "STEPRETURN") {
 				if (!jsDebug.isStepReturn(args)) {
-					if(scope!=window){
+					if(args.callee){
 						return;
 					}
 				}
 			} else if (jsDebug.debugCommand == "STEPOVER") {
 				if (!jsDebug.isStepOver(args)) {
-					if(scope!=window){
+					if(args.callee){
 						return;
 					}
 				}
