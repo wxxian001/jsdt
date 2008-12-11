@@ -149,6 +149,9 @@ public class JsResourceManager {
 	 * @return
 	 */
 	public IFile getFileByResource(String resource) {
+		if(resource.endsWith("/")){
+			resource = resource + "_homePage";
+		}
 		if (server.getRemoteBaseUrl().getProtocol().toLowerCase().startsWith(
 				"file")) {
 			URL url;
@@ -207,15 +210,10 @@ public class JsResourceManager {
 	 * @param isResult
 	 */
 	public void createFile(String resourcePath, InputStream isResult,boolean forceUpdate) {
-		IFile file = getFileByResource(resourcePath);
-		if(forceUpdate&&file.exists()){
-			try {
-				file.delete(true, null);
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if(resourcePath.endsWith("/")){
+			resourcePath = resourcePath + "_homePage";
 		}
+		IFile file = getFileByResource(resourcePath);
 		if (!file.exists()) {
 			IFolder parent = (IFolder) file.getParent();
 			if (!parent.exists()) {
@@ -242,6 +240,15 @@ public class JsResourceManager {
 				try {
 					file.create(isResult, true, null);
 
+				} catch (CoreException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}else{
+			if(forceUpdate && server.getRemoteBaseUrl().getProtocol().startsWith("http")){
+				try {
+					file.setContents(isResult, true, true, null);
 				} catch (CoreException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
