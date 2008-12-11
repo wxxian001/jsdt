@@ -70,7 +70,7 @@ public class ResourceProcessor extends AbstractProcessor {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,encoding));
 				String line = null;
 				while((line=reader.readLine())!=null){
-					getResponse().writeln(line);
+					getResponse().writeln(line,encoding);
 				}
 				reader.close();
 			}else{				
