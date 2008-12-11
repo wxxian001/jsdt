@@ -324,18 +324,24 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 							return;
 						}
 					}else{
-						return;
+						if(scope!=window){
+							return;
+						}
 					}
 				}
 
 			}
 			if (jsDebug.debugCommand == "STEPRETURN") {
 				if (!jsDebug.isStepReturn(args)) {
-					return;
+					if(scope!=window){
+						return;
+					}
 				}
 			} else if (jsDebug.debugCommand == "STEPOVER") {
 				if (!jsDebug.isStepOver(args)) {
-					return;
+					if(scope!=window){
+						return;
+					}
 				}
 			} else if (jsDebug.debugCommand == "RESUME") {
 				return;
