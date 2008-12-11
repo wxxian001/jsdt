@@ -12,13 +12,14 @@
 /**
  * handle window.onerror method
  */
-window.onerror = function(e, resource, line) {
+function _window_onerror(e, resource, line) {
 	if (e == "exit") {
 		return true;
 	} else {
 		jsDebug.error(e, resource, line,arguments.callee.caller);
 	}
 }
+window.onerror = _window_onerror;
 var arguments = [];
 /**
  * create xmlhttp to cross browser
@@ -288,6 +289,7 @@ jsDebug.evalExpression = function(expression, evalFunc) {
 }
 
 jsDebug.debug = function(resource, line, scope, args, evalFunc) {
+	window.onerror = _window_onerror;
 	if (jsDebug.isExpression) {
 		return;
 	}
