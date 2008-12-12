@@ -197,6 +197,9 @@
                id="org.ayound.js.debug.ui.ExpressionView"
                relationship="stack">
          </view>
+         <actionSet
+               id="org.eclipse.debug.ui.launchActionSet">
+         </actionSet>
       </perspectiveExtension>
    </extension>
 
