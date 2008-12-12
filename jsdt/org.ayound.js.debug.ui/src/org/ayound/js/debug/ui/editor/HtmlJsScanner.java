@@ -42,8 +42,8 @@ public class HtmlJsScanner extends RuleBasedScanner {
 		rules[2] = keywordRule;
 		IToken stringToken = new Token(new TextAttribute(manager.getColor(IHtmlJsColorConstants.STRING)));
 		rules[3] = new SingleLineRule("/","/",stringToken);
-		rules[4] = new MultiLineRule("\"","\"",stringToken);
-		rules[5] = new MultiLineRule("'","'",stringToken);
+		rules[4] = new SingleLineRule("\"","\"",stringToken);
+		rules[5] = new SingleLineRule("'","'",stringToken);
 		setRules(rules);
 	}
 }
