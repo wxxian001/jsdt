@@ -14,9 +14,7 @@
 package org.ayound.js.debug.server;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -48,7 +46,7 @@ public class ResourceProcessor extends AbstractProcessor {
 
 			DataInputStream isResult = new DataInputStream(getInfo()
 					.getInputStream());
-			File file = new File("charset");
+			File file = File.createTempFile("temp", "tmp");
 			FileOutputStream outputStream = new FileOutputStream(file);
 			byte[] buffer = new byte[1024];
 			int i = -1;
