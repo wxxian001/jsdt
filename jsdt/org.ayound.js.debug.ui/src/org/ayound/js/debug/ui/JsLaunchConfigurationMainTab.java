@@ -14,6 +14,7 @@
 package org.ayound.js.debug.ui;
 
 import org.ayound.js.debug.core.JsDebugCorePlugin;
+import org.ayound.js.debug.ui.internal.DebugHtmlUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -42,7 +43,7 @@ public class JsLaunchConfigurationMainTab extends
 
 	private Text browserText;
 
-	private static final String DEFAULT_URL = "http://jsdt.googlecode.com/files/test.html";
+	private static final String DEFAULT_URL = DebugHtmlUtil.getDefaultDebugPath();
 
 	private static final String DEFAULT_BROWSER = "C:\\Program Files\\Internet Explorer\\IEXPLORE.EXE";
 
