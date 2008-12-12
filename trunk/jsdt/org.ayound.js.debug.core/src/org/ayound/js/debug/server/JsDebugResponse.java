@@ -141,6 +141,19 @@ public class JsDebugResponse {
 					out.println(key + ":" + value);
 				}
 			}
+		}else{
+			if (fileName.endsWith("gif")) {
+				out.println("Content-Type:image/gif");
+			} else if(fileName.endsWith("png")){
+				out.println("Content-Type:image/png");
+			}else if(fileName.endsWith("jpg")||fileName.endsWith("jpeg")){
+				out.println("Content-Type:image/jpeg");
+			}else if(fileName.endsWith("bmp")){
+				out.println("Content-Type:image/bmp");
+			}
+			else if (fileName.endsWith("css")) {
+				out.println("Content-Type:text/css");
+			}
 		}
 		
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
