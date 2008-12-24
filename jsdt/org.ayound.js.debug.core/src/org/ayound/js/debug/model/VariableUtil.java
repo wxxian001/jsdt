@@ -56,7 +56,11 @@ public class VariableUtil {
 						String type = getJsonType(value);
 						var.setReferenceTypeName(type);
 						JsValue jsValue = new JsValue(target, launch);
-						jsValue.setValueString(value.toString());
+						if("[object]".equalsIgnoreCase(type)||"[array]".equalsIgnoreCase(type)){							
+							jsValue.setValueString(type);
+						}else{
+							jsValue.setValueString(value.toString());
+						}
 						jsValue.setReferenceTypeName(type);
 						if(value instanceof JSONObject){
 							jsValue.setVariables(createVarsByObject((JSONObject)value,target,launch));
@@ -138,11 +142,11 @@ public class VariableUtil {
 		} else if (value instanceof Boolean) {
 			return ("boolean");
 		} else if (value == null) {
-			return ("object");
+			return ("null");
 		} else if (value instanceof JSONObject) {
-			return ("object");
+			return ("[Object]");
 		} else if (value instanceof JSONArray) {
-			return ("array");
+			return ("[Array]");
 		}
 		return "unknown";
 	}

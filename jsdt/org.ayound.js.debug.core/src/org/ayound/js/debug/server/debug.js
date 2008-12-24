@@ -405,10 +405,10 @@ function json2string(obj, depth) {
 	depth = depth || 0;
 	if (typeof obj == "function") {
 		return "\"function\"";
+	}  else if (obj && typeof obj.pop == 'function' && obj instanceof Array) {
+		return array2string(obj, depth + 1);
 	} else if (typeof obj == "object") {
 		return obj2string(obj, depth + 1);
-	} else if (typeof obj == "array") {
-		return array2string(obj, depth + 1);
 	} else {
 		if (typeof obj == "string") {
 			return "\"" + obj.replace(/"/gm, "\\\"").replace(/\n|\r/gm, "")
