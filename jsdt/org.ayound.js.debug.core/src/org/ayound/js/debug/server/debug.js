@@ -468,7 +468,7 @@ function array2string(array, depth) {
 	depth = depth || 0;
 	var arr = [];
 	for (var i = 0; i < array.length; i++) {
-		arr.push(json2string(array[i]), depth + 1);
+		arr.push(json2string(array[i], depth + 1));
 	}
 	return "[" + arr.join(",") + "]";
 }
