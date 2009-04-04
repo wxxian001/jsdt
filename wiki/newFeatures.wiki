@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary help document of jsdt s version
 #labels javascript,debug,Featured
 
 = Javascript Debug Toolkit 2.0.0 published =
