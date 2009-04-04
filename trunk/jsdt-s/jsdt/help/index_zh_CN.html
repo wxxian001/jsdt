@@ -1,0 +1,119 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Javascript Debug Toolkit</title>
+<link rel="stylesheet" href="style/main.css" type="text/css"/>
+</head>
+<body>
+Javascript Debug Toolkit(JSDT) 是一款免费绿色免安装的javascript调试工具，JSDT可以在任何支持ajax的浏览器上调试javascript，譬如:<b>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IE6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IE7,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IE8,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Firefox1.5,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Firefox2,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Firefox3,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Safari,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Chrome,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Opera,<br>
+ 和一些 mobile browser</b>.<br>
+JSDT 可以运行在 windows 和 linux 操作系统上.
+<br><b>JSDT遵守GPL或LGPL开源协议. </b>
+<p><a href="#install">如何安装和运行?</a><br>
+<a href="#debug">如何调试javascript?</a><br>
+<a href="#expression">如何查看表达式?</a><br>
+<a href="#about">关于 Javascript Debug Toolkit</a>
+<table>
+	<caption><div align="left"><a name="install">如何安装和运行?</a></div></caption>
+	<tr>
+		<td>
+			<p>Javascript Debug Toolkit 运行在jre1.5+的环境上，请先安装jre1.5+</p>
+			<p>Javascript Debug Toolkit 是一款绿色免安装的程序，你只需要下载后解压就可以使用，注意：目录名中不能有中文.</p>
+			<p>在windows操作系统中请运行bin/jsdt.bat</p>
+			<p>在linux操作系统中请运行sh ./jsdt.sh命令</p>
+		</td>
+	</tr>
+</table>
+<table>
+	<caption><div align="left"><a name="debug">如何调试javascript?</a></div></caption>
+	<tr>
+		<td>
+			下图是JSDT的主界面.
+			<img src="images/jsdt_zh_CN.png" border="0"/>
+			<p><b>首先</b>,输入要调试的url,譬如 c:/a.htm or http://localhost/test.jsp.
+			JSDT支持本地html文件和远程基于http协议的URL.</p>
+			<p><b>其次</b>,输入浏览器的路径,JSDT 支持 IE,Firefox,Safari,Chrome,Opera 等等.
+			请注意：必须输入全路径.</p>
+			<p>点击开始调试按纽启动调试</p>
+			<table>
+				<caption>功能介绍</caption>
+				<thead>
+					<tr>
+						<td>功能项</td>
+						<td>描述</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>地址</td>
+						<td>本地文件或基于http协议的URL,譬如 c:/test.htm or http://localhost/a.jsp</td>
+					</tr>
+					<tr>
+						<td>端口</td>
+						<td>JSDT调试时使用的端口.</td>
+					</tr>
+					<tr>
+						<td>浏览器</td>
+						<td>浏览器的全路径,譬如 C:\Program Files\Internet Explorer\iexplore.exe 或者 /usr/bin/firefox</td>
+					</tr>
+					<tr>
+						<td>调试面板</td>
+						<td>提供查看调试栈和执行，单步跳入，单步跳过，单步返回等功能</td>
+					</tr>
+					<tr>
+						<td>资源面板</td>
+						<td>显示本次调试用到的资源，你可以从这里打开文件</td>
+					</tr>
+					<tr>
+						<td>变量面板</td>
+						<td>显示当前调用栈的变量.</td>
+					</tr>
+					<tr>
+						<td>断点面板</td>
+						<td>提供删除，切换断点等功能</td>
+					</tr>
+					<tr>
+						<td>表达式面板</td>
+						<td>提供查看表达式的功能.</td>
+					</tr>
+				</tbody>
+			</table>
+		</td>
+	</tr>
+</table>
+<table>
+	<caption><div align="left"><a name="breakpoint">如何查看表达式?</a></div></caption>
+	<tr>
+		<td>
+			<p><b>首先</b>,激活表达式面板，点击添加表达式按纽.
+			<img src="images/expression_zh_CN.png"/>
+			</p>
+			<p><b>其次</b>,输入表达式并点击确定按纽,你可以查看当前栈的表达式.
+			<img src="images/expressionAdd_zh_CN.png"/>
+			</p>
+		</td>
+	</tr>
+</table>
+<table>
+	<caption><div align="left"><a name="about">关于 Javascript Debug Toolkit</a></div></caption>
+	<tr>
+		<td>
+			<div>
+			<p>作者: ayound</p>
+			<p>邮箱: <a href="mailto:ayound@gmail.com">ayound@gmail.com</a></p>
+			</div>
+		</td>
+	</tr>
+</table>
+</body>
+</html>
