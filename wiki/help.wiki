@@ -31,7 +31,7 @@ Please run "sh ./jsdt.sh" in terminal of linux OS.
  
 ==How to Debug Javascript?==
 Let's to with JSDT.
-			[images/jsdt.png] 
+			[http://code.google.com/p/jsdt/wiki/images/jsdt.png]
 First,enter the url you want to debug,like c:/a.htm or http://localhost/test.jsp.
 JSDT supports local file and URL of http protocol.
  
@@ -53,14 +53,14 @@ Then you can start debug. Please click the start debug button to start your debu
 ||expressions Panel||The expression you watch in current stack.||
 ==How to watch Expression?==
 First,active the expressions Panel and click the add expression button.
-			[images/expression.png]
+			[http://code.google.com/p/jsdt/wiki/images/expression.png]
  
 Second,enter the expression to the dialog and click the ok button,then you can get the expression of current stack.
-			[images/expressionAdd.png]
+			[http://code.google.com/p/jsdt/wiki/images/expressionAdd.png]
 
  
 
 ==About Javascript Debug Toolkit==
 author: ayound
-email: [[ayound@gmail.com]]
+email: [ayound@gmail.com]
  
