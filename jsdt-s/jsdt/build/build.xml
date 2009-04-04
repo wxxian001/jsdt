@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<project default="main" basedir=".">
+	<property name="wordspace.dir" value="../../" />
+	<property name="build.path" value="${wordspace.dir}/jsdt" />
+	<property name="build.version" value="0.5" />
+	<target name="main">
+		<jar destfile="${build.path}/lib/jsdt-engine${build.version}.jar" basedir="${wordspace.dir}/jsdt-engine/bin">
+			<include name="**/*.*" />
+		</jar>
+		<jar destfile="${build.path}/lib/jsdt-core${build.version}.jar" basedir="${wordspace.dir}/jsdt-core/bin">
+			<include name="**/*.*" />
+		</jar>
+		<jar destfile="${build.path}/lib/jsdt-ui${build.version}.jar" basedir="${wordspace.dir}/jsdt-ui/bin">
+			<include name="**/*.*" />
+		</jar>
+		<jar destfile="${build.path}/lib/rsyntaxtextarea.jar" basedir="${wordspace.dir}/rsyntaxtextarea/bin">
+			<include name="**/*.*" />
+		</jar>
+	</target>
+
+</project>

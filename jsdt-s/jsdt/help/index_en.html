@@ -1,0 +1,120 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Javascript Debug Toolkit</title>
+<link rel="stylesheet" href="style/main.css" type="text/css"/>
+</head>
+<body>
+Javascript Debug Toolkit(JSDT) is a javascript debug tool. JSDT can
+debug javascript in any browser support Ajax, like<b>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IE6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IE7,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IE8,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Firefox1.5,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Firefox2,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Firefox3,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Safari,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Chrome,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Opera,<br>
+ and some mobile browser</b>.<br>
+JSDT can run in windows and linux OS.
+<br><b>JSDT is available under the LGPL. </b>
+<p><a href="#install">How to Install and run JSDT?</a><br>
+<a href="#debug">How to Debug Javascript?</a><br>
+<a href="#expression">How to watch Expression?</a><br>
+<a href="#about">About Javascript Debug Toolkit</a>
+<table>
+	<caption><div align="left"><a name="install">How to Install and run JSDT?</a></div></caption>
+	<tr>
+		<td>
+			<p>Javascript Debug Toolkit requires JRE1.5+ ,Please install JRE1.5+ first</p>
+			<p>Javascript Debug Toolkit is a Green-free installation software. You only need to download and extract it.</p>
+			<p>Please run jsdt.bat in "bin" directory of windows OS(win2000,winXP,Vista...).</p>
+			<p>Please run "sh ./jsdt.sh" in terminal of linux OS.</p>
+		</td>
+	</tr>
+</table>
+<table>
+	<caption><div align="left"><a name="debug">How to Debug Javascript?</a></div></caption>
+	<tr>
+		<td>
+			Let's to with JSDT.
+			<img src="images/jsdt.png" border="0"/>
+			<p><b>First</b>,enter the url you want to debug,like c:/a.htm or http://localhost/test.jsp.
+			JSDT supports local file and URL of http protocol.</p>
+			<p><b>Second</b>,enter the path of your browser,JSDT supports IE,Firefox,Safari,Chrome,Opera and so on.
+			Please notice that there must be a full path.</p>
+			<p>Then you can start debug. Please click the start debug button to start your debug</p>
+			<table>
+				<caption>Reference of JSDT</caption>
+				<thead>
+					<tr>
+						<td>Input or Button</td>
+						<td>description</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>url</td>
+						<td>The file or url you want to debug,support local file and URL of http protocal,like c:/test.htm or http://localhost/a.jsp</td>
+					</tr>
+					<tr>
+						<td>port</td>
+						<td>The port of JSDT's server listener when it is started.</td>
+					</tr>
+					<tr>
+						<td>browser</td>
+						<td>The browser's file path,like C:\Program Files\Internet Explorer\iexplore.exe or /usr/bin/firefox</td>
+					</tr>
+					<tr>
+						<td>Debug Panel</td>
+						<td>You can do resume,step into,step over,step return action here and see the stack of js debug.</td>
+					</tr>
+					<tr>
+						<td>Resources Panel</td>
+						<td>The resources of current debug like html and js files,you can open the file from here.</td>
+					</tr>
+					<tr>
+						<td>Variable Panel</td>
+						<td>Display the varialbe and value of current stack.</td>
+					</tr>
+					<tr>
+						<td>breakpoints Panel</td>
+						<td>Breakpoints manager where you can remove or disable breakpoints.</td>
+					</tr>
+					<tr>
+						<td>expressions Panel</td>
+						<td>The expression you watch in current stack.</td>
+					</tr>
+				</tbody>
+			</table>
+		</td>
+	</tr>
+</table>
+<table>
+	<caption><div align="left"><a name="breakpoint">How to watch Expression?</a></div></caption>
+	<tr>
+		<td>
+			<p><b>First</b>,active the expressions Panel and click the add expression button.
+			<img src="images/expression.png"/>
+			</p>
+			<p><b>Second</b>,enter the expression to the dialog and click the ok button,then you can get the expression of current stack.
+			<img src="images/expressionAdd.png"/>
+			</p>
+		</td>
+	</tr>
+</table>
+<table>
+	<caption><div align="left"><a name="about">About Javascript Debug Toolkit</a></div></caption>
+	<tr>
+		<td>
+			<div>
+			<p>author: ayound</p>
+			<p>email: <a href="mailto:ayound@gmail.com">ayound@gmail.com</a></p>
+			</div>
+		</td>
+	</tr>
+</table>
+</body>
+</html>
