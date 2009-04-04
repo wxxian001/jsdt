@@ -1,15 +1,15 @@
-      
+[helpzhCN 中文]
 Javascript Debug Toolkit(JSDT) is a javascript debug tool. JSDT can
 debug javascript in any browser support Ajax, like
-    IE6
-    IE7,
-    IE8,
-    Firefox1.5,
-    Firefox2,
-    Firefox3,
-    Safari,
-    Chrome,
-    Opera,
+    IE6 
+    IE7, 
+    IE8, 
+    Firefox1.5, 
+    Firefox2, 
+    Firefox3, 
+    Safari, 
+    Chrome, 
+    Opera, 
  and some mobile browser.
 JSDT can run in windows and linux OS.
 JSDT is available under the LGPL license.
@@ -32,16 +32,16 @@ Please run "sh ./jsdt.sh" in terminal of linux OS.
 ==How to Debug Javascript?==
 Let's to with JSDT.
 			[http://jsdt.googlecode.com/svn/wiki/images/jsdt.png]
-First,enter the url you want to debug,like c:/a.htm or http://localhost/test.jsp.
+*First*,enter the url you want to debug,like c:/a.htm or http://localhost/test.jsp.
 JSDT supports local file and URL of http protocol.
  
-Second,enter the path of your browser,JSDT supports IE,Firefox,Safari,Chrome,Opera and so on.
+*Second*,enter the path of your browser,JSDT supports IE,Firefox,Safari,Chrome,Opera and so on.
 Please notice that there must be a full path.
 
  
 Then you can start debug. Please click the start debug button to start your debug
 
-                       Reference of JSDT                    
+                       *Reference of JSDT*             
 ||Input or Button||description||
 ||url||The file or url you want to debug,support local file and URL of http protocal,like c:/test.htm or http://localhost/a.jsp||
 ||port||The port of JSDT's server listener when it is started.||
