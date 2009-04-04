@@ -1,0 +1,10 @@
+&nbsp;&nbsp;&nbsp;&nbsp;IE6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IE7,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IE8,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Firefox1.5,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Firefox2,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Firefox3,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Safari,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Chrome,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Opera,<br>
+ and some mobile browser</b>.<br>
