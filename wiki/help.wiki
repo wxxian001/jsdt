@@ -62,5 +62,5 @@ Second,enter the expression to the dialog and click the ok button,then you can g
 
 ==About Javascript Debug Toolkit==
 author: ayound
-email: [ayound@gmail.com]
+email: [ayound@gmail.com ayound@gmail.com]
  
