@@ -1,4 +1,5 @@
-      
+[english help]
+
 Javascript Debug Toolkit(JSDT) 是一款免费绿色免安装的javascript调试工具，JSDT可以在任何支持ajax的浏览器上调试javascript，譬如:
     IE6 
     IE7, 
@@ -25,7 +26,7 @@ Javascript Debug Toolkit 是一款绿色免安装的程序，你只需要下载�
 
 ==如何调试javascript?==
 		下图是JSDT的主界面.
-			 
+[http://jsdt.googlecode.com/svn/wiki/images/jsdt_zh_CN.png]			 
 *首先*,输入要调试的url,譬如 c:/a.htm or http://localhost/test.jsp.
 			JSDT支持本地html文件和远程基于http协议的URL.
 
@@ -50,10 +51,10 @@ Javascript Debug Toolkit 是一款绿色免安装的程序，你只需要下载�
 
 *首先*,激活表达式面板，点击添加表达式按纽.
 			 
-
+[http://jsdt.googlecode.com/svn/wiki/images/expression_zh_CN.png]
  
 *其次*,输入表达式并点击确定按纽,你可以查看当前栈的表达式.
 			 
-
+[http://jsdt.googlecode.com/svn/wiki/images/expressionAdd_zh_CN.png]
 
    
