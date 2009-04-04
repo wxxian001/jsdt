@@ -1,4 +1,4 @@
-#summary jsdt的说明
+#summary new Features
 #labels javascript,debug,Featured
 
 = Javascript Debug Toolkit 2.0.0 published =
