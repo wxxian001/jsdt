@@ -1,4 +1,4 @@
-#summary help document of jsdt s version
+#summary jsdt的说明
 #labels javascript,debug,Featured
 
 = Javascript Debug Toolkit 2.0.0 published =
