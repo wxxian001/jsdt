@@ -59,8 +59,3 @@ Second,enter the expression to the dialog and click the ok button,then you can g
 			[http://jsdt.googlecode.com/svn/wiki/images/expressionAdd.png]
 
  
-
-==About Javascript Debug Toolkit==
-author: ayound
-email: [ayound@gmail.com ayound@gmail.com]
- 
