@@ -45,7 +45,8 @@ Please notice that there must be a full path.
  
 Then you can start debug. Please click the start debug button to start your debug
 
-                       *Reference of JSDT*             
+                       *Reference of JSDT*         
+    
 ||Input or Button||description||
 ||url||The file or url you want to debug,support local file and URL of http protocal,like c:/test.htm or http://localhost/a.jsp||
 ||port||The port of JSDT's server listener when it is started.||
@@ -55,6 +56,8 @@ Then you can start debug. Please click the start debug button to start your debu
 ||Variable Panel||Display the varialbe and value of current stack.||
 ||breakpoints Panel||Breakpoints manager where you can remove or disable breakpoints.||
 ||expressions Panel||The expression you watch in current stack.||
+
+
 ==How to watch Expression?==
 First,active the expressions Panel and click the add expression button.
 			[http://jsdt.googlecode.com/svn/wiki/images/expression.png]
