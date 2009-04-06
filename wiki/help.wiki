@@ -45,7 +45,7 @@ Please notice that there must be a full path.
  
 Then you can start debug. Please click the start debug button to start your debug
 
-                       *Reference of JSDT*         
+                       * Reference of JSDT*         
     
 ||Input or Button||description||
 ||url||The file or url you want to debug,support local file and URL of http protocal,like c:/test.htm or http://localhost/a.jsp||
