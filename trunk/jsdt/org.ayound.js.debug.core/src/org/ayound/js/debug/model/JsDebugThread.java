@@ -2,13 +2,13 @@
  *
  *==============================================================================
  *
- * Copyright (c) 2008-2011 ayound@gmail.com 
+ * Copyright (c) 2008-2011 ayound@gmail.com
  * This program and the accompanying materials
- * are made available under the terms of the Apache License 2.0 
+ * are made available under the terms of the Apache License 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
  * All rights reserved.
- * 
+ *
  * Created on 2008-10-26
  *******************************************************************************/
 package org.ayound.js.debug.model;
@@ -25,7 +25,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 /**
- * 
+ *
  *
  */
 
@@ -34,14 +34,14 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 	private IStackFrame[] stackFrames = new IStackFrame[] {};
 
 	private Set<String> debugExpressions = new HashSet<String>();
-	
+
 	public JsDebugThread(IDebugTarget target, ILaunch launch) {
 		super(target, launch);
 	}
 
 	public String getName() throws DebugException {
 		IDebugTarget target =  getDebugTarget();
-		if(target instanceof JsDebugTarget){			
+		if(target instanceof JsDebugTarget){
 			return "Thread [" + ((JsDebugTarget)target).getServer().getRemoteBaseUrl() + "]";
 		}else{
 			return "Thread ";
@@ -68,18 +68,18 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 	public void addExpression(String expression){
 		debugExpressions.add(expression);
 	}
-	
+
 	public void removeExpression(String expression){
 		debugExpressions.remove(expression);
 	}
-	
+
 	public boolean hasStackFrames() throws DebugException {
 		return this.stackFrames != null && this.stackFrames.length > 0;
 	}
 
 	public boolean canResume() {
 		try {
-			if(this.getTopStackFrame()!=null){			
+			if(this.getTopStackFrame()!=null){
 				return this.getTopStackFrame().canResume();
 			}
 		} catch (DebugException e) {
@@ -98,7 +98,7 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 	}
 
 	public void resume() throws DebugException {
-		if(this.getTopStackFrame()!=null){			
+		if(this.getTopStackFrame()!=null){
 			this.getTopStackFrame().resume();
 		}
 	}
@@ -145,7 +145,7 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 
 	public boolean canTerminate() {
 		try {
-			if(this.getTopStackFrame()!=null){			
+			if(this.getTopStackFrame()!=null){
 				return this.getTopStackFrame().canTerminate();
 			}
 		} catch (DebugException e) {
@@ -174,6 +174,7 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 		this.stackFrames = list.toArray(new IStackFrame[list.size()]);
 		fireResumeEvent(DebugEvent.STEP_END);
 		fireSuspendEvent(DebugEvent.BREAKPOINT);
+		fireChangeEvent(DebugEvent.CONTENT);
 
 	}
 

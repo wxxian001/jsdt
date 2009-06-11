@@ -2,13 +2,13 @@
  *
  *==============================================================================
  *
- * Copyright (c) 2008-2011 ayound@gmail.com 
+ * Copyright (c) 2008-2011 ayound@gmail.com
  * This program and the accompanying materials
- * are made available under the terms of the Apache License 2.0 
+ * are made available under the terms of the Apache License 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
  * All rights reserved.
- * 
+ *
  * Created on 2008-10-26
  *******************************************************************************/
 package org.ayound.js.debug.model;
@@ -23,9 +23,10 @@ import org.eclipse.debug.core.model.IVariable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 /**
- * 
+ *
  * VariableUtil is used to create IVaraibles from json
  *
  */
@@ -38,7 +39,7 @@ public class VariableUtil {
 	 * @return
 	 */
 	public static IVariable[] createVarsByObject(JSONObject rootJson,
-			IDebugTarget target, ILaunch launch) {
+			IDebugTarget target, ILaunch launch,JsDebugStackFrame frame,JsVariable parentVar) {
 		if (rootJson != null) {
 			List<JsVariable> vars = new ArrayList<JsVariable>();
 			JSONArray names = rootJson.names();
@@ -52,21 +53,18 @@ public class VariableUtil {
 					if (nameObj != null) {
 						String name = nameObj.toString();
 						JsVariable var = new JsVariable(name, target, launch);
-						Object value = rootJson.get(name);
-						String type = getJsonType(value);
+						JSONObject value = rootJson.getJSONObject(name);
+						String type = value.getString("type");
 						var.setReferenceTypeName(type);
-						JsValue jsValue = new JsValue(target, launch);
-						if("[object]".equalsIgnoreCase(type)||"[array]".equalsIgnoreCase(type)){							
-							jsValue.setValueString(type);
+						JsValue jsValue = new JsValue(target,launch,frame);
+						if(value.has("value")){
+							jsValue.setValueString(value.getString("value"));
 						}else{
-							jsValue.setValueString(value.toString());
+							jsValue.setValueString("[unkown]");
 						}
 						jsValue.setReferenceTypeName(type);
-						if(value instanceof JSONObject){
-							jsValue.setVariables(createVarsByObject((JSONObject)value,target,launch));
-						}else if(value instanceof JSONArray){
-							jsValue.setVariables(createVarsByArray(name, (JSONArray)value, target, launch));
-						}
+						jsValue.setParentVar(var);
+						var.setParentVar(parentVar);
 						var.setValue(jsValue);
 						vars.add(var);
 					}
@@ -83,71 +81,16 @@ public class VariableUtil {
 		return null;
 
 	}
-	/**
-	 * create varibles by jsonarray
-	 * @param arrayName
-	 * @param jsonArray
-	 * @param target
-	 * @param launch
-	 * @return
-	 */
-	public static IVariable[] createVarsByArray(String arrayName,
-			JSONArray jsonArray, IDebugTarget target, ILaunch launch) {
-		if (jsonArray != null) {
-			List<JsVariable> vars = new ArrayList<JsVariable>();
-			for (int i = 0; i < jsonArray.length(); i++) {
-				Object value;
-				try {
-					value = jsonArray.get(i);
-					if (value != null) {
-						String name = arrayName + "[" + i + "]";
-						JsVariable var = new JsVariable(name, target, launch);
-						String type = getJsonType(value);
-						var.setReferenceTypeName(type);
-						JsValue jsValue = new JsValue(target, launch);
-						jsValue.setValueString(value.toString());
-						jsValue.setReferenceTypeName(type);
-						if(value instanceof JSONObject){
-							jsValue.setVariables(createVarsByObject((JSONObject)value,target,launch));
-						}else if(value instanceof JSONArray){
-							jsValue.setVariables(createVarsByArray(name, (JSONArray)value, target, launch));
-						}
-						var.setValue(jsValue);
-						vars.add(var);
-					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (DebugException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			return vars.toArray(new JsVariable[vars.size()]);
+	public static IVariable[] createVarsByObject(String jsonString,
+			IDebugTarget target, ILaunch launch,JsDebugStackFrame frame,JsVariable parentVar){
+		JSONObject rootJson;
+		try {
+			rootJson = new JSONObject(new JSONTokener(jsonString));
+			return createVarsByObject(rootJson, target, launch, frame,parentVar);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
-
-	}
-	/**
-	 * get javascript varible type
-	 * @param value
-	 * @return
-	 */
-	private static String getJsonType(Object value) {
-		if (value instanceof String) {
-			return ("string");
-		} else if (value instanceof Integer || value instanceof Double
-				|| value instanceof Long) {
-			return ("number");
-		} else if (value instanceof Boolean) {
-			return ("boolean");
-		} else if (value == null) {
-			return ("null");
-		} else if (value instanceof JSONObject) {
-			return ("[Object]");
-		} else if (value instanceof JSONArray) {
-			return ("[Array]");
-		}
-		return "unknown";
 	}
 }
