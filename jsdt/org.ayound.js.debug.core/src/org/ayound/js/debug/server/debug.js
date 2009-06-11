@@ -200,6 +200,7 @@ jsDebug.getBreakPoint = function(async) {
 			}
 			xmlHttp.send(escape(json2string(postData)));
 		}else{
+			xmlHttp.send(escape(json2string(postData)));
 			eval("var retObj = " + xmlHttp.responseText);
 			jsDebug.breakpoints = retObj["BREAKPOINTS"];
 		}
@@ -324,7 +325,7 @@ jsDebug.evalValue = function(expression, evalFunc){
 						if(type=="function"){
 							continue;
 						}
-						var stringValue = "[unkown]";
+						var stringValue = "";
 						if(value){
 							stringValue = value.toString();
 						}
@@ -368,12 +369,13 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 		jsDebug.currLine = line;
 		if (jsDebug.debugCommand == null) {
 			jsDebug.debugCommand = "START";
-//			jsDebug.getBreakPoint();
 		}
 		if (jsDebug.debugCommand == "TERMINATE") {
 			throw "exit";
 		}
-
+		if(!jsDebug.breakpoints){
+			jsDebug.getBreakPoint(true);
+		}
 		if (!(jsDebug.breakpoints && jsDebug.breakpoints[resource + line])) {
 			if (jsDebug.debugCommand == "STEPRETURN"
 					|| jsDebug.debugCommand == "STEPOVER") {
