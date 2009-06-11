@@ -2,13 +2,13 @@
  *
  *==============================================================================
  *
- * Copyright (c) 2008-2011 ayound@gmail.com 
+ * Copyright (c) 2008-2011 ayound@gmail.com
  * This program and the accompanying materials
- * are made available under the terms of the Apache License 2.0 
+ * are made available under the terms of the Apache License 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
  * All rights reserved.
- * 
+ *
  * Created on 2008-10-26
  *******************************************************************************/
 package org.ayound.js.debug.model;
@@ -29,6 +29,8 @@ public class JsVariable extends JsDebugElement implements IVariable {
 	private IValue value;
 
 	private IDebugTarget target;
+
+	private JsVariable parentVar;
 
 	private ILaunch launch;
 
@@ -99,6 +101,14 @@ public class JsVariable extends JsDebugElement implements IVariable {
 	public boolean verifyValue(IValue value) throws DebugException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public JsVariable getParentVar() {
+		return parentVar;
+	}
+
+	public void setParentVar(JsVariable parentVar) {
+		this.parentVar = parentVar;
 	}
 
 }

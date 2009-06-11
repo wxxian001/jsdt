@@ -2,13 +2,13 @@
  *
  *==============================================================================
  *
- * Copyright (c) 2008-2011 ayound@gmail.com 
+ * Copyright (c) 2008-2011 ayound@gmail.com
  * This program and the accompanying materials
- * are made available under the terms of the Apache License 2.0 
+ * are made available under the terms of the Apache License 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
  * All rights reserved.
- * 
+ *
  * Created on 2008-10-26
  *******************************************************************************/
 
@@ -30,8 +30,8 @@ import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 
 /**
- * 
- * 
+ *
+ *
  */
 
 public class JsDebugStackFrame extends JsDebugElement implements IStackFrame {
@@ -240,7 +240,7 @@ public class JsDebugStackFrame extends JsDebugElement implements IStackFrame {
 		((JsDebugThread) thread).removeExpression(model.getExpression());
 		JsDebugCorePlugin.getDefault().updateEval(this);
 	}
-	
+
 	public void runExpression() {
 		synchronized (this) {
 			if (this.expressionStack.empty()) {
@@ -271,6 +271,15 @@ public class JsDebugStackFrame extends JsDebugElement implements IStackFrame {
 
 	public List<ExpressionModel> getExpressionResult() {
 		return expressionResult;
+	}
+
+	public void writeValue(String value){
+		this.response.writeValue(value);
+		this.response.close();
+	}
+
+	public boolean isExecuted() {
+		return executed;
 	}
 
 }

@@ -2,13 +2,13 @@
  *
  *==============================================================================
  *
- * Copyright (c) 2008-2011 ayound@gmail.com 
+ * Copyright (c) 2008-2011 ayound@gmail.com
  * This program and the accompanying materials
- * are made available under the terms of the Apache License 2.0 
+ * are made available under the terms of the Apache License 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
  * All rights reserved.
- * 
+ *
  * Created on 2008-10-26
  *******************************************************************************/
 package org.ayound.js.debug.server;
@@ -61,7 +61,7 @@ public class JsDebugResponse {
 
 	/**
 	 * write html header of this request
-	 * 
+	 *
 	 * @param encoding
 	 */
 	public void writeHTMLHeader(String encoding,
@@ -89,8 +89,8 @@ public class JsDebugResponse {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							
-							
+
+
 						}
 						out.println(entry.getKey() + ":" + value);
 					}
@@ -109,7 +109,7 @@ public class JsDebugResponse {
 
 	/**
 	 * write javascript response header of this request
-	 * 
+	 *
 	 * @param encoding
 	 */
 	public void writeJsHeader(String encoding) {
@@ -125,14 +125,14 @@ public class JsDebugResponse {
 	/**
 	 * write other header. the method will set response header accroding to
 	 * different file
-	 * 
+	 *
 	 * @param fileName
 	 */
 	public void writeOtherHeader(String fileName, String encoding,
 			Map<String, List<String>> responseHeader, int length) {
 		fileName = fileName.toLowerCase();
 		out.println("HTTP/1.0 200 OK");// 返回应答消息,并结束应答
-		if(responseHeader!=null){			
+		if(responseHeader!=null){
 			for (Map.Entry<String, List<String>> entry : responseHeader.entrySet()) {
 				String key = entry.getKey();
 				if (key != null ) {
@@ -155,13 +155,13 @@ public class JsDebugResponse {
 				out.println("Content-Type:text/css");
 			}
 		}
-		
+
 		out.println();// 根据 HTTP 协议, 空行将结束头信息
 	}
 
 	/**
 	 * write string to client
-	 * 
+	 *
 	 * @param str
 	 */
 	public void write(String str) {
@@ -172,7 +172,7 @@ public class JsDebugResponse {
 
 	/**
 	 * write line to client
-	 * 
+	 *
 	 * @param str
 	 */
 	public void writeln(String str) {
@@ -196,7 +196,7 @@ public class JsDebugResponse {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void close() {
 		this.out.close();
 		try {
@@ -243,7 +243,7 @@ public class JsDebugResponse {
 
 	/**
 	 * write terminate command to client
-	 * 
+	 *
 	 */
 	public void writeTerminate() {
 		this.write("{COMMAND:'TERMINATE'}");
@@ -252,7 +252,7 @@ public class JsDebugResponse {
 
 	/**
 	 * write stepover command to client
-	 * 
+	 *
 	 */
 	public void writeStepOver() {
 		this.write("{COMMAND:'STEPOVER'}");
@@ -260,7 +260,7 @@ public class JsDebugResponse {
 
 	/**
 	 * write stepreturn command to client
-	 * 
+	 *
 	 */
 	public void writeStepReturn() {
 		this.write("{COMMAND:'STEPRETURN'}");
@@ -268,7 +268,7 @@ public class JsDebugResponse {
 
 	/**
 	 * write stepinto command to client
-	 * 
+	 *
 	 */
 	public void writeStepInTo() {
 		this.write("{COMMAND:'STEPINTO'}");
@@ -284,6 +284,11 @@ public class JsDebugResponse {
 
 	public void writeExpression(String expression) {
 		this.write("{COMMAND:'EXPRESSION',\"EXPRESSION\":\""
+				+ expression.replace("\"", "\\\"") + "\"}");
+	}
+
+	public void writeValue(String expression) {
+		this.write("{COMMAND:'VALUE',\"EXPRESSION\":\""
 				+ expression.replace("\"", "\\\"") + "\"}");
 	}
 }

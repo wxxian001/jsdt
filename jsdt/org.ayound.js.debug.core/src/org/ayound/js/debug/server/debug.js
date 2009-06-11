@@ -181,20 +181,33 @@ jsDebug.isStepOver = function(args) {
 /**
  * get breakpoints from server
  */
-jsDebug.getBreakPoint = function() {
+jsDebug.getBreakPoint = function(async) {
+	async = async?false:true;
 	try {
 		var postData = {
 			"COMMAND" : "RESUME"
 		}
 		var xmlHttp = createXMLHttp();
-		xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
-		xmlHttp.send(json2string(postData));
-		eval("var retObj = " + xmlHttp.responseText);
-		jsDebug.breakpoints = retObj["BREAKPOINTS"];
-		setTimeout(jsDebug.getBreakPoint, 500);
+		xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), async);
+		if(async){
+			xmlHttp.onreadystatechange = function fnRun() {
+				if ((xmlHttp.readyState == 4) && (xmlHttp.status == 200)) {
+
+					eval("var retObj = " + xmlHttp.responseText);
+					jsDebug.breakpoints = retObj["BREAKPOINTS"];
+					setTimeout(jsDebug.getBreakPoint, 500);
+				}
+			}
+			xmlHttp.send(escape(json2string(postData)));
+		}else{
+			eval("var retObj = " + xmlHttp.responseText);
+			jsDebug.breakpoints = retObj["BREAKPOINTS"];
+		}
+//		setTimeout(jsDebug.getBreakPoint, 500);
 	} catch (e) {
 	}
 }
+jsDebug.getBreakPoint();
 /**
  * update function stack
  */
@@ -287,7 +300,64 @@ jsDebug.evalExpression = function(expression, evalFunc) {
 
 	}
 }
+jsDebug.evalValue = function(expression, evalFunc){
+	try {
+		jsDebug.xmlHttp.open("POST", "/jsdebug.debug?" + new Date(), false);
+		var postData = {
+			"STACK" : {},
+			"COMMAND" : "VALUE",
+			"EXPRESSION" : expression
+		}
+		try {
+			jsDebug.isExpression = true;
+			var ret = evalFunc(expression);
+			var data = {};
+			if(typeof(ret)=="undefined"){
+				ret = "undefined";
+			}else if(ret==null){
+				ret = "null";
+			}else{
+				for(var prop in ret){
+					try{
+						var value = ret[prop];
+						var type = typeof(value);
+						if(type=="function"){
+							continue;
+						}
+						var stringValue = "[unkown]";
+						if(value){
+							stringValue = value.toString();
+						}
+						if(value==null){
+							stringValue = "null";
+							type = "null";
+						}else if(value==undefined){
+							stringValue = "undefined";
+							type = "undefined";
+						}
+						data[prop] = {"value":stringValue,"type":typeof(value)};
+					}catch(e){
 
+					}
+				}
+			}
+			postData["RESULT"] = data;
+		} catch (e) {
+			postData["ERROR"] = e;
+		}
+		jsDebug.isExpression = false;
+		var submitString = "{}";
+		try{
+			submitString = json2string(postData);
+		}catch(e){
+
+		}
+		jsDebug.xmlHttp.send(escape(submitString));
+		jsDebug.parseResult(jsDebug.xmlHttp.responseText, evalFunc);
+	} catch (e) {
+		alert(e)
+	}
+}
 jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 	window.onerror = _window_onerror;
 	if (jsDebug.isExpression) {
@@ -298,7 +368,7 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 		jsDebug.currLine = line;
 		if (jsDebug.debugCommand == null) {
 			jsDebug.debugCommand = "START";
-			jsDebug.getBreakPoint();
+//			jsDebug.getBreakPoint();
 		}
 		if (jsDebug.debugCommand == "TERMINATE") {
 			throw "exit";
@@ -361,6 +431,29 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 		}else{
 			data["this"] = scope;
 		}
+		for(var prop in data){
+			var value = data[prop];
+			var stringValue = null;
+			if(value){
+				if(value.valueOf){
+					stringValue = value.valueOf();
+				}else{
+					stringValue = value.toString();
+				}
+			}
+			var type = typeof(value);
+			if(type=="function"){
+				continue;
+			}
+			if(value==null){
+				stringValue = "null";
+				type = "null";
+			}else if(value==undefined){
+				stringValue = "undefined";
+				type = "undefined";
+			}
+			data[prop] = {"value":stringValue,"type":typeof(value)};
+		}
 		var postData = {
 			"STACK" : data,
 			"COMMAND" : jsDebug.debugCommand,
@@ -379,14 +472,16 @@ jsDebug.parseResult = function(result, evalFunc) {
 			try {
 				eval("var retObj = " + result);
 				if( retObj["COMMAND"]){
-					if(retObj["COMMAND"]!="EXPRESSION"){
+					if(retObj["COMMAND"]=="EXPRESSION"){
+						jsDebug.evalExpression(retObj["EXPRESSION"], evalFunc);
+					}else if(retObj["COMMAND"]=="VALUE"){
+						jsDebug.evalValue(retObj["EXPRESSION"], evalFunc);
+					}else{
 						jsDebug.isExpression = false;
 						jsDebug.debugCommand = retObj["COMMAND"];
 						if (jsDebug.debugCommand == "BREAKPOINT") {
 							jsDebug.breakpoints = retObj["BREAKPOINTS"];
 						}
-					}else{
-						jsDebug.evalExpression(retObj["EXPRESSION"], evalFunc);
 					}
 				}
 
@@ -411,7 +506,7 @@ function json2string(obj, depth) {
 		return obj2string(obj, depth + 1);
 	} else {
 		if (typeof obj == "string") {
-			return "\"" + obj.replace(/"/gm, "\\\"").replace(/\n|\r/gm, "")
+			return "\"" + obj.replace(/"/gm, "'").replace(/\n|\r/gm, "")
 					+ "\"";
 		} else if (typeof obj == "number") {
 			if (isFinite(obj)) {
@@ -454,7 +549,7 @@ function complexObj2String(obj){
 	for (var prop in obj) {
 		try {
 			if (typeof(obj[prop]) != "function") {
-				var value = (obj[prop] + "").replace(/"/gm, "\\\"").replace(/\n|\r/gm, "");
+				var value = (obj[prop] + "").replace(/"/gm, "'").replace(/\n|\r/gm, "");
 				arr.push("\"" + prop + "\":\""
 						+ value + "\"");
 			}

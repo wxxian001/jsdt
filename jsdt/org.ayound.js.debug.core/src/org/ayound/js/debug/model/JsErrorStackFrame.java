@@ -14,7 +14,7 @@ public class JsErrorStackFrame extends JsDebugStackFrame {
 	}
 
 	public void setErrorMsg(String msg){
-		JsValue value = new JsValue(this.getDebugTarget(),this.getLaunch());
+		JsValue value = new JsValue(this.getDebugTarget(),this.getLaunch(),this);
 		value.setReferenceTypeName("error");
 		value.setValueString(msg);
 		JsVariable var = new JsVariable("error",this.getDebugTarget(),this.getLaunch());
