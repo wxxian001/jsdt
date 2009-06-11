@@ -60,7 +60,7 @@ public class VariableUtil {
 						if(value.has("value")){
 							jsValue.setValueString(value.getString("value"));
 						}else{
-							jsValue.setValueString("[unkown]");
+							jsValue.setValueString("");
 						}
 						jsValue.setReferenceTypeName(type);
 						jsValue.setParentVar(var);
