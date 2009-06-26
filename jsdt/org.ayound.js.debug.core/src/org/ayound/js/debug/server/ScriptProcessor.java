@@ -2,13 +2,13 @@
  *
  *==============================================================================
  *
- * Copyright (c) 2008-2011 ayound@gmail.com 
+ * Copyright (c) 2008-2011 ayound@gmail.com
  * This program and the accompanying materials
- * are made available under the terms of the Apache License 2.0 
+ * are made available under the terms of the Apache License 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
  * All rights reserved.
- * 
+ *
  * Created on 2008-10-26
  *******************************************************************************/
 package org.ayound.js.debug.server;
@@ -41,10 +41,10 @@ public class ScriptProcessor extends AbstractProcessor {
 			URL url = this.computeRemoteURL();
 			String resourcePath = url.getPath();
 			JsResourceManager manager = getServer().getJsResourceManager();
-			manager.createFile(resourcePath, getInfo().getInputStream(),false);
+			manager.createFile(resourcePath, getInfo().getInputStream(),true);
 			IFile scriptFile = manager.getFileByResource(resourcePath);
 			String encoding = getInfo().getEncoding();
-			if(encoding==null){				
+			if(encoding==null){
 				CharsetDetector detector = new CharsetDetector();
 				detector.detect(scriptFile);
 				encoding = detector.getCharset();
@@ -75,7 +75,7 @@ public class ScriptProcessor extends AbstractProcessor {
 				String jsLine = lines[i];
 				if (i == 0 && "UTF-8".equalsIgnoreCase(encoding)) {
 					try {
-						if(jsLine.length()>0){							
+						if(jsLine.length()>0){
 							char ch = jsLine.charAt(0);
 							if (!(Character.isLetter(ch) || ch == '/')) {
 								jsLine = jsLine.substring(1);
