@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.ayound.js.debug.feature"
-      label="Feature Feature"
-      version="2.1.0">
+      label="Js Debug"
+      version="2.1.1">
 
    <description url="http://code.google.com/p/jsdt/">
       [Javascript Debug Toolkit is a cross browser debug toolkit who
@@ -39,25 +39,43 @@ and
 limitations under the License.]
    </license>
 
+   <url>
+      <update label="Js Debug" url="http://jsdt.googlecode.com/svn/trunk/org.ayound.js.debug.update"/>
+      <discovery label="Js Debug" url="http://jsdt.googlecode.com/svn/trunk/org.ayound.js.debug.update"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.views"/>
+   </requires>
+
    <plugin
          id="org.ayound.js.debug.core"
          download-size="0"
          install-size="0"
-         version="2.1.0"
+         version="2.1.1"
          unpack="false"/>
 
    <plugin
          id="org.ayound.js.debug.engine"
          download-size="0"
          install-size="0"
-         version="2.1.0"
+         version="2.1.1"
          unpack="false"/>
 
    <plugin
          id="org.ayound.js.debug.ui"
          download-size="0"
          install-size="0"
-         version="2.1.0"
+         version="2.1.1"
          unpack="false"/>
 
 </feature>
