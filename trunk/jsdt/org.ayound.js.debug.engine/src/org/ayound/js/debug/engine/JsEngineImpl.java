@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PushbackInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,15 +42,14 @@ public class JsEngineImpl implements IJsEngine {
 	}
 
 	public boolean canBreakLine(String url, int line) {
-		if(engineMap.containsKey(url)){
+		if (engineMap.containsKey(url)) {
 			JsDebugCompileEngine engine = engineMap.get(url);
-			if(engine.getBreakPoints().containsKey(line-1)){
+			if (engine.getBreakPoints().containsKey(line - 1)) {
 				return true;
 			}
 		}
 		return false;
 	}
-
 
 	/**
 	 * compile javascript files use rhino dim engine.
@@ -63,11 +63,12 @@ public class JsEngineImpl implements IJsEngine {
 		engineMap.put(url, compile);
 	}
 
-	public String compileJsOffset(String url, String text,int offset) throws EvaluatorException{
+	public String compileJsOffset(String url, String text, int offset)
+			throws EvaluatorException {
 		JsDebugCompileEngine compile = null;
-		if(engineMap.containsKey(url)){
+		if (engineMap.containsKey(url)) {
 			compile = engineMap.get(url);
-		}else{
+		} else {
 			compile = new JsDebugCompileEngine();
 			engineMap.put(url, compile);
 		}
@@ -76,16 +77,15 @@ public class JsEngineImpl implements IJsEngine {
 		compile.setSourceString(text);
 		compile.setOffsetLine(offset);
 		String result = null;
-		try{
+		try {
 			result = compile.compile();
-		}catch(EvaluatorException e){
+		} catch (EvaluatorException e) {
 			int errLine = offset + e.lineNumber();
 			e.initLineNumber(errLine);
 			throw e;
 		}
 		return result;
 	}
-
 
 	/**
 	 * remove all the html tag and convert html file to javascript file then
@@ -96,16 +96,16 @@ public class JsEngineImpl implements IJsEngine {
 		StringBuffer scriptBuffer = new StringBuffer();
 		boolean scriptStart = false;
 		boolean scriptChar = false;
-//		text = text.replaceAll("\n\r", "\n").replaceAll("\r", "\n");
+		// text = text.replaceAll("\n\r", "\n").replaceAll("\r", "\n");
 		int currLine = 1;
 		int scriptOffsetLine = 0;
 		for (int i = 0; i < text.length(); i++) {
 			char ch = text.charAt(i);
 			if (ch == '\n') {
 				currLine++;
-				if(scriptChar){
+				if (scriptChar) {
 					scriptBuffer.append(' ').append(ch);
-				}else{
+				} else {
 					htmlBuffer.append(ch);
 				}
 			} else {
@@ -121,7 +121,8 @@ public class JsEngineImpl implements IJsEngine {
 							scriptStart = false;
 							scriptChar = false;
 							String script = scriptBuffer.toString();
-							htmlBuffer.append(compileJsOffset(url, script,scriptOffsetLine));
+							htmlBuffer.append(compileJsOffset(url, script,
+									scriptOffsetLine));
 							scriptBuffer = new StringBuffer();
 						}
 					}
@@ -129,7 +130,7 @@ public class JsEngineImpl implements IJsEngine {
 					if (scriptStart == true && scriptChar == false) {
 						htmlBuffer.append(ch);
 						scriptChar = true;
-						if(text.charAt(i+1)=='\n'){
+						if (text.charAt(i + 1) == '\n') {
 							currLine++;
 							i++;
 						}
@@ -138,7 +139,7 @@ public class JsEngineImpl implements IJsEngine {
 				}
 				if (scriptChar) {
 					scriptBuffer.append(ch);
-				}else{
+				} else {
 					htmlBuffer.append(ch);
 				}
 			}
@@ -148,37 +149,28 @@ public class JsEngineImpl implements IJsEngine {
 
 	}
 
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		JsEngineImpl js = new JsEngineImpl();
-		/*StringBuffer buffer = new StringBuffer();
-		buffer.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n");
-		buffer.append("<HTML>\n");
-		buffer.append("    \n");
-		buffer.append("    <HEAD>\n");
-		buffer.append("        <TITLE>\n");
-		buffer.append("            New Document\n");
-		buffer.append("        </TITLE>\n");
-		buffer.append("        <META NAME=\"Generator\" CONTENT=\"EditPlus\">\n");
-		buffer.append("        <META NAME=\"Author\" CONTENT=\"\">\n");
-		buffer.append("        <META NAME=\"Keywords\" CONTENT=\"\">\n");
-		buffer.append("        <META NAME=\"Description\" CONTENT=\"\">\n");
-		buffer.append("    </HEAD>\n");
-		buffer.append("    \n");
-		buffer.append("    <BODY>\n");
-		buffer.append("        <script type=\"text/javascript\">\n");
-		buffer.append("            function test() {\n");
-		buffer.append("                alert(\'a\');\n");
-		buffer.append("            }\n");
-		buffer.append("        </script>\n");
-		buffer.append("        <script type=\"text/javascript\">\n");
-		buffer.append("            function test() {\n");
-		buffer.append("                alert(\'a\');\n");
-		buffer.append("            }\n");
-		buffer.append("        </script>\n");
-		buffer.append("    </BODY>\n");
-		buffer.append("\n");
-		buffer.append("</HTML>\n");
-		buffer.append("\n");*/
+		/*
+		 * StringBuffer buffer = new StringBuffer(); buffer.append("<!DOCTYPE
+		 * HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n");
+		 * buffer.append("<HTML>\n"); buffer.append(" \n"); buffer.append("
+		 * <HEAD>\n"); buffer.append(" <TITLE>\n"); buffer.append(" New
+		 * Document\n"); buffer.append(" </TITLE>\n"); buffer.append(" <META
+		 * NAME=\"Generator\" CONTENT=\"EditPlus\">\n"); buffer.append(" <META
+		 * NAME=\"Author\" CONTENT=\"\">\n"); buffer.append(" <META
+		 * NAME=\"Keywords\" CONTENT=\"\">\n"); buffer.append(" <META
+		 * NAME=\"Description\" CONTENT=\"\">\n"); buffer.append(" </HEAD>\n");
+		 * buffer.append(" \n"); buffer.append(" <BODY>\n"); buffer.append("
+		 * <script type=\"text/javascript\">\n"); buffer.append(" function
+		 * test() {\n"); buffer.append(" alert(\'a\');\n"); buffer.append("
+		 * }\n"); buffer.append(" </script>\n"); buffer.append(" <script
+		 * type=\"text/javascript\">\n"); buffer.append(" function test() {\n");
+		 * buffer.append(" alert(\'a\');\n"); buffer.append(" }\n");
+		 * buffer.append(" </script>\n"); buffer.append(" </BODY>\n");
+		 * buffer.append("\n"); buffer.append("</HTML>\n");
+		 * buffer.append("\n");
+		 */
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("function test(){\n\n/*abc\ndef\nddd*/");
 		buffer.append("	alert(\'a\');\n");
@@ -193,17 +185,38 @@ public class JsEngineImpl implements IJsEngine {
 	 * get lines by url
 	 */
 	public String getCompiledString(String url) {
-		if(compileMap.containsKey(url)){
+		if (compileMap.containsKey(url)) {
 			return compileMap.get(url);
 		}
 		return null;
+	}
+
+	public static InputStream getInputStream(InputStream in) throws IOException {
+
+		PushbackInputStream testin = new PushbackInputStream(in);
+		int ch = testin.read();
+		if (ch != 0xEF) {
+			testin.unread(ch);
+		} else if ((ch = testin.read()) != 0xBB) {
+			testin.unread(ch);
+			testin.unread(0xef);
+		} else if ((ch = testin.read()) != 0xBF) {
+			testin.unread(ch);
+			return testin;
+		} else {
+			// 不需要做，这里是bom头被读完了
+			// // System.out.println("still exist bom");
+
+		}
+		return testin;
+
 	}
 
 	public void compileFile(IFile file) {
 		String fileName = file.getFullPath().toString();
 		InputStream input = null;
 		try {
-			input = file.getContents();
+			input = getInputStream(file.getContents());
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					input));
 			String line = null;
