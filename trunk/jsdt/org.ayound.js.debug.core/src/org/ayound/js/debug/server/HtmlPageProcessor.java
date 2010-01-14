@@ -2,13 +2,13 @@
  *
  *==============================================================================
  *
- * Copyright (c) 2008-2011 ayound@gmail.com 
+ * Copyright (c) 2008-2011 ayound@gmail.com
  * This program and the accompanying materials
- * are made available under the terms of the Apache License 2.0 
+ * are made available under the terms of the Apache License 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
  * All rights reserved.
- * 
+ *
  * Created on 2008-10-26
  *******************************************************************************/
 package org.ayound.js.debug.server;
@@ -30,7 +30,7 @@ import org.eclipse.debug.core.model.IThread;
 import org.mozilla.javascript.EvaluatorException;
 
 /**
- * 
+ *
  * the processor to resolver home page. the home page have some html code and
  * javascript code
  */
@@ -52,7 +52,7 @@ public class HtmlPageProcessor extends AbstractProcessor {
 			manager.createFile(resourcePath, getInfo().getInputStream(),true);
 			IFile htmlFile = manager.getFileByResource(resourcePath);
 			String encoding = getInfo().getEncoding();
-			if(encoding==null){				
+			if(encoding==null){
 				CharsetDetector detector = new CharsetDetector();
 				detector.detect(htmlFile);
 				encoding = detector.getCharset();
@@ -80,7 +80,7 @@ public class HtmlPageProcessor extends AbstractProcessor {
 				reader.close();
 			}
 			getServer().setDebugLine(debugLine);
-			
+
 			getResponse().writeln("</script>",encoding);
 			StringBuffer buffer = new StringBuffer();
 			BufferedReader homeInputStream = new BufferedReader(
@@ -100,17 +100,7 @@ public class HtmlPageProcessor extends AbstractProcessor {
 			}catch(EvaluatorException e){
 				getServer().compileError(e.getMessage(), scriptPath, e.getLineNumber());
 			}
-			String[] lines = scriptContent.split("\n");
-			for (int i = 0; i < lines.length; i++) {
-				String htmlLine = lines[i];
-				String jsLine = htmlLine;
-				if (getServer().getJsEngine().canBreakLine(scriptPath, i + 1)) {
-					jsLine = ScriptCompileUtil.compileHtmlLine(lines,
-							scriptPath, i);//
-				}
-				getResponse().writeln(jsLine,encoding);
-			}
-			lines = null;
+			getResponse().write(getServer().getJsEngine().getCompiledString(scriptPath));
 			scriptContent = null;
 			buffer = null;
 			try {

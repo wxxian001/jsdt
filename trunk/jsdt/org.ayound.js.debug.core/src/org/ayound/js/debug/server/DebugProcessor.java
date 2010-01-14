@@ -79,7 +79,7 @@ public class DebugProcessor extends AbstractProcessor {
 							.getFileByResource(resource);
 					resource = resourceFile.getFullPath().toString();
 				}
-				if (param.isIE()) {
+				/*if (param.isIE()) {
 					if (param.getErrorFunc() != null) {
 						String[] jsLines = getServer().getJsEngine()
 								.getScriptLines(resource);
@@ -129,9 +129,9 @@ public class DebugProcessor extends AbstractProcessor {
 						}
 					}
 				} else {
-					if (getServer().isHtmlPage(resource)) {
-						errorLine = errorLine - getServer().getDebugLine();
-					}
+				}*/
+				if (getServer().isHtmlPage(resource)) {
+					errorLine = errorLine - getServer().getDebugLine();
 				}
 				frame.setLineNum(errorLine);
 				frame.setResource(resource);

@@ -22,7 +22,6 @@ import java.net.URL;
 import java.util.Map;
 
 import org.ayound.js.debug.resource.JsResourceManager;
-import org.ayound.js.debug.script.ScriptCompileUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.debug.core.model.IThread;
 import org.mozilla.javascript.EvaluatorException;
@@ -67,31 +66,10 @@ public class ScriptProcessor extends AbstractProcessor {
 			try{
 				getServer().getJsEngine().compileJs(scriptPath, scriptContent);
 			}catch(EvaluatorException e){
-				getServer().compileError(e.getMessage(), scriptPath, e.getLineNumber());
+				e.printStackTrace();
+				getServer().compileError(e.getMessage(), scriptPath, e.lineNumber());
 			}
-			String[] lines = getServer().getJsEngine().getScriptLines(
-					scriptPath);
-			for (int i = 0; i < lines.length; i++) {
-				String jsLine = lines[i];
-				if (i == 0 && "UTF-8".equalsIgnoreCase(encoding)) {
-					try {
-						if(jsLine.length()>0){
-							char ch = jsLine.charAt(0);
-							if (!(Character.isLetter(ch) || ch == '/')) {
-								jsLine = jsLine.substring(1);
-							}
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-				if (getServer().getJsEngine().canBreakLine(scriptPath, i + 1)) {
-					jsLine = ScriptCompileUtil.compileJsLine(lines,
-							scriptPath, i);//
-				}
-				getResponse().writeln(jsLine,encoding);
-			}
-			lines = null;
+			getResponse().write(getServer().getJsEngine().getCompiledString(scriptPath));
 			scriptContent = null;
 			buffer = null;
 			try {
