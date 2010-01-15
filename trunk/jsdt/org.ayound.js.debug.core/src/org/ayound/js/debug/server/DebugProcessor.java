@@ -49,6 +49,9 @@ public class DebugProcessor extends AbstractProcessor {
 		IThread thread = getThread();
 		if (thread instanceof JsDebugThread) {
 			JsDebugThread jsThread = (JsDebugThread) thread;
+			if(param.isNewStack()){
+				jsThread.clearStackFrame();
+			}
 			if ("START".equalsIgnoreCase(param.getCommand())
 					|| "RESUME".equalsIgnoreCase(param.getCommand())) {
 				getResponse().writeResume();

@@ -24,6 +24,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
+
 /**
  *
  *
@@ -40,10 +41,12 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 	}
 
 	public String getName() throws DebugException {
-		IDebugTarget target =  getDebugTarget();
-		if(target instanceof JsDebugTarget){
-			return "Thread [" + ((JsDebugTarget)target).getServer().getRemoteBaseUrl() + "]";
-		}else{
+		IDebugTarget target = getDebugTarget();
+		if (target instanceof JsDebugTarget) {
+			return "Thread ["
+					+ ((JsDebugTarget) target).getServer().getRemoteBaseUrl()
+					+ "]";
+		} else {
 			return "Thread ";
 		}
 	}
@@ -65,11 +68,11 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 		}
 	}
 
-	public void addExpression(String expression){
+	public void addExpression(String expression) {
 		debugExpressions.add(expression);
 	}
 
-	public void removeExpression(String expression){
+	public void removeExpression(String expression) {
 		debugExpressions.remove(expression);
 	}
 
@@ -79,7 +82,7 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 
 	public boolean canResume() {
 		try {
-			if(this.getTopStackFrame()!=null){
+			if (this.getTopStackFrame() != null) {
 				return this.getTopStackFrame().canResume();
 			}
 		} catch (DebugException e) {
@@ -98,7 +101,7 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 	}
 
 	public void resume() throws DebugException {
-		if(this.getTopStackFrame()!=null){
+		if (this.getTopStackFrame() != null) {
 			this.getTopStackFrame().resume();
 		}
 	}
@@ -145,7 +148,7 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 
 	public boolean canTerminate() {
 		try {
-			if(this.getTopStackFrame()!=null){
+			if (this.getTopStackFrame() != null) {
 				return this.getTopStackFrame().canTerminate();
 			}
 		} catch (DebugException e) {
@@ -156,13 +159,24 @@ public class JsDebugThread extends JsDebugElement implements IThread {
 	}
 
 	public void terminate() throws DebugException {
-		if(this.getTopStackFrame()!=null){
+		if (this.getTopStackFrame() != null) {
 			this.getTopStackFrame().terminate();
 		}
 
 	}
+
+	public void clearStackFrame() {
+		List<IStackFrame> list = new ArrayList<IStackFrame>();
+		this.stackFrames = list.toArray(new IStackFrame[list.size()]);
+		fireResumeEvent(DebugEvent.STEP_END);
+		fireSuspendEvent(DebugEvent.BREAKPOINT);
+		fireChangeEvent(DebugEvent.CONTENT);
+
+	}
+
 	/**
-	 *  add statck frame to thread and fire resume event and breakpoint event
+	 * add statck frame to thread and fire resume event and breakpoint event
+	 *
 	 * @param frame
 	 */
 	public void addStackFrame(JsDebugStackFrame frame) {

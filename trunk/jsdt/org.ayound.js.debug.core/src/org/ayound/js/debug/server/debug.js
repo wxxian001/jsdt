@@ -21,6 +21,8 @@ function _window_onerror(e, resource, line) {
 }
 window.onerror = _window_onerror;
 var arguments = [];
+arguments.callee = {};
+var DEBUG_FUNC_INDEX = 1;
 /**
  * create xmlhttp to cross browser
  */
@@ -361,6 +363,17 @@ jsDebug.evalValue = function(expression, evalFunc){
 }
 jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 	window.onerror = _window_onerror;
+	var isNewStack = false;
+	if(args && args["__funcIndex"]==undefined){
+		if(args.callee.caller && args.callee.caller.arguments){
+			if(args.callee.caller.arguments["__funcIndex"]==undefined){
+				args["__funcIndex"] = DEBUG_FUNC_INDEX++;
+				isNewStack = true;
+			}else{
+				args["__funcIndex"] = args.callee.caller.arguments["__funcIndex"];
+			}
+		}
+	}
 	if (jsDebug.isExpression) {
 		return;
 	}
@@ -460,7 +473,8 @@ jsDebug.debug = function(resource, line, scope, args, evalFunc) {
 			"STACK" : data,
 			"COMMAND" : jsDebug.debugCommand,
 			"RESOURCE" : resource,
-			"LINE" : line
+			"LINE" : line,
+			"NEWSTACK":isNewStack
 		}
 		jsDebug.xmlHttp.send(json2string(postData));
 		jsDebug.parseResult(jsDebug.xmlHttp.responseText, evalFunc);
