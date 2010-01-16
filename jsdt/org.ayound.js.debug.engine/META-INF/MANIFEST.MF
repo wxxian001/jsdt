@@ -3,13 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Engine Plug-in
 Bundle-SymbolicName: org.ayound.js.debug.engine
 Bundle-Version: 2.1.1
-Bundle-Activator: org.ayound.js.debug.engine.JsEnginePlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.core.resources
-Eclipse-LazyStart: true
+Eclipse-LazyStart: false
 Bundle-ClassPath: lib/js.jar,
  .
 Export-Package: org.ayound.js.debug.engine,
  org.mozilla.javascript
+Require-Bundle: org.eclipse.core.runtime

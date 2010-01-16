@@ -13,16 +13,9 @@
  *******************************************************************************/
 package org.ayound.js.debug.engine;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PushbackInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.JsDebugCompileEngine;
 
@@ -189,61 +182,6 @@ public class JsEngineImpl implements IJsEngine {
 			return compileMap.get(url);
 		}
 		return null;
-	}
-
-	public static InputStream getInputStream(InputStream in) throws IOException {
-
-		PushbackInputStream testin = new PushbackInputStream(in);
-		int ch = testin.read();
-		if (ch != 0xEF) {
-			testin.unread(ch);
-		} else if ((ch = testin.read()) != 0xBB) {
-			testin.unread(ch);
-			testin.unread(0xef);
-		} else if ((ch = testin.read()) != 0xBF) {
-			testin.unread(ch);
-			return testin;
-		} else {
-			// 不需要做，这里是bom头被读完了
-			// // System.out.println("still exist bom");
-
-		}
-		return testin;
-
-	}
-
-	public void compileFile(IFile file) {
-		String fileName = file.getFullPath().toString();
-		InputStream input = null;
-		try {
-			input = getInputStream(file.getContents());
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					input));
-			String line = null;
-			StringBuffer buffer = new StringBuffer();
-			while ((line = reader.readLine()) != null) {
-				buffer.append(line).append("\n");
-			}
-			String scriptText = buffer.toString();
-			if (scriptText.trim().startsWith("<")) {
-				this.compileHtml(fileName, scriptText);
-			} else {
-				this.compileJs(fileName, scriptText);
-			}
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				input.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 	}
 
 }

@@ -13,13 +13,11 @@
  *******************************************************************************/
 package org.ayound.js.debug.engine;
 
-import org.eclipse.core.resources.IFile;
 
 
 
 public interface IJsEngine {
 
-	public void compileFile(IFile file);
 	/**
 	 *
 	 * @param url
