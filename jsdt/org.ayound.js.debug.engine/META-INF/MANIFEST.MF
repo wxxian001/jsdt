@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Engine Plug-in
 Bundle-SymbolicName: org.ayound.js.debug.engine
-Bundle-Version: 2.1.1
+Bundle-Version: 2.2.0
 Bundle-Localization: plugin
 Eclipse-LazyStart: false
 Bundle-ClassPath: lib/js.jar,
