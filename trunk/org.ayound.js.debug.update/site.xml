@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.ayound.js.debug.feature_2.1.1.jar" id="org.ayound.js.debug.feature" version="2.1.1"/>
+   <feature url="features/org.ayound.js.debug.feature_2.2.0.jar" id="org.ayound.js.debug.feature" version="2.2.0"/>
 </site>
