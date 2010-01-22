@@ -160,6 +160,18 @@ public class Decompiler {
 		addToken(Token.STRING);
 		appendString(str);
 	}
+	//add by caozw
+    void addJScriptConditionalComment(String str)
+    {
+        addToken(Token.CONDCOMMENT);
+        appendString(str);
+    }
+    //add by caozw
+    void addPreservedComment(String str)
+    {
+        addToken(Token.KEEPCOMMENT);
+        appendString(str);
+    }
 
 	void addRegexp(String regexp, String flags) {
 		addToken(Token.REGEXP);
@@ -902,7 +914,11 @@ public class Decompiler {
 			case Token.XMLATTR:
 				result.append('@');
 				break;
-
+			case Token.KEEPCOMMENT:
+				result.append("/*");
+				i = printSourceString(source, i + 1, false, result);
+				result.append("*/");
+				break;
 			default:
 				// If we don't know how to decompile it, raise an exception.
 				throw new RuntimeException("Token: "

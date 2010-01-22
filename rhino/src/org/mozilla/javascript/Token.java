@@ -257,8 +257,10 @@ public class Token
         ARRAYCOMP      = 156,  // array comprehension
         LETEXPR        = 157,
         WITHEXPR       = 158,
-        DEBUGGER       = 159,
-        LAST_TOKEN     = 159;
+        CONDCOMMENT    = 159,  // JScript conditional comment
+        KEEPCOMMENT    = 160,  // /*! ... */ comment
+        DEBUGGER       = 161,
+        LAST_TOKEN     = 161;
 
     public static String name(int token)
     {
