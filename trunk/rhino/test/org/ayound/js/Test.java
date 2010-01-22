@@ -35,7 +35,7 @@ public class Test {
 			JsDebugCompileEngine c = new JsDebugCompileEngine();
 			c.setLineno(0);
 			c.setSourceName("test");
-			c.setSourceString("/*abcdef\n\nddd\n*///abc\nvar a = '' \n<%=a%>\nfunction test()\n{\nreturn 'ddd';\n}\ntest();if(2>1)a=b");
+			c.setSourceString("/*abcdef\n\nddd\n*///abc\nvar a = '' \n\nfunction test()\n{\nreturn 'ddd';\n}\ntest();if(2>1)a=b");
 //			c.setSourceString(text);
 			System.out.println(c.compile());
 			FileUtils.writeStringToFile(new File("d:\\result.js"), c.compile());
