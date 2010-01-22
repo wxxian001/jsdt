@@ -15,6 +15,8 @@ package org.ayound.js.debug.engine;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.JsDebugCompileEngine;
@@ -51,8 +53,9 @@ public class JsEngineImpl implements IJsEngine {
 		JsDebugCompileEngine compile = new JsDebugCompileEngine();
 		compile.setLineno(0);
 		compile.setSourceName(url);
+		text = encode(text);
 		compile.setSourceString(text);
-		compileMap.put(url, compile.compile());
+		compileMap.put(url, decode(compile.compile()));
 		engineMap.put(url, compile);
 	}
 
@@ -67,6 +70,8 @@ public class JsEngineImpl implements IJsEngine {
 		}
 		compile.setLineno(0);
 		compile.setSourceName(url);
+		// add support of jsp
+		text = encode(text);
 		compile.setSourceString(text);
 		compile.setOffsetLine(offset);
 		String result = null;
@@ -77,7 +82,35 @@ public class JsEngineImpl implements IJsEngine {
 			e.initLineNumber(errLine);
 			throw e;
 		}
+		return decode(result);
+	}
+
+	private String encode(String text) {
+		return encodeJsp(text);
+	}
+
+	private String decode(String text) {
+		return decodeJsp(text);
+	}
+
+	private String decodeJsp(String result) {
+		result = result.replaceAll("/\\*!!<%", "<%");
+		result = result.replaceAll("%>!!\\*/", "%>");
 		return result;
+	}
+
+	private String encodeJsp(String text) {
+		if (text.indexOf("<%") > 0) {
+			Pattern pattern = Pattern.compile("(<%.*%>)");
+			Matcher matcher = pattern.matcher(text);
+			StringBuffer sbr = new StringBuffer();
+			while (matcher.find()) {
+				matcher.appendReplacement(sbr, "/*!!$0!!*/");
+			}
+			matcher.appendTail(sbr);
+			return sbr.toString();
+		}
+		return text;
 	}
 
 	/**
@@ -165,10 +198,13 @@ public class JsEngineImpl implements IJsEngine {
 		 * buffer.append("\n");
 		 */
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("function test(){\n\n/*abc\ndef\nddd*/");
+		buffer.append("function test(){\n\n<%if%>/*abc\ndef\nddd*/");
 		buffer.append("	alert(\'a\');\n");
 		buffer.append("}");
-
+		String encoded = js.encodeJsp(buffer.toString());
+		String decoded = js.decodeJsp(encoded);
+		System.out.println(encoded);
+		System.out.println(decoded);
 		js.compileJs("test", buffer.toString());
 		System.out.println(js.compileMap.get("test"));
 
